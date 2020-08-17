@@ -5,12 +5,25 @@ import { Appearance, useColorScheme } from 'react-native-appearance'
 
 export const Note: FunctionComponent = () => {
 
+    Appearance.getColorScheme();
+    const colorScheme = useColorScheme();
+
+    const themeContainerStyle =
+        colorScheme === 'light' ? styles.lightContainer : styles.darkContainer;
+    const themeTextStyle =
+        colorScheme === 'light' ? styles.lightThemeText : styles.darkThemeText;
+    const themeTitleTextStyle =
+        colorScheme === 'light' ? styles.lightTitleText : styles.darkTitleText;
 
     return (
 
-        <View style={styles.container}>
-            <Text style={[styles.text, styles.title]}>Title</Text>
-            <Text style={[styles.text, styles.paragraph]}>Loren Ipsum</Text>
+        <View style={[styles.container, themeContainerStyle]}>
+            <Text style={[styles.text, themeTitleTextStyle]}>Title</Text>
+            <Text style={[styles.text, themeTextStyle]}>Loren Ipsum I could go on
+                sefiodnfisdfi og fdgo fidsfidsjfisdjfo isdjfoi sdjfiodsjf idsjfo sdi
+                fdvndfnvdfn voidfjvi djfv difj d 
+                fewrfdsf fewf w
+            </Text>
         </View>
 
     );
@@ -23,24 +36,38 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 8,
         borderWidth: 1,
-        borderColor: '#d3d3d3', 
         padding: 15,
         marginRight: 7,
         marginLeft: 7,
         marginTop: 4,
         marginBottom: 4,
     },
-    title: {
+    lightContainer: {
+        borderColor: '#d3d3d3', 
+    },
+    darkContainer: {
+        borderColor: 'white',
+    },
+    lightTitleText: {
         fontWeight: "600",
         fontSize: 17,
+        color: 'black'
+    },
+    darkTitleText: {
+        fontWeight: "600",
+        fontSize: 17,
+        color: 'white'
     },
     text: {
-        color: 'black',
         alignSelf: 'flex-start',
     },
-    paragraph: {
+    lightThemeText: {
+        paddingTop: 10,
         color: 'grey',
-        paddingTop: 10
-    }
+    },
+    darkThemeText: {
+        paddingTop: 10,
+        color: 'white'
+    },
 
 });
