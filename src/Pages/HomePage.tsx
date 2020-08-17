@@ -1,6 +1,7 @@
 import React from 'react';
-import { Text, SafeAreaView, StatusBar, StyleSheet } from 'react-native';
-import { Appearance, useColorScheme } from 'react-native-appearance'
+import { Text, SafeAreaView, StatusBar, StyleSheet, ScrollView } from 'react-native';
+import { Appearance, useColorScheme } from 'react-native-appearance';
+import { Note } from '../Components/Notes/Note';
 
 
 export default function HomePage() {
@@ -20,9 +21,24 @@ export default function HomePage() {
     return (
         <SafeAreaView style={[styles.container, themeContainerStyle]}>
             <StatusBar barStyle={themeStatusBarStyle} />
-            <Text style={[styles.text, themeTextStyle]}>
+            {/* <Text style={[styles.text, themeTextStyle]}>
                 Color scheme: {colorScheme}
-            </Text>
+            </Text> */}
+            <ScrollView style={styles.notesContatiner}>
+                <Note />
+                <Note />
+                <Note />
+                <Note />
+                <Note />
+                <Note />
+                <Note />
+                <Note />
+                <Note />
+                <Note />
+                <Note />
+                <Note />
+                <Note />
+            </ScrollView>
         </SafeAreaView>
 
     );
@@ -35,7 +51,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     lightContainer: {
-        backgroundColor: '#D0D0C0',
+        backgroundColor: '#fff',
     },
     darkContainer: {
         backgroundColor: '#242C40',
@@ -48,6 +64,9 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 17,
+    },
+    notesContatiner: {
+        width: '100%',
     }
 
 });
