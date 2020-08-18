@@ -1,10 +1,10 @@
 import React from 'react';
-import { Text, SafeAreaView, StatusBar, StyleSheet, ScrollView } from 'react-native';
+import { Text, SafeAreaView, StatusBar, StyleSheet, ScrollView, View } from 'react-native';
 import { Appearance, useColorScheme } from 'react-native-appearance';
 import { Note } from '../Components/Notes/Note';
 
 
-export default function HomePage() {
+const EditNoteScreen = () => {
 
     Appearance.getColorScheme();
     const colorScheme = useColorScheme();
@@ -20,25 +20,7 @@ export default function HomePage() {
 
     return (
         <SafeAreaView style={[styles.container, themeContainerStyle]}>
-            <StatusBar barStyle={themeStatusBarStyle} />
-            {/* <Text style={[styles.text, themeTextStyle]}>
-                Color scheme: {colorScheme}
-            </Text> */}
-            <ScrollView style={styles.notesContatiner}>
-                <Note />
-                <Note />
-                <Note />
-                <Note />
-                <Note />
-                <Note />
-                <Note />
-                <Note />
-                <Note />
-                <Note />
-                <Note />
-                <Note />
-                <Note />
-            </ScrollView>
+           <Text>Yoza</Text>
         </SafeAreaView>
 
     );
@@ -68,5 +50,6 @@ const styles = StyleSheet.create({
     notesContatiner: {
         width: '100%',
     }
-
 });
+
+export default EditNoteScreen;
