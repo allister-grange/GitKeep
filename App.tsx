@@ -16,11 +16,12 @@ export default function App() {
   Appearance.getColorScheme();
   const colorScheme = useColorScheme();
 
-  const barStyle = colorScheme === 'dark' ? 'dark' : 'light'; 
+  const statusBarStyle = colorScheme === 'dark' ? 'dark' : 'light'; 
+  const barStyle = colorScheme === 'dark' ? 'grey' : 'white'; 
 
   return (
     <AppearanceProvider>
-      <StatusBar style={barStyle}/>
+      <StatusBar style={statusBarStyle}/>
       <NavigationContainer>
         <Tab.Navigator
           screenOptions={({ route }) => ({
@@ -42,6 +43,9 @@ export default function App() {
           tabBarOptions={{
             activeTintColor: 'tomato',
             inactiveTintColor: 'gray',
+            style: {
+              backgroundColor: barStyle
+            }
           }}
         >
           <Tab.Screen name="Home" component={HomeScreen} />

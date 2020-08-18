@@ -24,6 +24,8 @@ const EditNoteScreen = () => {
     const themeContainerStyle =
         colorScheme === 'light' ? styles.lightContainer : styles.darkContainer;
 
+    console.log(colorScheme)
+
     return (
         <SafeAreaView style={[styles.container, themeContainerStyle]}>
             <TextInput 

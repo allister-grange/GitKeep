@@ -25,6 +25,7 @@
     "androidNavigationBar": {
       "barStyle": "dark-content",
       "backgroundColor": "#ffffff"
-    }
+    },
+    "userInterfaceStyle": "automatic"
   }
 }
