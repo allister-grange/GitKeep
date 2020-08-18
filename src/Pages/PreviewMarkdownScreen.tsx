@@ -26,14 +26,8 @@ const EditNoteScreen = () => {
     Appearance.getColorScheme();
     const colorScheme = useColorScheme();
 
-    const themeStatusBarStyle =
-        colorScheme === 'light' ? 'dark-content' : 'light-content';
     const themeContainerStyle =
         colorScheme === 'light' ? styles.lightContainer : styles.darkContainer;
-    const themeTextStyle =
-        colorScheme === 'light' ? styles.lightThemeText : styles.darkThemeText;
-
-    console.log(colorScheme)
 
     return (
         <SafeAreaView style={[styles.container, themeContainerStyle]}>
