@@ -8,12 +8,19 @@ import { Ionicons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import EditNoteScreen from './src/Pages/EditNoteScreen';
+import { Appearance, useColorScheme } from 'react-native-appearance';
+
 
 export default function App() {
   const Tab = createBottomTabNavigator();
+  Appearance.getColorScheme();
+  const colorScheme = useColorScheme();
+
+  const barStyle = colorScheme === 'dark' ? 'dark' : 'light'; 
 
   return (
     <AppearanceProvider>
+      <StatusBar style={barStyle}/>
       <NavigationContainer>
         <Tab.Navigator
           screenOptions={({ route }) => ({
@@ -24,7 +31,7 @@ export default function App() {
                 iconName = focused
                   ? 'ios-information-circle'
                   : 'ios-information-circle-outline';
-              } else if (route.name === 'Settings') {
+              } else if (route.name === 'EditNoteScreen') {
                 iconName = focused ? 'ios-list-box' : 'ios-list';
               }
 

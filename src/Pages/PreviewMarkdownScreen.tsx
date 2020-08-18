@@ -5,54 +5,33 @@ import { Note } from '../Components/Notes/Note';
 import Markdown from 'react-native-showdown';
 
 const markdown = `
-# Todo
+# Welcome to React Native Showdown!
 
-## Architectural Spike MVP
+To get started, edit the markdown in \`App.tsx\`.
 
-Authentication  
-Storing words in a database associated with user accounts - GUID?
-Search  
-I want to create a user using some curl command for learning purposes  
-Search for a word and it gets stored in the database
-
-## Authentication
-
-Got a single user working, good enough for MVP!
-
-In the future, need to hook up a database to store users.  Also, need to use DTO's.
-
-
-## Database
-
-MVP:  
-Store a searched word with a user ID attached to it
-
-## Mobile App
-
-Loggin in (screw registering)
-
-## Other stuff
-
-Authentication  
-Storing words in a database associated with user accounts - GUID?
-Search  
-I want to create a user using some curl command for learning purposes  
-Search for a word and it gets stored in the database
-
+| Column 1 | Column 2 |
+|----------|----------|
+| A1       | B1       |
+| A2       | B2       |
 `;
 
   const css = `
-// h1 { color: red; }
+h1 { color: red; }
 code { font-size: 1.2rem; background-color: lightgray; }
 `;
 
 const EditNoteScreen = () => {
 
+
     Appearance.getColorScheme();
     const colorScheme = useColorScheme();
 
+    const themeStatusBarStyle =
+        colorScheme === 'light' ? 'dark-content' : 'light-content';
     const themeContainerStyle =
         colorScheme === 'light' ? styles.lightContainer : styles.darkContainer;
+    const themeTextStyle =
+        colorScheme === 'light' ? styles.lightThemeText : styles.darkThemeText;
 
     console.log(colorScheme)
 
@@ -66,13 +45,25 @@ const EditNoteScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 15,
+
     },
     lightContainer: {
-        backgroundColor: 'white'
+        backgroundColor: '#fff',
     },
     darkContainer: {
-        backgroundColor: 'black'
+        backgroundColor: '#242C40',
+    },
+    lightThemeText: {
+        color: '#242C40',
+    },
+    darkThemeText: {
+        color: '#D0D0C0',
+    },
+    text: {
+        fontSize: 17,
+    },
+    notesContatiner: {
+        width: '100%',
     }
 });
 
