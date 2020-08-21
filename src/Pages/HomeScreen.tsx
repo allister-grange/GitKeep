@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     darkContainer: {
-        backgroundColor: '#242C40',
+        backgroundColor: '#202020',
     },
     lightThemeText: {
         color: '#242C40',

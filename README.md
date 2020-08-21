@@ -14,3 +14,7 @@ https://github.com/jerolimov/react-native-showdown
 https://blog.expo.io/firebase-github-authentication-with-react-native-2543e32697b4
 
 https://docs.expo.io/guides/authentication/#github
+
+## Todo
+
+Swap out hiding the toolbar for  real naviagtion

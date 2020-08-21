@@ -26,10 +26,6 @@
       "barStyle": "dark-content",
       "backgroundColor": "#ffffff"
     },
-    "GitHubAuth": {
-      "GITHUB_ID":"placeholder",
-      "GITHUB_SECRET":"other"
-    },
     "userInterfaceStyle": "automatic"
   }
 }

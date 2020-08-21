@@ -23,14 +23,15 @@ const EditNoteScreen = () => {
 
     const themeContainerStyle =
         colorScheme === 'light' ? styles.lightContainer : styles.darkContainer;
-
-    console.log(colorScheme)
+    const themeTextStyle =
+        colorScheme === 'light' ? styles.lightText : styles.darkText;
 
     return (
         <SafeAreaView style={[styles.container, themeContainerStyle]}>
             <TextInput 
                   value={text}
                   multiline = {true}
+                  style={themeTextStyle}
                   onChangeText={(value) => setText(value)}
                     />
         </SafeAreaView>
@@ -47,7 +48,13 @@ const styles = StyleSheet.create({
         backgroundColor: 'white'
     },
     darkContainer: {
-        backgroundColor: 'black'
+        backgroundColor: '#202020'
+    },
+    lightText: {
+        color: 'black'
+    },
+    darkText: {
+        color: 'white'
     }
 });
 

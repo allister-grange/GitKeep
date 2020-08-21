@@ -5,9 +5,10 @@ import HomeScreen from './src/Pages/HomeScreen';
 import { AppearanceProvider } from 'react-native-appearance'
 import { Ionicons } from '@expo/vector-icons';
 
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, TabActions } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import EditNoteScreen from './src/Pages/EditNoteScreen';
+import CreateNoteScreen from './src/Pages/CreateNoteScreen';
 import { Appearance, useColorScheme } from 'react-native-appearance';
 
 
@@ -17,7 +18,7 @@ export default function App() {
   const colorScheme = useColorScheme();
 
   const statusBarStyle = colorScheme === 'dark' ? 'dark' : 'light'; 
-  const barStyle = colorScheme === 'dark' ? 'grey' : 'white'; 
+  const barStyle = colorScheme === 'dark' ? '#303030' : 'white'; 
 
   return (
     <AppearanceProvider>
@@ -30,10 +31,10 @@ export default function App() {
 
               if (route.name === 'Home') {
                 iconName = focused
-                  ? 'ios-information-circle'
-                  : 'ios-information-circle-outline';
+                  ? 'hourglass'
+                  : 'hourglass';
               } else if (route.name === 'EditNoteScreen') {
-                iconName = focused ? 'ios-list-box' : 'ios-list';
+                iconName = focused ? 'hourglass' : 'hourglass';
               }
 
               // You can return any component that you like here!
@@ -49,7 +50,8 @@ export default function App() {
           }}
         >
           <Tab.Screen name="Home" component={HomeScreen} />
-          <Tab.Screen name="EditNoteScreen" component={EditNoteScreen} />
+          <Tab.Screen name="EditNoteScreen" component={EditNoteScreen} options={{ tabBarVisible: false }}/>
+          <Tab.Screen name="CreateNoteScreen" component={CreateNoteScreen} options={{ tabBarVisible: false }}/>
         </Tab.Navigator>
       </NavigationContainer>
 
