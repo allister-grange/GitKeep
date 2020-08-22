@@ -2,6 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import HomeScreen from './src/Pages/HomeScreen';
+import AuthenticateScreen from './src/Pages/AuthenticateScreen';
 import { AppearanceProvider } from 'react-native-appearance'
 import { Ionicons } from '@expo/vector-icons';
 
@@ -38,7 +39,7 @@ export default function App() {
               }
 
               // You can return any component that you like here!
-              return <Ionicons name={iconName} size={size} color={color} />;
+              return <Ionicons name={'md-tablet-portrait'} size={size} color={color} />;
             },
           })}
           tabBarOptions={{
@@ -50,7 +51,7 @@ export default function App() {
           }}
         >
           <Tab.Screen name="Home" component={HomeScreen} />
-          <Tab.Screen name="EditNoteScreen" component={EditNoteScreen} options={{ tabBarVisible: false }}/>
+          <Tab.Screen name="AuthenticateScreen" component={AuthenticateScreen} options={{ tabBarVisible: false }}/>
           <Tab.Screen name="CreateNoteScreen" component={CreateNoteScreen} options={{ tabBarVisible: false }}/>
         </Tab.Navigator>
       </NavigationContainer>

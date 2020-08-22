@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { Text, SafeAreaView, StatusBar, StyleSheet, TextInput, View } from 'react-native';
+import { SafeAreaView, StyleSheet, TextInput, View } from 'react-native';
 import { Appearance, useColorScheme } from 'react-native-appearance';
-import { Note } from '../Components/Notes/Note';
-import Markdown from 'react-native-showdown';
 
 const CreateNoteScreen = () => {
 
@@ -90,7 +88,6 @@ const styles = StyleSheet.create({
     },
     textInput: {
         fontSize: 20
-        // flex: 1
     },
 });
 

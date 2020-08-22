@@ -1,73 +1,57 @@
 import * as React from 'react';
-import { Text, SafeAreaView, Button , StyleSheet, ScrollView, View, TouchableOpacity } from 'react-native';
-import { Appearance, useColorScheme } from 'react-native-appearance';
 import * as WebBrowser from 'expo-web-browser';
-import { makeRedirectUri, useAuthRequest } from 'expo-auth-session';
+import { makeRedirectUri, useAuthRequest, getRedirectUrl } from 'expo-auth-session';
+import { Button, View, Text } from 'react-native';
 
-import Constants from 'expo-constants';
-
+WebBrowser.maybeCompleteAuthSession();
 
 // Endpoint
 const discovery = {
-    authorizationEndpoint: 'https://github.com/login/oauth/authorize',
-    tokenEndpoint: 'https://github.com/login/oauth/access_token',
-    revocationEndpoint: 'https://github.com/settings/connections/applications/<CLIENT_ID>',
+  authorizationEndpoint: 'https://github.com/login/oauth/authorize',
+  tokenEndpoint: 'https://github.com/login/oauth/access_token',
+  revocationEndpoint: 'https://github.com/settings/connections/applications/<CLIENT_ID>',
 };
 
-const HomeScreen = () => {
+// https://auth.expo.io/@allig256/GitKeep
 
-    Appearance.getColorScheme();
-    const colorScheme = useColorScheme();
+export default function App() {
+  const [request, response, promptAsync] = useAuthRequest(
+    {
+      clientId: '0ebefb6bb5e94c6193a0',
+      scopes: ['identity'],
+      // For usage in managed apps using the proxy
+      redirectUri: makeRedirectUri({
+        // For usage in bare and standalone
+        native: 'http://localhost:19006',
+      }),
+    },
+    discovery
+  );
 
-    const themeStatusBarStyle =
-        colorScheme === 'light' ? 'dark-content' : 'light-content';
-    const themeContainerStyle =
-        colorScheme === 'light' ? styles.lightContainer : styles.darkContainer;
+  const [code, setCode] = React.useState("");
 
-    const [request, response, promptAsync] = useAuthRequest(
-        {
-            clientId: 'CLIENT_ID',
-            scopes: ['identity'],
-            // For usage in managed apps using the proxy
-            redirectUri: makeRedirectUri({
-                // For usage in bare and standalone
-                native: 'your.app://redirect',
-            }),
-        },
-        discovery
-    );
+  React.useEffect(() => {
+    if (response?.type === 'success') {
+      const { code } = response.params;
+      setCode(code);
+      }
+  }, [response]);
 
-    React.useEffect(() => {
-        if (response ?.type === 'success') {
-            const { code } = response.params;
-        }
-    }, [response]);
-
-    return (
-        <SafeAreaView style={[styles.container, themeContainerStyle]}>
-            <Button
-                disabled={!request}
-                title="Login"
-                onPress={() => {
-                    promptAsync();
-                }}
-            />
-        </SafeAreaView>
-    );
+  return (
+      <View style={{flex:  1, justifyContent: 'center'}}>
+    <Button
+      disabled={!request}
+      title="Login"
+      onPress={() => {
+        promptAsync();
+        }}
+    />
+    <Text>
+        {getRedirectUrl()}
+    </Text>
+    <Text>
+        {code}
+    </Text>
+    </View>
+  );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    lightContainer: {
-        backgroundColor: '#fff',
-    },
-    darkContainer: {
-        backgroundColor: '#242C40',
-    },
-});
-
-export default HomeScreen;
