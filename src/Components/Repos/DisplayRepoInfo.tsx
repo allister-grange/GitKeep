@@ -3,6 +3,8 @@ import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Appearance, useColorScheme } from 'react-native-appearance'
 import { useNavigation } from '@react-navigation/native';
 import RepoSelectScreen from '../../Pages/RepoSelectScreen';
+import { Ionicons } from '@expo/vector-icons';
+
 
 type PassedProps = {
     title: string,
@@ -23,6 +25,8 @@ export const DisplayRepoInfo: FunctionComponent<PassedProps> = ({ title, onPress
         colorScheme === 'light' ? styles.lightThemeText : styles.darkThemeText;
     const themeTitleTextStyle =
         colorScheme === 'light' ? styles.lightTitleText : styles.darkTitleText;
+    const themeIconStyle =
+        colorScheme === 'light' ? 'black' : 'white';
 
     return (
         <View style={[styles.container, themeContainerStyle]}>
@@ -30,7 +34,10 @@ export const DisplayRepoInfo: FunctionComponent<PassedProps> = ({ title, onPress
                 onPress={() => navigation.navigate('EditNoteScreen')
                 }
             >
-                <Text style={[styles.text, themeTitleTextStyle]}>{title}</Text>
+                <View style={{flexDirection:'row'}}>
+                    <Text style={[styles.text, themeTitleTextStyle]}>{title}</Text>
+                    {privateRepo && <Ionicons style={{paddingLeft: 10}} name={'md-lock'} size={20} color={themeIconStyle} />}
+                </View>
                 <Text style={[styles.text, themeTextStyle]}>{description ? description : "No description for this repo."}</Text>
             </TouchableOpacity>
         </View>
