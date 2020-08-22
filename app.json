@@ -26,6 +26,7 @@
       "barStyle": "dark-content",
       "backgroundColor": "#ffffff"
     },
-    "userInterfaceStyle": "automatic"
+    "userInterfaceStyle": "automatic",
+    "scheme": "gitkeep"
   }
 }

@@ -2,7 +2,9 @@ import * as React from 'react';
 import * as WebBrowser from 'expo-web-browser';
 import { makeRedirectUri, useAuthRequest, getRedirectUrl } from 'expo-auth-session';
 import { Button, View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import { GitHubLoginButton } from '../Components/LoginButtons/GithubLoginButton';
+import { GitHubLoginButton } from '../Components/LoginButtons/GitHubLoginButton';
+import * as SecureStore from 'expo-secure-store';
+import * as Linking from 'expo-linking'
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -10,7 +12,7 @@ WebBrowser.maybeCompleteAuthSession();
 const discovery = {
     authorizationEndpoint: 'https://github.com/login/oauth/authorize',
     tokenEndpoint: 'https://github.com/login/oauth/access_token',
-    revocationEndpoint: 'https://github.com/settings/connections/applications/<CLIENT_ID>',
+    revocationEndpoint: 'https://github.com/settings/connections/applications/0ebefb6bb5e94c6193a0',
 };
 
 // https://auth.expo.io/@allig256/GitKeep
@@ -21,16 +23,19 @@ export default function App() {
             clientId: '0ebefb6bb5e94c6193a0',
             scopes: ['user', 'repo'],
             // For usage in managed apps using the proxy
-            redirectUri: makeRedirectUri({
-                // For usage in bare and standalone
-                // native: 'https://auth.expo.io/@allig256/GitKeep',
-                native: 'http://localhost:19006',
-            }),
+            // redirectUri: makeRedirectUri({
+            //     // For usage in bare and standalone
+            //     // native: 'https://auth.expo.io/@allig256/GitKeep',
+            //     native: 'gitkeep://',
+            //     // useProxy: true,
+            // }),
+            redirectUri: getRedirectUrl()
+        
+            // redirectUri: getRedirectUrl()
         },
         discovery
     );
 
-    const [code, setCode] = React.useState("");
     const [token, setToken] = React.useState("");
 
     const findRepos = () => {
@@ -45,29 +50,58 @@ export default function App() {
             .catch(err => console.log(err))
     }
 
-    const getToken = () => {
+    const getToken = async (code: string) => {
         const url = 'https://github.com/login/oauth/access_token';
         const headers = new Headers({
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         });
 
-        console.log(code);
+        console.log("getting token now ");
+        
 
-        fetch('https://cors-anywhere.herokuapp.com/' + url + '?client_id=0ebefb6bb5e94c6193a0&client_secret=1905a7cc5a255be077df3fc6a848ba2de15e2913&code=' + code, { method: 'POST', headers: headers })
+        await fetch('https://cors-anywhere.herokuapp.com/' + url + '?client_id=0ebefb6bb5e94c6193a0&client_secret=1905a7cc5a255be077df3fc6a848ba2de15e2913&code=' + code, { method: 'POST', headers: headers })
             .then(res => res.json())
-            .then(data => setToken(data.access_token))
+            .then(async (data) => {
+                console.log(data.access_token);
+                setToken(data.access_token);
+                await SecureStore.setItemAsync('github_token', data.access_token);
+                // const storageToken = await SecureStore.getItemAsync('github_token');        
+            })
             .catch(err => console.log(err))
+
+        console.log("token + " + token);
+
+        // await SecureStore.setItemAsync('github_token', token);
+        return await SecureStore.getItemAsync('github_token');
+        // return 
+        // console.log(storageToken + ' set in storage'); // output: sahdkfjaskdflas$%^&
     }
 
 
     React.useEffect(() => {
-        if (response?.type === 'success') {
-            const { code } = response.params;
-            setCode(code);
-            //   getToken();
+        async function fetchMyToken() {
+            console.log("there");
+            console.log(response);
+            
+            if (response?.type === 'success') {
+                const { code } = response.params;
+                let token = await getToken(code);
+                console.log(token);
+            }
         }
+
+        console.log("here");
+        
+        fetchMyToken()
     }, [response]);
+
+    // React.useEffect(() => {
+    //     if (response?.type === 'success') {
+    //         const { code } = response.params;
+    //         // await getToken(code);
+    //     }
+    // }, [response]);
 
     return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -79,13 +113,6 @@ export default function App() {
 
             <Button
                 disabled={!request}
-                title="Get Token"
-                onPress={() => {
-                    getToken();
-                }}
-            />
-            <Button
-                disabled={!request}
                 title="Get repos"
                 onPress={() => {
                     findRepos();
@@ -95,10 +122,10 @@ export default function App() {
                 {getRedirectUrl()}
             </Text>
             <Text>
-                {code}
+                {"token = " + token}
             </Text>
             <Text>
-                {token}
+                {Linking.makeUrl()}
             </Text>
         </View>
     );

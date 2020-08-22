@@ -11,23 +11,29 @@ import EditNoteScreen from './src/Pages/EditNoteScreen';
 import CreateNoteScreen from './src/Pages/CreateNoteScreen';
 import { Appearance, useColorScheme } from 'react-native-appearance';
 import { createStackNavigator } from '@react-navigation/stack';
-
+import * as Linking from 'expo-linking'
+import RepoSelectScreen from './src/Pages/RepoSelectScreen';
 
 export default function App() {
   const Tab = createBottomTabNavigator();
   Appearance.getColorScheme();
   const colorScheme = useColorScheme();
 
-  const [isRegistered, setIsRegistered] = useState(false);
+  const [isRegistered, setIsRegistered] = useState(true);
 
   const statusBarStyle = colorScheme === 'dark' ? 'dark' : 'light';
   const barStyle = colorScheme === 'dark' ? '#303030' : 'white';
   const Stack = createStackNavigator();
+  const prefix = Linking.makeUrl('/');
+
+  const linking = {
+    prefixes: [prefix],
+  };
 
   return (
     <AppearanceProvider>
       <StatusBar style={statusBarStyle} />
-      <NavigationContainer>
+      <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
         {
           isRegistered ?
             (
@@ -59,6 +65,7 @@ export default function App() {
                 <Tab.Screen name="Home" component={HomeScreen} />
                 <Tab.Screen name="AuthenticateScreen" component={AuthenticateScreen} options={{ tabBarVisible: false }} />
                 <Tab.Screen name="CreateNoteScreen" component={CreateNoteScreen} options={{ tabBarVisible: false }} />
+                <Tab.Screen name="RepoSelectScreen" component={RepoSelectScreen} options={{ tabBarVisible: false }} />
               </Tab.Navigator>
             ) :
             <Stack.Navigator>
