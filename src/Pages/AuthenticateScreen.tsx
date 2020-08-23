@@ -5,6 +5,7 @@ import { Button, View, Text, TouchableOpacity, StyleSheet, Image } from 'react-n
 import { GitHubLoginButton } from '../Components/LoginButtons/GitHubLoginButton';
 import * as SecureStore from 'expo-secure-store';
 import * as Linking from 'expo-linking'
+import { useNavigation } from '@react-navigation/native';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -18,6 +19,9 @@ const discovery = {
 // https://auth.expo.io/@allig256/GitKeep
 
 export default function App() {
+    const navigation = useNavigation();
+    const [token, setToken] = React.useState("");
+
     const [request, response, promptAsync] = useAuthRequest(
         {
             clientId: '0ebefb6bb5e94c6193a0',
@@ -31,25 +35,9 @@ export default function App() {
             // }),
             // redirectUri: getRedirectUrl()
             redirectUri: Linking.makeUrl()
-        
-            // redirectUri: getRedirectUrl()
         },
         discovery
     );
-
-    const [token, setToken] = React.useState("");
-
-    const findRepos = () => {
-        const url = 'https://api.github.com/user/repos'
-        const headers = new Headers({
-            'Authorization': 'Token ' + token
-        })
-
-        fetch(url, { method: 'GET', headers: headers })
-            .then(res => res.json())
-            .then(data => console.log(data))
-            .catch(err => console.log(err))
-    }
 
     const getToken = async (code: string) => {
         const url = 'https://github.com/login/oauth/access_token';
@@ -68,19 +56,16 @@ export default function App() {
             })
             .catch(err => console.log(err))
 
-        return await SecureStore.getItemAsync('github_token');
+        await SecureStore.getItemAsync('github_token');
+        navigation.navigate('RepoSelectScreen');
     }
-
 
     React.useEffect(() => {
         async function fetchMyToken() {
             
             if (response?.type === 'success') {
-                const { code } = response.params;
-                console.log("code " + code);
-                
-                let token = await getToken(code);
-                console.log("hrrp " + token);
+                const { code } = response.params;                
+                await getToken(code);
             }
         }
 
@@ -93,14 +78,6 @@ export default function App() {
             <GitHubLoginButton
                 disabled={!request}
                 onPress={() => promptAsync()}
-            />
-
-            <Button
-                disabled={!request}
-                title="Get repos"
-                onPress={() => {
-                    findRepos();
-                }}
             />
             <Text>
                 {getRedirectUrl()}

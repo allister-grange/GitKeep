@@ -54,3 +54,4 @@ https://developer.github.com/v3/repos/#create-a-repository-for-the-authenticated
     1) Clean up the authentication flow
     2) Get the screens nicely passing props to eachother 
     3) Start on the integration with GitHub
+    4) Conver to this <https://www.npmjs.com/package/@octokit/core>

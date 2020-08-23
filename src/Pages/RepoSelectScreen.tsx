@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
-import { Text, SafeAreaView, StatusBar, StyleSheet, TextInput, View, ScrollView } from 'react-native';
+import { Text, SafeAreaView, StatusBar, StyleSheet, TextInput, View, ScrollView, ActivityIndicator } from 'react-native';
 import { Appearance, useColorScheme } from 'react-native-appearance';
 import { Note } from '../Components/Notes/Note';
 import Markdown from 'react-native-showdown';
 import { DisplayRepoInfo } from '../Components/Repos/DisplayRepoInfo';
 import { useNavigation } from '@react-navigation/native';
+import * as SecureStore from 'expo-secure-store';
 
 const RepoSelectScreen = () => {
 
     Appearance.getColorScheme();
     const colorScheme = useColorScheme();
-    const [text, setText] = useState("markdown");
+    const [loadingRepos, setLoadingRepos] = useState(false);
+    const [repoData, setRepoData] = useState([]);
     const navigation = useNavigation();
 
     const themeContainerStyle =
@@ -19,6 +21,28 @@ const RepoSelectScreen = () => {
         colorScheme === 'light' ? styles.lightText : styles.darkText;
     const themeTitleContainer =
         colorScheme === 'light' ? styles.lightTitleContainer : styles.darkTitleContainer;
+
+    React.useEffect(() => {
+        async function fetchUserRepos() {
+            setLoadingRepos(true);
+
+            const token = await SecureStore.getItemAsync('github_token');
+
+            const url = 'https://api.github.com/user/repos'
+            
+            const headers = new Headers({
+                'Authorization': 'Token ' + token
+            })
+    
+            fetch(url, { method: 'GET', headers: headers })
+                .then(res => res.json())
+                .then(data => setRepoData(data))
+                .catch(err => console.log(err))
+
+            setLoadingRepos(false);
+        }
+        fetchUserRepos()
+    }, []);
 
     return (
         <SafeAreaView style={[styles.container, themeContainerStyle]}>
@@ -36,19 +60,22 @@ const RepoSelectScreen = () => {
                     </Text>
                 </View>
                 {
-                    repos.map((repo) => {
-                        return (
-                            <View key={repo.id}>
-                                <DisplayRepoInfo
-                                    title={repo.name}
-                                    onPress={() => navigation.navigate('Home')}
-                                    description={repo.description}
-                                    privateRepo={repo.private}
-                                />
-                            </View>
-                        )
-                    })
-
+                    loadingRepos ?
+                        // <ActivityIndicator color={"black"} size={40}/>
+                        <Text>HELLOOOO</Text>
+                        :
+                        repoData.map((repo: any) => {
+                            return (
+                                <View key={repo.id}>
+                                    <DisplayRepoInfo
+                                        title={repo.name}
+                                        onPress={() => navigation.navigate('Home')}
+                                        description={repo.description}
+                                        privateRepo={repo.private}
+                                    />
+                                </View>
+                            )
+                        })
                 }
             </ScrollView>
         </SafeAreaView>
@@ -63,7 +90,7 @@ const styles = StyleSheet.create({
     reposContainer: {
         // flexGrow: 1,
         // alignItems: 'center',
-    }, 
+    },
     lightContainer: {
         backgroundColor: 'white'
     },
@@ -76,7 +103,7 @@ const styles = StyleSheet.create({
     darkText: {
         color: 'white'
     },
-    title:{
+    title: {
         fontSize: 20,
     },
     lightTitleContainer: {
