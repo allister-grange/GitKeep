@@ -4,29 +4,44 @@ import { Appearance, useColorScheme } from 'react-native-appearance';
 import { Note } from '../Components/Notes/Note';
 import Markdown from 'react-native-showdown';
 import { DisplayRepoInfo } from '../Components/Repos/DisplayRepoInfo';
+import { useNavigation } from '@react-navigation/native';
 
 const RepoSelectScreen = () => {
 
     Appearance.getColorScheme();
     const colorScheme = useColorScheme();
     const [text, setText] = useState("markdown");
+    const navigation = useNavigation();
 
     const themeContainerStyle =
         colorScheme === 'light' ? styles.lightContainer : styles.darkContainer;
     const themeTextStyle =
         colorScheme === 'light' ? styles.lightText : styles.darkText;
+    const themeTitleContainer =
+        colorScheme === 'light' ? styles.lightTitleContainer : styles.darkTitleContainer;
 
     return (
         <SafeAreaView style={[styles.container, themeContainerStyle]}>
-            <ScrollView style={styles.reposContainer}>
+            <ScrollView contentContainerStyle={styles.reposContainer}>
+                <DisplayRepoInfo
+                    title={'Create a new repo'}
+                    onPress={() => navigation.navigate('Home')}
+                    description={'Start a new repository for your notes from scratch'}
+                    privateRepo={false}
+                />
 
+                <View style={[styles.titleContainer, themeTitleContainer]}>
+                    <Text style={[styles.title, themeTextStyle]}>
+                        Existing repos
+                    </Text>
+                </View>
                 {
                     repos.map((repo) => {
                         return (
                             <View key={repo.id}>
                                 <DisplayRepoInfo
                                     title={repo.name}
-                                    onPress={() => { }}
+                                    onPress={() => navigation.navigate('Home')}
                                     description={repo.description}
                                     privateRepo={repo.private}
                                 />
@@ -43,11 +58,11 @@ const RepoSelectScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 15,
         paddingTop: 30,
     },
     reposContainer: {
-        width: '100%',
+        // flexGrow: 1,
+        // alignItems: 'center',
     }, 
     lightContainer: {
         backgroundColor: 'white'
@@ -60,6 +75,24 @@ const styles = StyleSheet.create({
     },
     darkText: {
         color: 'white'
+    },
+    title:{
+        fontSize: 20,
+    },
+    lightTitleContainer: {
+        borderColor: '#d3d3d3',
+    },
+    darkTitleContainer: {
+        borderColor: 'white',
+    },
+    titleContainer: {
+        // width: '90%',
+        flexDirection: 'row',
+        paddingBottom: 20,
+        paddingLeft: 10,
+        paddingTop: 20,
+        marginBottom: 30,
+        borderBottomWidth: 1,
     }
 });
 

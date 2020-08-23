@@ -31,8 +31,7 @@ export const DisplayRepoInfo: FunctionComponent<PassedProps> = ({ title, onPress
     return (
         <View style={[styles.container, themeContainerStyle]}>
             <TouchableOpacity
-                onPress={() => navigation.navigate('EditNoteScreen')
-                }
+                onPress={onPress}
             >
                 <View style={{flexDirection:'row'}}>
                     <Text style={[styles.text, themeTitleTextStyle]}>{title}</Text>

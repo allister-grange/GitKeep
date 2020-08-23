@@ -18,3 +18,39 @@ https://docs.expo.io/guides/authentication/#github
 ## Todo
 
 Swap out hiding the toolbar for  real naviagtion
+
+
+## How to manage repos
+
+    1. Have the application store the repo on the file system, then git clone/push that folder
+    
+    
+    2. Store every .md file in state?? Then when a user enters/exits a note, or every 5 minutes or something, do a push 
+        1. Pull down the files into state, could 
+
+### How to git clone repos with react native expo
+
+Use the endpoint below:
+https://docs.github.com/en/rest/reference/repos#get-repository-content
+
+
+If file ends in .md, add it to a list to download the content from
+
+
+Add in that downloaded content into cards 
+
+
+Once a file is updated, update using this endpoint:
+https://docs.github.com/en/rest/reference/repos#create-or-update-file-contents
+
+
+### Create a new repo
+
+https://developer.github.com/v3/repos/#create-a-repository-for-the-authenticated-user
+
+
+### Next steps 
+
+    1) Clean up the authentication flow
+    2) Get the screens nicely passing props to eachother 
+    3) Start on the integration with GitHub

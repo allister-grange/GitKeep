@@ -29,7 +29,8 @@ export default function App() {
             //     native: 'gitkeep://',
             //     // useProxy: true,
             // }),
-            redirectUri: getRedirectUrl()
+            // redirectUri: getRedirectUrl()
+            redirectUri: Linking.makeUrl()
         
             // redirectUri: getRedirectUrl()
         },
@@ -52,56 +53,39 @@ export default function App() {
 
     const getToken = async (code: string) => {
         const url = 'https://github.com/login/oauth/access_token';
+        //figure out this header, bit dodgy 
         const headers = new Headers({
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        });
-
-        console.log("getting token now ");
+            'Content-Type': 'application/json',
+            "X-Requested-With": "XMLHttpRequest"
+        });        
         
-
         await fetch('https://cors-anywhere.herokuapp.com/' + url + '?client_id=0ebefb6bb5e94c6193a0&client_secret=1905a7cc5a255be077df3fc6a848ba2de15e2913&code=' + code, { method: 'POST', headers: headers })
             .then(res => res.json())
             .then(async (data) => {
-                console.log(data.access_token);
                 setToken(data.access_token);
                 await SecureStore.setItemAsync('github_token', data.access_token);
-                // const storageToken = await SecureStore.getItemAsync('github_token');        
             })
             .catch(err => console.log(err))
 
-        console.log("token + " + token);
-
-        // await SecureStore.setItemAsync('github_token', token);
         return await SecureStore.getItemAsync('github_token');
-        // return 
-        // console.log(storageToken + ' set in storage'); // output: sahdkfjaskdflas$%^&
     }
 
 
     React.useEffect(() => {
         async function fetchMyToken() {
-            console.log("there");
-            console.log(response);
             
             if (response?.type === 'success') {
                 const { code } = response.params;
+                console.log("code " + code);
+                
                 let token = await getToken(code);
-                console.log(token);
+                console.log("hrrp " + token);
             }
         }
 
-        console.log("here");
-        
         fetchMyToken()
     }, [response]);
-
-    // React.useEffect(() => {
-    //     if (response?.type === 'success') {
-    //         const { code } = response.params;
-    //         // await getToken(code);
-    //     }
-    // }, [response]);
 
     return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>

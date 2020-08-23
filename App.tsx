@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import HomeScreen from './src/Pages/HomeScreen';
 import AuthenticateScreen from './src/Pages/AuthenticateScreen';
@@ -13,13 +13,14 @@ import { Appearance, useColorScheme } from 'react-native-appearance';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as Linking from 'expo-linking'
 import RepoSelectScreen from './src/Pages/RepoSelectScreen';
+import * as SecureStore from 'expo-secure-store';
 
 export default function App() {
   const Tab = createBottomTabNavigator();
   Appearance.getColorScheme();
   const colorScheme = useColorScheme();
 
-  const [isRegistered, setIsRegistered] = useState(true);
+  const [isRegistered, setIsRegistered] = useState(false);
 
   const statusBarStyle = colorScheme === 'dark' ? 'dark' : 'light';
   const barStyle = colorScheme === 'dark' ? '#303030' : 'white';
@@ -29,6 +30,22 @@ export default function App() {
   const linking = {
     prefixes: [prefix],
   };
+
+  useEffect( () => {
+    console.log("yoza");
+    
+    async function getGitHubToken() {
+      const token = await SecureStore.getItemAsync('github_token');
+      console.log(token);
+      
+      if(token){
+        console.log("foud one");
+        setIsRegistered(true);
+      }
+    }
+
+    getGitHubToken();
+  })
 
   return (
     <AppearanceProvider>

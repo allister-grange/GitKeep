@@ -19,8 +19,7 @@ export const Note = () => {
     return (
         <View style={[styles.container, themeContainerStyle]}>
             <TouchableOpacity
-                onPress={() => navigation.navigate('EditNoteScreen')
-                }
+                onPress={() => navigation.navigate('EditNoteScreen')}
             >
                 <Text style={[styles.text, themeTitleTextStyle]}>Title</Text>
                 <Text style={[styles.text, themeTextStyle]}>Loren Ipsum I could go on
