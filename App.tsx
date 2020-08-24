@@ -23,7 +23,8 @@ export default function App() {
   const [isRegistered, setIsRegistered] = useState(false);
 
   const statusBarStyle = colorScheme === 'dark' ? 'dark' : 'light';
-  const barStyle = colorScheme === 'dark' ? '#303030' : 'white';
+  const activeTintTheme = colorScheme === 'dark' ? 'white' : '#303030';
+  const barStyle = colorScheme === 'dark' ? 'rgba(48, 48, 48, 0.9)' : 'rgba(255, 255, 255, 0.9)';
   const Stack = createStackNavigator();
   const prefix = Linking.makeUrl('/');
 
@@ -42,7 +43,7 @@ export default function App() {
     }
 
     getGitHubTokenFromStorage();
-  })
+  }, [])
 
   return (
     <AppearanceProvider>
@@ -69,16 +70,18 @@ export default function App() {
                   },
                 })}
                 tabBarOptions={{
-                  activeTintColor: 'tomato',
-                  inactiveTintColor: 'gray',
+                  activeTintColor: activeTintTheme,
                   style: {
-                    backgroundColor: barStyle
+                    backgroundColor: barStyle,
+                    elevation: 0,
+                    position: 'absolute',
                   }
                 }}
               >
                 <Tab.Screen name="Home" component={HomeScreen} />
                 <Tab.Screen name="AuthenticateScreen" component={AuthenticateScreen} options={{ tabBarVisible: false }} />
                 <Tab.Screen name="CreateNoteScreen" component={CreateNoteScreen} options={{ tabBarVisible: false }} />
+                <Tab.Screen name="EditNoteScreen" component={EditNoteScreen} options={{ tabBarVisible: false }} />
                 <Tab.Screen name="RepoSelectScreen" component={RepoSelectScreen} options={{ tabBarVisible: false }} />
               </Tab.Navigator>
             ) :

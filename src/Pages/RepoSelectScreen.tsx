@@ -46,6 +46,11 @@ const RepoSelectScreen = () => {
         fetchUserRepos()
     }, []);
 
+    const selectRepo = async (repoName: string) => {        
+        await SecureStore.setItemAsync('repo_name', repoName);
+        navigation.navigate('Home');
+    }
+
     return (
         <SafeAreaView style={[styles.container, themeContainerStyle]}>
             <ScrollView>
@@ -72,7 +77,7 @@ const RepoSelectScreen = () => {
                                 <View key={repo.id}>
                                     <DisplayRepoInfo
                                         title={repo.name}
-                                        onPress={() => navigation.navigate('Home')}
+                                        onPress={() => selectRepo(repo.name)}
                                         description={repo.description}
                                         privateRepo={repo.private}
                                     />
@@ -120,8 +125,8 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
     },
     activityContainer: {
-        paddingTop: 40, 
-        justifyContent: 'center', 
+        paddingTop: 200,
+        justifyContent: 'center',
         alignItems: 'center'
     }
 });

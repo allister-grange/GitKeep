@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as WebBrowser from 'expo-web-browser';
 import { makeRedirectUri, useAuthRequest, getRedirectUrl } from 'expo-auth-session';
-import { Button, View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
+import { Button, View, Text, TouchableOpacity, StyleSheet, SafeAreaView, ActivityIndicator } from 'react-native';
 import { GitHubLoginButton } from '../Components/LoginButtons/GitHubLoginButton';
 import * as SecureStore from 'expo-secure-store';
 import * as Linking from 'expo-linking'
@@ -24,6 +24,7 @@ export default function App() {
     const navigation = useNavigation();
     Appearance.getColorScheme();
     const colorScheme = useColorScheme();
+    const [loadingToken, setLoadingToken] = React.useState(false);
 
     const themeContainerStyle =
         colorScheme === 'light' ? styles.lightContainer : styles.darkContainer;
@@ -33,6 +34,9 @@ export default function App() {
         colorScheme === 'light' ? styles.lightTitleContainer : styles.darkTitleContainer;
     const themeTextStyle =
         colorScheme === 'light' ? styles.lightText : styles.darkText;
+    const themeActivityIndicator =
+        colorScheme === 'light' ? 'black' : 'white';
+
 
     const [request, response, promptAsync] = useAuthRequest(
         {
@@ -59,16 +63,38 @@ export default function App() {
                 await SecureStore.setItemAsync('github_token', data.access_token);
             })
             .catch(err => console.log(err))
+    }
 
-        await SecureStore.getItemAsync('github_token');
-        navigation.navigate('RepoSelectScreen');
+    const getUserInfo = async () => {
+        const url = 'https://api.github.com/user';
+        const token = await SecureStore.getItemAsync('github_token');
+
+        const headers = new Headers({
+            'Authorization': 'Token ' + token,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            "X-Requested-With": "XMLHttpRequest"
+        });
+
+        await fetch('https://cors-anywhere.herokuapp.com/' + url, { method: 'GET', headers: headers })
+            .then(res => res.json())
+            .then(async (data) => {
+                console.log(data);
+                await SecureStore.setItemAsync('user_name', data.login);
+            })
+            .catch(err => console.log(err))
     }
 
     React.useEffect(() => {
+
         async function fetchMyToken() {
             if (response?.type === 'success') {
                 const { code } = response.params;
+                setLoadingToken(true);
                 await getToken(code);
+                await getUserInfo();
+                navigation.navigate('RepoSelectScreen');
+                setLoadingToken(false);
             }
         }
 
@@ -86,10 +112,15 @@ export default function App() {
                 </Text>
             </View>
             <View style={styles.providerButtonsContainer}>
-                <GitHubLoginButton
-                    disabled={!request}
-                    onPress={() => promptAsync()}
-                />
+                {loadingToken ?
+                    <ActivityIndicator color={themeActivityIndicator} size={40} />
+                    :
+                    <GitHubLoginButton
+                        disabled={!request}
+                        onPress={() => promptAsync()}
+                    />
+                }
+                <Text>{Linking.makeUrl()}</Text>
             </View>
         </SafeAreaView>
     );
@@ -138,8 +169,8 @@ const styles = StyleSheet.create({
         fontSize: 15
     },
     providerButtonsContainer: {
-        flex: 1, 
-        justifyContent: 'center', 
+        flex: 1,
+        justifyContent: 'center',
         alignItems: 'center'
     }
 });
