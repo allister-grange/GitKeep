@@ -32,19 +32,16 @@ export default function App() {
   };
 
   useEffect( () => {
-    console.log("yoza");
-    
-    async function getGitHubToken() {
+    async function getGitHubTokenFromStorage() {
       const token = await SecureStore.getItemAsync('github_token');
-      console.log(token);
       
       if(token){
-        console.log("foud one");
+        console.log("Found a token in storage.");
         setIsRegistered(true);
       }
     }
 
-    getGitHubToken();
+    getGitHubTokenFromStorage();
   })
 
   return (
