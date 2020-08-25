@@ -6,6 +6,7 @@ import Markdown from 'react-native-showdown';
 import { DisplayRepoInfo } from '../Components/Repos/DisplayRepoInfo';
 import { useNavigation } from '@react-navigation/native';
 import * as SecureStore from 'expo-secure-store';
+import { fetchUserRepos } from '../Services/GitHub';
 
 const RepoSelectScreen = () => {
 
@@ -25,25 +26,14 @@ const RepoSelectScreen = () => {
         colorScheme === 'light' ? 'black' : 'white';
 
     React.useEffect(() => {
-        async function fetchUserRepos() {
+        async function fetchData() {
             setLoadingRepos(true);
-
-            const token = await SecureStore.getItemAsync('github_token');
-
-            const url = 'https://api.github.com/user/repos'
-            
-            const headers = new Headers({
-                'Authorization': 'Token ' + token
-            })
-    
-            await fetch(url, { method: 'GET', headers: headers })
-                .then(res => res.json())
+            await fetchUserRepos()
                 .then(data => setRepoData(data))
-                .catch(err => console.log(err))
-
             setLoadingRepos(false);
         }
-        fetchUserRepos()
+
+        fetchData()
     }, []);
 
     const selectRepo = async (repoName: string) => {        

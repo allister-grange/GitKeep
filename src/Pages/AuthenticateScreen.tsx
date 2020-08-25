@@ -7,6 +7,7 @@ import * as SecureStore from 'expo-secure-store';
 import * as Linking from 'expo-linking'
 import { useNavigation } from '@react-navigation/native';
 import { Appearance, useColorScheme } from 'react-native-appearance';
+import { getAccessToken, getAuthenticatedUserName } from '../Services/GitHub';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -47,52 +48,14 @@ export default function App() {
         discovery
     );
 
-    const getToken = async (code: string) => {
-        const url = 'https://github.com/login/oauth/access_token';
-
-        //figure out this header, bit dodgy 
-        const headers = new Headers({
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            "X-Requested-With": "XMLHttpRequest"
-        });
-
-        await fetch('https://cors-anywhere.herokuapp.com/' + url + '?client_id=0ebefb6bb5e94c6193a0&client_secret=1905a7cc5a255be077df3fc6a848ba2de15e2913&code=' + code, { method: 'POST', headers: headers })
-            .then(res => res.json())
-            .then(async (data) => {
-                await SecureStore.setItemAsync('github_token', data.access_token);
-            })
-            .catch(err => console.log(err))
-    }
-
-    const getUserInfo = async () => {
-        const url = 'https://api.github.com/user';
-        const token = await SecureStore.getItemAsync('github_token');
-
-        const headers = new Headers({
-            'Authorization': 'Token ' + token,
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            "X-Requested-With": "XMLHttpRequest"
-        });
-
-        await fetch('https://cors-anywhere.herokuapp.com/' + url, { method: 'GET', headers: headers })
-            .then(res => res.json())
-            .then(async (data) => {
-                console.log(data);
-                await SecureStore.setItemAsync('user_name', data.login);
-            })
-            .catch(err => console.log(err))
-    }
-
     React.useEffect(() => {
 
         async function fetchMyToken() {
             if (response?.type === 'success') {
                 const { code } = response.params;
                 setLoadingToken(true);
-                await getToken(code);
-                await getUserInfo();
+                await getAccessToken(code);
+                await getAuthenticatedUserName();
                 navigation.navigate('RepoSelectScreen');
                 setLoadingToken(false);
             }

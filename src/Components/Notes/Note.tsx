@@ -3,7 +3,12 @@ import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Appearance, useColorScheme } from 'react-native-appearance'
 import { useNavigation } from '@react-navigation/native';
 
-export const Note = () => {
+type PassedProps = {
+    content: string,
+    title?: string,
+};
+
+export const Note: FunctionComponent<PassedProps> = ({content, title}) => {
 
     Appearance.getColorScheme();
     const colorScheme = useColorScheme();
@@ -16,17 +21,21 @@ export const Note = () => {
     const themeTitleTextStyle =
         colorScheme === 'light' ? styles.lightTitleText : styles.darkTitleText;
 
+    const truncateContent = (text : string) : string =>{
+        let cutdownContent = text.substr(0, 400);
+        if (/^\S/.test(text.substr(100)))
+            return cutdownContent.replace(/\s+\S*$/, "");
+        
+        return cutdownContent;
+    }
+
     return (
         <View style={[styles.container, themeContainerStyle]}>
             <TouchableOpacity
                 onPress={() => navigation.navigate('EditNoteScreen')}
             >
                 <Text style={[styles.text, themeTitleTextStyle]}>Title</Text>
-                <Text style={[styles.text, themeTextStyle]}>Loren Ipsum I could go on
-                sefiodnfisdfi og fdgo fidsfidsjfisdjfo isdjfoi sdjfiodsjf idsjfo sdi
-                fdvndfnvdfn voidfjvi djfv difj d
-                fewrfdsf fewf w
-            </Text>
+                <Text style={[styles.text, themeTextStyle]}>{truncateContent(content) + '...'}</Text>
             </TouchableOpacity>
         </View>
 
