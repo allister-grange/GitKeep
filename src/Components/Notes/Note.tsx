@@ -22,9 +22,9 @@ export const Note: FunctionComponent<PassedProps> = ({content, title}) => {
         colorScheme === 'light' ? styles.lightTitleText : styles.darkTitleText;
 
     const truncateContent = (text : string) : string =>{
-        let cutdownContent = text.substr(0, 400);
+        let cutdownContent = text.substr(0, 100);
         if (/^\S/.test(text.substr(100)))
-            return cutdownContent.replace(/\s+\S*$/, "");
+            return cutdownContent.replace(/\s+\S*$/, "") + '...';
         
         return cutdownContent;
     }
@@ -35,7 +35,7 @@ export const Note: FunctionComponent<PassedProps> = ({content, title}) => {
                 onPress={() => navigation.navigate('EditNoteScreen')}
             >
                 <Text style={[styles.text, themeTitleTextStyle]}>Title</Text>
-                <Text style={[styles.text, themeTextStyle]}>{truncateContent(content) + '...'}</Text>
+                <Text style={[styles.text, themeTextStyle]}>{truncateContent(content)}</Text>
             </TouchableOpacity>
         </View>
 
@@ -45,7 +45,6 @@ export const Note: FunctionComponent<PassedProps> = ({content, title}) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 8,
         borderWidth: 1,
@@ -72,7 +71,7 @@ const styles = StyleSheet.create({
         color: 'white'
     },
     text: {
-        alignSelf: 'flex-start',
+        textAlign: 'left',
     },
     lightThemeText: {
         paddingTop: 10,

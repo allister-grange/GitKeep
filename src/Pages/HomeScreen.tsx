@@ -61,12 +61,14 @@ const HomeScreen = () => {
       }
     });
 
-    urlsOfFilesToDownload.forEach((url: string) => {
-      getFileContentOfUrl(url)
-        .then(fileContent => {
-          setFiles([...files, fileContent])
-        })
-    });
+    let contentOfFilesArray = new Array<string>();
+
+    for (let url in urlsOfFilesToDownload) {
+      getFileContentOfUrl(urlsOfFilesToDownload[url])
+        .then(fileContent => (contentOfFilesArray.push(fileContent)))
+    }
+
+    setFiles(contentOfFilesArray);
   }
 
   React.useEffect(() => {
@@ -89,14 +91,14 @@ const HomeScreen = () => {
           <ActivityIndicator color={themeActivityIndicator} size={40} />
           :
           <ScrollView style={styles.notesContatiner}>
-            <Note content={'Loren Ipsum I could go on sefiodnfisdfi og fdgo fidsfidsjfisdjfo isdjfoi sdjfiodsjf idsjfo sdi fdvndfnvdfn voidfjvi djfv difj d'} />
-            <Note content={'Loren Ipsum I could go on sefiodnfisdfi og fdgo fidsfidsjfisdjfo isdjfoi sdjfiodsjf idsjfo sdi fdvndfnvdfn voidfjvi djfv difj d'} />
             {
               files.map((file, idx) => (
                 <Note key={idx} content={file} />
               ))
             }
+            <Text>{files.length}</Text>
           </ScrollView>
+
       }
 
       <View style={styles.newNoteButtonContainer}>
