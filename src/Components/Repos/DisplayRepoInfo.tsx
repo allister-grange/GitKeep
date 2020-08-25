@@ -11,7 +11,7 @@ type PassedProps = {
     onPress: () => void,
     description: string | null,
     privateRepo: boolean,
-  };
+};
 
 export const DisplayRepoInfo: FunctionComponent<PassedProps> = ({ title, onPress, description, privateRepo }) => {
 
@@ -33,9 +33,9 @@ export const DisplayRepoInfo: FunctionComponent<PassedProps> = ({ title, onPress
             <TouchableOpacity
                 onPress={onPress}
             >
-                <View style={{flexDirection:'row'}}>
+                <View style={{ flexDirection: 'row' }}>
                     <Text style={[styles.text, themeTitleTextStyle]}>{title}</Text>
-                    {privateRepo && <Ionicons style={{paddingLeft: 10}} name={'md-lock'} size={20} color={themeIconStyle} />}
+                    {privateRepo && <Ionicons style={{ paddingLeft: 10 }} name={'md-lock'} size={20} color={themeIconStyle} />}
                 </View>
                 <Text style={[styles.text, themeTextStyle]}>{description ? description : "No description for this repo."}</Text>
             </TouchableOpacity>

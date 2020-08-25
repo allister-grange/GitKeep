@@ -30,7 +30,10 @@ const HomeScreen = () => {
 
   const parseRepoData = async (data: any): Promise<any> => {
     let urlsOfFilesToDownload: Array<string> = new Array<string>();
-    
+
+    if (!data)
+      return;
+
     data.forEach((file: any) => {
       //add in check for markdown here 
       if (file.type !== 'dir') {
@@ -44,19 +47,21 @@ const HomeScreen = () => {
       await getFileContentOfUrl(urlsOfFilesToDownload[url])
         .then(fileContent => (contentOfFilesArray.push(fileContent)))
     }
-    
+
     return contentOfFilesArray;
   }
 
   React.useEffect(() => {
 
     async function pullDownFiles() {
-      setLoadingNotes(true);
-      await fetchRepoContents()
-        .then(data => parseRepoData(data))
-        .then(files => setFiles(files))
-        .catch(err => alert(err));
-      setLoadingNotes(false);
+      if (files.length === 0) {
+        setLoadingNotes(true);
+        await fetchRepoContents()
+          .then(data => parseRepoData(data))
+          .then(files => setFiles(files))
+          .catch(err => alert(err));
+        setLoadingNotes(false);
+      }
     }
 
     pullDownFiles();

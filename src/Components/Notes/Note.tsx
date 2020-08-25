@@ -8,7 +8,7 @@ type PassedProps = {
     title?: string,
 };
 
-export const Note: FunctionComponent<PassedProps> = ({content, title}) => {
+export const Note: FunctionComponent<PassedProps> = ({ content, title }) => {
 
     Appearance.getColorScheme();
     const colorScheme = useColorScheme();
@@ -21,18 +21,23 @@ export const Note: FunctionComponent<PassedProps> = ({content, title}) => {
     const themeTitleTextStyle =
         colorScheme === 'light' ? styles.lightTitleText : styles.darkTitleText;
 
-    const truncateContent = (text : string) : string =>{
+    const truncateContent = (text: string): string => {
         let cutdownContent = text.substr(0, 100);
         if (/^\S/.test(text.substr(100)))
             return cutdownContent.replace(/\s+\S*$/, "") + '...';
-        
+
         return cutdownContent;
     }
 
     return (
         <View style={[styles.container, themeContainerStyle]}>
             <TouchableOpacity
-                onPress={() => navigation.navigate('EditNoteScreen')}
+                onPress={() => navigation.navigate('CreateNoteScreen',
+                    {
+                        passedContent: content,
+                        passedTitle: title,
+                        isNewNote: false
+                    })}
             >
                 <Text style={[styles.text, themeTitleTextStyle]}>Title</Text>
                 <Text style={[styles.text, themeTextStyle]}>{truncateContent(content)}</Text>

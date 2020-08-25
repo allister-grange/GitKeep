@@ -1,13 +1,29 @@
-import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet, TextInput, View } from 'react-native';
+import React, { useState, FunctionComponent } from 'react';
+import { SafeAreaView, StyleSheet, TextInput, View, Text } from 'react-native';
 import { Appearance, useColorScheme } from 'react-native-appearance';
+import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 
-const CreateNoteScreen = () => {
+type RootStackParamList = {
+    Home: undefined;
+    CreateNoteScreen: {
+        passedTitle?: string,
+        passedContent: string,
+        isNewNote: boolean,
+    };
+    Feed: { sort: 'latest' | 'top' } | undefined;
+};
+
+type Props = BottomTabNavigationProp<RootStackParamList, 'CreateNoteScreen'>;
+
+
+export function CreateNoteScreen({ route }: Props) {
+
 
     Appearance.getColorScheme();
     const colorScheme = useColorScheme();
-    const [content, setContent] = useState("");
-    const [title, setTitle] = useState("");
+    const [content, setContent] = useState(route.params.passedContent);
+    const [title, setTitle] = useState(route.params.passedTitle);
+    // const navigation = useNavigation();
 
     const themeContainerStyle =
         colorScheme === 'light' ? styles.lightContainer : styles.darkContainer;
@@ -87,7 +103,7 @@ const styles = StyleSheet.create({
         color: 'white'
     },
     textInput: {
-        fontSize: 20
+        fontSize: 15
     },
 });
 

@@ -65,6 +65,9 @@ export const fetchUserRepos = async (): Promise<any> => {
 }
 
 export const fetchRepoContents = async (): Promise<any> => {
+
+    console.log("fetching repo contents ");
+
     const repoName = await SecureStore.getItemAsync('repo_name');
     const githubToken = await SecureStore.getItemAsync('github_token');
     const userName = await SecureStore.getItemAsync('user_name');
