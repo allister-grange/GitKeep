@@ -45,7 +45,7 @@ export const getAccessToken = async (code: string) => {
         .catch(err => console.log(err))
 }
 
-export const fetchUserRepos = async () : Promise<any> => {
+export const fetchUserRepos = async (): Promise<any> => {
     const token = await SecureStore.getItemAsync('github_token');
 
     const url = 'https://api.github.com/user/repos'
@@ -64,21 +64,46 @@ export const fetchUserRepos = async () : Promise<any> => {
     return userRepos;
 }
 
-export const getFileContentOfUrl = async (url: string) : Promise<string> => {
+export const fetchRepoContents = async (): Promise<any> => {
+    const repoName = await SecureStore.getItemAsync('repo_name');
+    const githubToken = await SecureStore.getItemAsync('github_token');
+    const userName = await SecureStore.getItemAsync('user_name');
+
+    const url = 'https://api.github.com/repos/' + userName + '/' + repoName + '/contents/';
+
+    const headers = new Headers({
+        'Authorization': 'Token ' + githubToken,
+        'Accept': 'application/vnd.github.VERSION.raw',
+        "X-Requested-With": "XMLHttpRequest"
+    });
+
+    let repoData = {};
+
+    await fetch('https://cors-anywhere.herokuapp.com/' + url, { method: 'GET', headers: headers })
+        .then(res => res.json())
+        .then(async (data) => {
+            repoData = data;
+        })
+        .catch(err => console.log(err))
+
+    return repoData;
+}
+
+export const getFileContentOfUrl = async (url: string): Promise<string> => {
     const token = await SecureStore.getItemAsync('github_token');
 
     const headers = new Headers({
         'Authorization': 'Token ' + token,
         'Accept': 'application/vnd.github.v3+json',
         "X-Requested-With": "XMLHttpRequest"
-      });
+    });
 
-      let fileContent = ""
+    let fileContent = ""
 
-      await fetch(url, { method: 'GET', headers: headers })
+    await fetch(url, { method: 'GET', headers: headers })
         .then(res => res.json())
         .then(data => fileContent = Buffer.from(data.content, 'base64').toString('ascii'))
-        .catch(err => console.log(err))      
+        .catch(err => console.log(err))
 
     return fileContent;
 }
