@@ -47,7 +47,8 @@ export const Note: FunctionComponent<PassedProps> = ({ content, title }) => {
                 {/* <Text style={[styles.text, themeTitleTextStyle]}>Title</Text> */}
                 {/* <Text style={[styles.text, themeTextStyle]}>{truncateContent(content)}</Text> */}
                 <View style={{height: heightOfNote}}>
-                    <Markdown markdown={content} css={css} />
+                    <Markdown showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator ={false} markdown={content} css={css} />
                 </View>
             </TouchableOpacity>
         </View>
