@@ -32,6 +32,8 @@ export const Note: FunctionComponent<PassedProps> = ({ content, title }) => {
         return cutdownContent;
     }
 
+    const heightOfNote = content.length > 400 ? 400 : content.length + 20;
+
     return (
         <View style={[styles.container, themeContainerStyle]}>
             <TouchableOpacity
@@ -44,8 +46,8 @@ export const Note: FunctionComponent<PassedProps> = ({ content, title }) => {
             >
                 {/* <Text style={[styles.text, themeTitleTextStyle]}>Title</Text> */}
                 {/* <Text style={[styles.text, themeTextStyle]}>{truncateContent(content)}</Text> */}
-                <View style={{height: 800}}>
-                <Markdown markdown={content} css={css} />
+                <View style={{height: heightOfNote}}>
+                    <Markdown markdown={content} css={css} />
                 </View>
             </TouchableOpacity>
         </View>

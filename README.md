@@ -55,3 +55,5 @@ https://developer.github.com/v3/repos/#create-a-repository-for-the-authenticated
     2) Get the screens nicely passing props to eachother 
     3) Start on the integration with GitHub
     4) Conver to this <https://www.npmjs.com/package/@octokit/core>
+    5) One tap on a note expands it out, hold on it to edit it 
+    6) On a note there will be a delete icon in the upper right
