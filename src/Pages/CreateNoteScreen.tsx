@@ -4,6 +4,7 @@ import { Appearance, useColorScheme } from 'react-native-appearance';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import { useIsFocused } from '@react-navigation/native';
 import Markdown from 'react-native-showdown';
+import { FileData, updateFileContent } from '../Services/GitHub';
 
 const css = `
 h1 { color: red; }
@@ -15,7 +16,7 @@ type RootStackParamList = {
     Home: undefined;
     CreateNoteScreen: {
         passedTitle?: string,
-        passedContent: string,
+        file: FileData,
         isNewNote: boolean,
     };
     Feed: { sort: 'latest' | 'top' } | undefined;
@@ -35,15 +36,17 @@ export function CreateNoteScreen({ route }: Props) {
     useEffect(() =>{
 
         //this means the content was edited by the user, so refresh it in git
-        if(content !== "" && content !== route.params.passedContent){
-                        
+        if(content !== "" && content !== route.params.file.fileContent){
+            updateFileContent(route.params.file, content)
+                .then(data => console.log(data))
+                .catch(error => console.log(error))
         }
 
         if(!isFocused){
             setContent("");
         }
         else {
-            setContent(route.params.passedContent);
+            setContent(route.params.file.fileContent);
         }
 
     }, [isFocused])

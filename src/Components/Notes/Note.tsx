@@ -5,14 +5,15 @@ import { useNavigation } from '@react-navigation/native';
 import Markdown from 'react-native-showdown';
 import { darkCss } from './dark';
 import { lightCss } from './light';
+import { FileData } from '../../Services/GitHub';
 
 type PassedProps = {
-    content: string,
+    file: FileData,
     title?: string,
 };
 
 
-export const Note: FunctionComponent<PassedProps> = ({ content, title }) => {
+export const Note: FunctionComponent<PassedProps> = ({ file, title }) => {
 
     Appearance.getColorScheme();
     const colorScheme = useColorScheme();
@@ -23,14 +24,16 @@ export const Note: FunctionComponent<PassedProps> = ({ content, title }) => {
     const css =
         colorScheme === 'light' ? lightCss : darkCss;
 
-    const heightOfNote = content.length > 400 ? 400 : content.length + 20;
+    const fileContent = file.fileContent; 
+
+    const heightOfNote = fileContent.length > 400 ? 400 : fileContent.length + 20;
 
     return (
         <View style={[styles.container, themeContainerStyle]}>
             <TouchableOpacity
                 onPress={() => navigation.navigate('CreateNoteScreen',
                     {
-                        passedContent: content,
+                        file: file,
                         passedTitle: title,
                         isNewNote: false
                     })}
@@ -38,7 +41,7 @@ export const Note: FunctionComponent<PassedProps> = ({ content, title }) => {
                 <View style={{ height: heightOfNote }}>
                     <Markdown showsHorizontalScrollIndicator={false}
                         showsVerticalScrollIndicator={false}
-                        markdown={content} css={css} />
+                        markdown={fileContent} css={css} />
                 </View>
             </TouchableOpacity>
         </View>

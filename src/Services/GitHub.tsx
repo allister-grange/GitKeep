@@ -135,3 +135,39 @@ export const getFileContentOfUrl = async (url: string): Promise<string> => {
 
     return fileContent;
 }
+
+export const updateFileContent = async (file: FileData, newContent: string): Promise<any> => {
+    console.log("updating file content ");
+
+    const repoName = await SecureStore.getItemAsync('repo_name');
+    const githubToken = await SecureStore.getItemAsync('github_token');
+    const userName = await SecureStore.getItemAsync('user_name');
+
+    const url = 'https://api.github.com/repos/' + userName + '/' + repoName + '/contents/' + file.fileInfo.path;
+    const fileContent = Buffer.from(newContent).toString('base64');
+
+    const headers = new Headers({
+        'Authorization': 'Token ' + githubToken,
+        'Accept': 'application/vnd.github.VERSION.raw',
+        "X-Requested-With": "XMLHttpRequest",
+    });
+
+    const body = JSON.stringify({
+        "message": 'Updated from GitKeep :)',
+        "content": fileContent,
+        "sha": file.fileInfo.sha
+    })
+
+    let repoData = {};
+
+    await fetch('https://cors-anywhere.herokuapp.com/' + url, { method: 'PUT', headers: headers, body: body })
+        .then(res => res.json())
+        .then(async (data) => {
+            console.log(data);
+            
+            // repoData = data;
+        })
+        .catch(err => console.log(err))
+
+    return repoData;
+}

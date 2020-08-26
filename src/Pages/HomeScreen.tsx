@@ -45,6 +45,12 @@ const HomeScreen = () => {
           .catch(err => alert(err));
         setLoadingNotes(false);
       }
+      else{
+        await fetchRepoContents()
+        .then(data => parseRepoData(data))
+        .then(files => setFiles(files))
+        .catch(err => alert(err));
+      }
     }
 
     pullDownFiles();
@@ -60,7 +66,7 @@ const HomeScreen = () => {
           <ScrollView style={styles.notesContatiner}>
             {
               files.map((file, idx) => (
-                <Note key={idx} content={file.fileContent} />
+                <Note key={idx} file={file} />
               ))
             }
           </ScrollView>
