@@ -32,12 +32,11 @@ export default function App() {
     prefixes: [prefix],
   };
 
-  useEffect( () => {
+  useEffect(() => {
     async function getGitHubTokenFromStorage() {
       const token = await SecureStore.getItemAsync('github_token');
-      
-      if(token){
-        console.log("Found a token in storage.");
+
+      if (token) {
         setIsRegistered(true);
       }
     }
@@ -79,14 +78,14 @@ export default function App() {
                 }}
               >
                 <Tab.Screen name="Home" component={HomeScreen} />
-                <Tab.Screen name="AuthenticateScreen" component={AuthenticateScreen} options={{ tabBarVisible: false }} />
+                {/* <Tab.Screen name="AuthenticateScreen" component={AuthenticateScreen} options={{ tabBarVisible: false }} /> */}
                 <Tab.Screen name="CreateNoteScreen" component={CreateNoteScreen} options={{ tabBarVisible: false }} />
                 <Tab.Screen name="EditNoteScreen" component={EditNoteScreen} options={{ tabBarVisible: false }} />
                 <Tab.Screen name="RepoSelectScreen" component={RepoSelectScreen} options={{ tabBarVisible: false }} />
               </Tab.Navigator>
             ) :
             <Stack.Navigator>
-              <Stack.Screen name="AuthScreen" component={AuthenticateScreen} options={{ headerShown: false }}/>
+              <Stack.Screen name="AuthScreen" component={AuthenticateScreen} options={{ headerShown: false }} />
             </Stack.Navigator>
         }
       </NavigationContainer>

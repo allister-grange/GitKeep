@@ -8,6 +8,11 @@
 import * as SecureStore from 'expo-secure-store';
 import { Buffer } from 'buffer';
 
+export type FileData = {
+    fileInfo : any,
+    fileContent: string,
+}
+
 export const getAuthenticatedUserName = async () => {
     const url = 'https://api.github.com/user';
     const token = await SecureStore.getItemAsync('github_token');
@@ -90,6 +95,26 @@ export const fetchRepoContents = async (): Promise<any> => {
         .catch(err => console.log(err))
 
     return repoData;
+}
+
+export const parseRepoData = async (data: any): Promise<Array<FileData>> => {
+    let files: Array<FileData> = new Array<FileData>();
+
+    if (!data)
+        throw Error;
+
+    data.forEach((file: any) => {
+        if (file.type !== 'dir' && file.name.split('.').pop() === 'md') {
+            files.push({fileInfo: file, fileContent: ""});
+        }
+    });
+
+    for(let fileInfo in files) {
+        await getFileContentOfUrl(files[fileInfo].fileInfo.url)
+            .then(fileContent => (files[fileInfo].fileContent = fileContent));
+    }
+
+    return files;
 }
 
 export const getFileContentOfUrl = async (url: string): Promise<string> => {

@@ -57,3 +57,4 @@ https://developer.github.com/v3/repos/#create-a-repository-for-the-authenticated
     4) Conver to this <https://www.npmjs.com/package/@octokit/core>
     5) One tap on a note expands it out, hold on it to edit it 
     6) On a note there will be a delete icon in the upper right
+    7) Pull up to refresh

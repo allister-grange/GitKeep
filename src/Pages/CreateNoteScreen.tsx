@@ -33,6 +33,12 @@ export function CreateNoteScreen({ route }: Props) {
     const isFocused = useIsFocused();
     
     useEffect(() =>{
+
+        //this means the content was edited by the user, so refresh it in git
+        if(content !== "" && content !== route.params.passedContent){
+                        
+        }
+
         if(!isFocused){
             setContent("");
         }
@@ -41,7 +47,6 @@ export function CreateNoteScreen({ route }: Props) {
         }
 
     }, [isFocused])
-    // const navigation = useNavigation();
 
     const themeContainerStyle =
         colorScheme === 'light' ? styles.lightContainer : styles.darkContainer;
@@ -54,7 +59,6 @@ export function CreateNoteScreen({ route }: Props) {
 
     return (
         <KeyboardAvoidingView style={[styles.container, themeContainerStyle]}>
-
             <View style={[styles.titleContainer, themeTitleContainer]}>
                 <TextInput
                     value={title}
@@ -71,8 +75,6 @@ export function CreateNoteScreen({ route }: Props) {
                     style={[styles.textInput, themeTextStyle]}
                     onChangeText={(value) => setContent(value)}
                 />
-                {/* <Markdown markdown={content} css={css} /> */}
-
             </View>
         </KeyboardAvoidingView>
     );

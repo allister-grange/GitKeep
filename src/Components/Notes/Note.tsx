@@ -23,14 +23,6 @@ export const Note: FunctionComponent<PassedProps> = ({ content, title }) => {
     const css =
         colorScheme === 'light' ? lightCss : darkCss;
 
-    const truncateContent = (text: string): string => {
-        let cutdownContent = text.substr(0, 100);
-        if (/^\S/.test(text.substr(100)))
-            return cutdownContent.replace(/\s+\S*$/, "") + '...';
-
-        return cutdownContent;
-    }
-
     const heightOfNote = content.length > 400 ? 400 : content.length + 20;
 
     return (

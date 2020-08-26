@@ -3,12 +3,10 @@ import { Text, SafeAreaView, StatusBar, StyleSheet, ScrollView, View, TouchableO
 import { Appearance, useColorScheme } from 'react-native-appearance';
 import { Note } from '../Components/Notes/Note';
 import * as SecureStore from 'expo-secure-store';
-import * as FileSystem from 'expo-file-system';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useIsFocused } from '@react-navigation/native';
-import { Buffer } from 'buffer'
-import { getFileContentOfUrl, fetchRepoContents } from '../Services/GitHub';
+import { getFileContentOfUrl, fetchRepoContents, parseRepoData, FileData } from '../Services/GitHub';
 
 const HomeScreen = () => {
 
@@ -16,8 +14,9 @@ const HomeScreen = () => {
   const colorScheme = useColorScheme();
   const navigation = useNavigation();
   Appearance.getColorScheme();
-  const [files, setFiles] = useState(new Array<string>());
+  const [files, setFiles] = useState(new Array<FileData>());
   const [loadingNotes, setLoadingNotes] = useState(false);
+  const isFocused = useIsFocused();
 
   const themeStatusBarStyle =
     colorScheme === 'light' ? 'dark-content' : 'light-content';
@@ -28,32 +27,16 @@ const HomeScreen = () => {
   const themeActivityIndicator =
     colorScheme === 'light' ? 'black' : 'white';
 
-  const parseRepoData = async (data: any): Promise<any> => {
-    let urlsOfFilesToDownload: Array<string> = new Array<string>();
-
-    if (!data)
-      return;
-
-    data.forEach((file: any) => {
-      //add in check for markdown here 
-      if (file.type !== 'dir') {
-        urlsOfFilesToDownload.push(file.url);
-      }
-    });
-
-    let contentOfFilesArray = new Array<string>();
-
-    for (let url in urlsOfFilesToDownload) {
-      await getFileContentOfUrl(urlsOfFilesToDownload[url])
-        .then(fileContent => (contentOfFilesArray.push(fileContent)))
-    }
-
-    return contentOfFilesArray;
-  }
-
   React.useEffect(() => {
 
     async function pullDownFiles() {
+
+      if (!await SecureStore.getItemAsync('github_token'))
+        navigation.navigate('AuthScreen')
+
+      if (!await SecureStore.getItemAsync('repo_name'))
+        navigation.navigate('RepoSelectScreen')
+
       if (files.length === 0) {
         setLoadingNotes(true);
         await fetchRepoContents()
@@ -77,7 +60,7 @@ const HomeScreen = () => {
           <ScrollView style={styles.notesContatiner}>
             {
               files.map((file, idx) => (
-                <Note key={idx} content={file} />
+                <Note key={idx} content={file.fileContent} />
               ))
             }
           </ScrollView>
