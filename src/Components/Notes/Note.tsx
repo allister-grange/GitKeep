@@ -3,7 +3,8 @@ import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Appearance, useColorScheme } from 'react-native-appearance'
 import { useNavigation } from '@react-navigation/native';
 import Markdown from 'react-native-showdown';
-import { css } from './light';
+import { darkCss } from './dark';
+import { lightCss } from './light';
 
 type PassedProps = {
     content: string,
@@ -19,10 +20,8 @@ export const Note: FunctionComponent<PassedProps> = ({ content, title }) => {
 
     const themeContainerStyle =
         colorScheme === 'light' ? styles.lightContainer : styles.darkContainer;
-    const themeTextStyle =
-        colorScheme === 'light' ? styles.lightThemeText : styles.darkThemeText;
-    const themeTitleTextStyle =
-        colorScheme === 'light' ? styles.lightTitleText : styles.darkTitleText;
+    const css =
+        colorScheme === 'light' ? lightCss : darkCss;
 
     const truncateContent = (text: string): string => {
         let cutdownContent = text.substr(0, 100);
@@ -44,11 +43,10 @@ export const Note: FunctionComponent<PassedProps> = ({ content, title }) => {
                         isNewNote: false
                     })}
             >
-                {/* <Text style={[styles.text, themeTitleTextStyle]}>Title</Text> */}
-                {/* <Text style={[styles.text, themeTextStyle]}>{truncateContent(content)}</Text> */}
-                <View style={{height: heightOfNote}}>
+                <View style={{ height: heightOfNote }}>
                     <Markdown showsHorizontalScrollIndicator={false}
-        showsVerticalScrollIndicator ={false} markdown={content} css={css} />
+                        showsVerticalScrollIndicator={false}
+                        markdown={content} css={css} />
                 </View>
             </TouchableOpacity>
         </View>
@@ -67,7 +65,6 @@ const styles = StyleSheet.create({
         marginLeft: 7,
         marginTop: 4,
         marginBottom: 4,
-        // elevation: 0.2,
     },
     lightContainer: {
         borderColor: '#d3d3d3',
@@ -75,26 +72,4 @@ const styles = StyleSheet.create({
     darkContainer: {
         borderColor: 'white',
     },
-    lightTitleText: {
-        fontWeight: "600",
-        fontSize: 17,
-        color: 'black'
-    },
-    darkTitleText: {
-        fontWeight: "600",
-        fontSize: 17,
-        color: 'white'
-    },
-    text: {
-        textAlign: 'left',
-    },
-    lightThemeText: {
-        paddingTop: 10,
-        color: 'grey',
-    },
-    darkThemeText: {
-        paddingTop: 10,
-        color: 'white'
-    },
-
 });

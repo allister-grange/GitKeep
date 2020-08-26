@@ -1,4 +1,4 @@
-export const css = `@media print {
+export const lightCss = `@media print {
     *,
     *:before,
     *:after {
@@ -75,7 +75,7 @@ export const css = `@media print {
   }
   
   body {
-    line-height: 1.85;
+    line-height: 1.6;
   }
   
   p,
