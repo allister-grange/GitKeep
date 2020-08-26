@@ -1,7 +1,15 @@
-import React, { useState, FunctionComponent } from 'react';
-import { SafeAreaView, StyleSheet, TextInput, View, Text } from 'react-native';
+import React, { useState, FunctionComponent, useEffect } from 'react';
+import { KeyboardAvoidingView, StyleSheet, TextInput, View, Text } from 'react-native';
 import { Appearance, useColorScheme } from 'react-native-appearance';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
+import { useIsFocused } from '@react-navigation/native';
+import Markdown from 'react-native-showdown';
+
+const css = `
+h1 { color: red; }
+code { font-size: 1.2rem; background-color: lightgray; }
+p {color: black;}
+`;
 
 type RootStackParamList = {
     Home: undefined;
@@ -18,11 +26,21 @@ type Props = BottomTabNavigationProp<RootStackParamList, 'CreateNoteScreen'>;
 
 export function CreateNoteScreen({ route }: Props) {
 
-
     Appearance.getColorScheme();
     const colorScheme = useColorScheme();
-    const [content, setContent] = useState(route.params.passedContent);
-    const [title, setTitle] = useState(route.params.passedTitle);
+    const [content, setContent] = useState("");
+    const [title, setTitle] = useState("");
+    const isFocused = useIsFocused();
+    
+    useEffect(() =>{
+        if(!isFocused){
+            setContent("");
+        }
+        else {
+            setContent(route.params.passedContent);
+        }
+
+    }, [isFocused])
     // const navigation = useNavigation();
 
     const themeContainerStyle =
@@ -35,7 +53,7 @@ export function CreateNoteScreen({ route }: Props) {
         colorScheme === 'light' ? styles.lightTitleContainer : styles.darkTitleContainer;
 
     return (
-        <SafeAreaView style={[styles.container, themeContainerStyle]}>
+        <KeyboardAvoidingView style={[styles.container, themeContainerStyle]}>
 
             <View style={[styles.titleContainer, themeTitleContainer]}>
                 <TextInput
@@ -53,15 +71,18 @@ export function CreateNoteScreen({ route }: Props) {
                     style={[styles.textInput, themeTextStyle]}
                     onChangeText={(value) => setContent(value)}
                 />
+                {/* <Markdown markdown={content} css={css} /> */}
+
             </View>
-        </SafeAreaView>
+        </KeyboardAvoidingView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center'
+        alignItems: 'center',
+        paddingBottom: 40,
     },
     lightContainer: {
         backgroundColor: 'white'
@@ -89,9 +110,9 @@ const styles = StyleSheet.create({
     },
     contentContainer: {
         width: '90%',
-        paddingBottom: 15,
+        paddingBottom: 50,
         paddingTop: 25,
-        alignItems: 'stretch'
+        height: '100%'
     },
     title: {
         fontSize: 30

@@ -2,11 +2,14 @@ import React, { FunctionComponent } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Appearance, useColorScheme } from 'react-native-appearance'
 import { useNavigation } from '@react-navigation/native';
+import Markdown from 'react-native-showdown';
+import { css } from './light';
 
 type PassedProps = {
     content: string,
     title?: string,
 };
+
 
 export const Note: FunctionComponent<PassedProps> = ({ content, title }) => {
 
@@ -39,8 +42,11 @@ export const Note: FunctionComponent<PassedProps> = ({ content, title }) => {
                         isNewNote: false
                     })}
             >
-                <Text style={[styles.text, themeTitleTextStyle]}>Title</Text>
-                <Text style={[styles.text, themeTextStyle]}>{truncateContent(content)}</Text>
+                {/* <Text style={[styles.text, themeTitleTextStyle]}>Title</Text> */}
+                {/* <Text style={[styles.text, themeTextStyle]}>{truncateContent(content)}</Text> */}
+                <View style={{height: 800}}>
+                <Markdown markdown={content} css={css} />
+                </View>
             </TouchableOpacity>
         </View>
 
@@ -58,6 +64,7 @@ const styles = StyleSheet.create({
         marginLeft: 7,
         marginTop: 4,
         marginBottom: 4,
+        // elevation: 0.2,
     },
     lightContainer: {
         borderColor: '#d3d3d3',

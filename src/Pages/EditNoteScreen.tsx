@@ -28,12 +28,12 @@ const EditNoteScreen = () => {
 
     return (
         <SafeAreaView style={[styles.container, themeContainerStyle]}>
-            <TextInput 
+            {/* <TextInput 
                   value={text}
                   multiline = {true}
                   style={themeTextStyle}
                   onChangeText={(value) => setText(value)}
-                    />
+                    /> */}
         </SafeAreaView>
     );
 }
