@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useIsFocused } from '@react-navigation/native';
 import { getFileContentOfUrl, fetchRepoContents, parseRepoData, FileData } from '../Services/GitHub';
+import Toast from 'react-native-root-toast';
 
 const HomeScreen = () => {
 
@@ -16,6 +17,7 @@ const HomeScreen = () => {
   Appearance.getColorScheme();
   const [files, setFiles] = useState(new Array<FileData>());
   const [loadingNotes, setLoadingNotes] = useState(false);
+  const [toastVisible, setToastVisible] = useState(false);
   const isFocused = useIsFocused();
 
   const themeStatusBarStyle =
@@ -28,7 +30,7 @@ const HomeScreen = () => {
     colorScheme === 'light' ? 'black' : 'white';
 
   React.useEffect(() => {
-    
+
     async function pullDownFiles() {
 
       if (!await SecureStore.getItemAsync('github_token'))
@@ -51,7 +53,13 @@ const HomeScreen = () => {
       pullDownFiles();
   }, []);
 
+  let toast = () => {
+    setToastVisible(true);
+    setTimeout(() => setToastVisible(false), 2000);
+  };
+
   const refreshNotes = async () => {
+    toast();
     console.log("refreshing notes");
     await fetchRepoContents()
       .then(data => parseRepoData(data))
@@ -82,6 +90,13 @@ const HomeScreen = () => {
           <Ionicons outline={false} name={'md-add'} size={35} color={'orange'} />
         </TouchableOpacity>
       </View>
+      <Toast
+        visible={toastVisible}
+        position={Toast.positions.BOTTOM - 30}
+        shadow={false}
+        animation={false}
+        hideOnPress={true}
+      >Saving changes to git :)</Toast>
     </SafeAreaView>
   );
 }
