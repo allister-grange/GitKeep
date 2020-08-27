@@ -28,7 +28,7 @@ const HomeScreen = () => {
     colorScheme === 'light' ? 'black' : 'white';
 
   React.useEffect(() => {
-
+    
     async function pullDownFiles() {
 
       if (!await SecureStore.getItemAsync('github_token'))
@@ -45,16 +45,20 @@ const HomeScreen = () => {
           .catch(err => alert(err));
         setLoadingNotes(false);
       }
-      else{
-        await fetchRepoContents()
-        .then(data => parseRepoData(data))
-        .then(files => setFiles(files))
-        .catch(err => alert(err));
-      }
     }
 
-    pullDownFiles();
+    if (isFocused)
+      pullDownFiles();
   }, []);
+
+  const refreshNotes = async () => {
+    console.log("refreshing notes");
+    await fetchRepoContents()
+      .then(data => parseRepoData(data))
+      .then(files => setFiles(files))
+      .catch(err => alert(err));
+    console.log("done :)");
+  }
 
   return (
     <SafeAreaView style={[styles.container, themeContainerStyle]}>
@@ -66,7 +70,7 @@ const HomeScreen = () => {
           <ScrollView style={styles.notesContatiner}>
             {
               files.map((file, idx) => (
-                <Note key={idx} file={file} />
+                <Note refreshNotes={refreshNotes} key={idx} file={file} />
               ))
             }
           </ScrollView>

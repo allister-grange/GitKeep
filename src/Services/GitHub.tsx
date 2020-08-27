@@ -137,8 +137,6 @@ export const getFileContentOfUrl = async (url: string): Promise<string> => {
 }
 
 export const updateFileContent = async (file: FileData, newContent: string): Promise<any> => {
-    console.log("updating file content ");
-
     const repoName = await SecureStore.getItemAsync('repo_name');
     const githubToken = await SecureStore.getItemAsync('github_token');
     const userName = await SecureStore.getItemAsync('user_name');
@@ -163,11 +161,12 @@ export const updateFileContent = async (file: FileData, newContent: string): Pro
     await fetch('https://cors-anywhere.herokuapp.com/' + url, { method: 'PUT', headers: headers, body: body })
         .then(res => res.json())
         .then(async (data) => {
-            console.log(data);
-            
-            // repoData = data;
+            repoData = data;
         })
         .catch(err => console.log(err))
+
+    console.log("Pushed up new data to github");
+    
 
     return repoData;
 }

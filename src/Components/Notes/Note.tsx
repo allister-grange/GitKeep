@@ -10,10 +10,11 @@ import { FileData } from '../../Services/GitHub';
 type PassedProps = {
     file: FileData,
     title?: string,
+    refreshNotes: () => {},
 };
 
 
-export const Note: FunctionComponent<PassedProps> = ({ file, title }) => {
+export const Note: FunctionComponent<PassedProps> = ({ file, title, refreshNotes }) => {
 
     Appearance.getColorScheme();
     const colorScheme = useColorScheme();
@@ -33,6 +34,7 @@ export const Note: FunctionComponent<PassedProps> = ({ file, title }) => {
             <TouchableOpacity
                 onPress={() => navigation.navigate('CreateNoteScreen',
                     {
+                        refreshNotes: refreshNotes,
                         file: file,
                         passedTitle: title,
                         isNewNote: false

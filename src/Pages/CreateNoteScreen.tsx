@@ -1,7 +1,7 @@
 import React, { useState, FunctionComponent, useEffect } from 'react';
 import { KeyboardAvoidingView, StyleSheet, TextInput, View, Text } from 'react-native';
 import { Appearance, useColorScheme } from 'react-native-appearance';
-import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useIsFocused } from '@react-navigation/native';
 import Markdown from 'react-native-showdown';
 import { FileData, updateFileContent } from '../Services/GitHub';
@@ -18,6 +18,7 @@ type RootStackParamList = {
         passedTitle?: string,
         file: FileData,
         isNewNote: boolean,
+        refreshNotes: () => {}
     };
     Feed: { sort: 'latest' | 'top' } | undefined;
 };
@@ -32,17 +33,22 @@ export function CreateNoteScreen({ route }: Props) {
     const [content, setContent] = useState("");
     const [title, setTitle] = useState("");
     const isFocused = useIsFocused();
-    
-    useEffect(() =>{
 
-        //this means the content was edited by the user, so refresh it in git
-        if(content !== "" && content !== route.params.file.fileContent){
-            updateFileContent(route.params.file, content)
-                .then(data => console.log(data))
-                .catch(error => console.log(error))
+    useEffect(() => {
+
+        //this means the content was edited by the user, so refresh it in git, todo add a toast below
+        async function pushNoteToGit() {
+            if (content !== "" && content !== route.params.file.fileContent) {
+                await updateFileContent(route.params.file, content)
+                    .then(data => data)
+                    .catch(error => console.log(error));
+                route.params.refreshNotes();
+            }
         }
 
-        if(!isFocused){
+        pushNoteToGit();
+
+        if (!isFocused) {
             setContent("");
         }
         else {
