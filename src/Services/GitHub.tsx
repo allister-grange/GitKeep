@@ -13,6 +13,9 @@ export type FileData = {
     fileContent: string,
 }
 
+// const proxyUrl = 'https://0.0.0.0:8080/'
+const proxyUrl = 'https://cors-anywhere.herokuapp.com/'
+
 export const getAuthenticatedUserName = async () => {
     const url = 'https://api.github.com/user';
     const token = await SecureStore.getItemAsync('github_token');
@@ -24,7 +27,7 @@ export const getAuthenticatedUserName = async () => {
         "X-Requested-With": "XMLHttpRequest"
     });
 
-    await fetch('https://cors-anywhere.herokuapp.com/' + url, { method: 'GET', headers: headers })
+    await fetch(proxyUrl + url, { method: 'GET', headers: headers })
         .then(res => res.json())
         .then(async (data) => {
             await SecureStore.setItemAsync('user_name', data.login);
@@ -42,7 +45,7 @@ export const getAccessToken = async (code: string) => {
         "X-Requested-With": "XMLHttpRequest"
     });
 
-    await fetch('https://cors-anywhere.herokuapp.com/' + url + '?client_id=0ebefb6bb5e94c6193a0&client_secret=1905a7cc5a255be077df3fc6a848ba2de15e2913&code=' + code, { method: 'POST', headers: headers })
+    await fetch(proxyUrl + url + '?client_id=0ebefb6bb5e94c6193a0&client_secret=1905a7cc5a255be077df3fc6a848ba2de15e2913&code=' + code, { method: 'POST', headers: headers })
         .then(res => res.json())
         .then(async (data) => {
             await SecureStore.setItemAsync('github_token', data.access_token);
@@ -77,6 +80,8 @@ export const fetchRepoContents = async (): Promise<any> => {
     const githubToken = await SecureStore.getItemAsync('github_token');
     const userName = await SecureStore.getItemAsync('user_name');
 
+    console.log("Repo name = " + repoName + " github token = " + githubToken + " userName = " + userName);
+
     const url = 'https://api.github.com/repos/' + userName + '/' + repoName + '/contents/';
 
     const headers = new Headers({
@@ -87,7 +92,7 @@ export const fetchRepoContents = async (): Promise<any> => {
 
     let repoData = {};
 
-    await fetch('https://cors-anywhere.herokuapp.com/' + url, { method: 'GET', headers: headers })
+    await fetch(proxyUrl + url, { method: 'GET', headers: headers })
         .then(res => res.json())
         .then(async (data) => {
             repoData = data;
@@ -118,7 +123,7 @@ export const parseRepoData = async (data: any): Promise<Array<FileData>> => {
 }
 
 export const getFileContentOfUrl = async (url: string): Promise<string> => {
-    const token = await SecureStore.getItemAsync('github_token');
+    const token = await SecureStore.getItemAsync('github_token');    
 
     const headers = new Headers({
         'Authorization': 'Token ' + token,
@@ -158,7 +163,7 @@ export const updateFileContent = async (file: FileData, newContent: string): Pro
 
     let repoData = {};
 
-    await fetch('https://cors-anywhere.herokuapp.com/' + url, { method: 'PUT', headers: headers, body: body })
+    await fetch(proxyUrl + url, { method: 'PUT', headers: headers, body: body })
         .then(res => res.json())
         .then(async (data) => {
             repoData = data;

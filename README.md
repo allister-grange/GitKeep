@@ -15,7 +15,7 @@ https://blog.expo.io/firebase-github-authentication-with-react-native-2543e32697
 
 https://docs.expo.io/guides/authentication/#github
 
-https://github.com/crazycodeboy/react-native-easy-toast
+https://www.npmjs.com/package/react-native-root-toast
 
 ## Todo
 
