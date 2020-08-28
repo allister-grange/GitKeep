@@ -6,12 +6,6 @@ import { useIsFocused } from '@react-navigation/native';
 import Markdown from 'react-native-showdown';
 import { FileData, updateFileContent } from '../Services/GitHub';
 
-const css = `
-h1 { color: red; }
-code { font-size: 1.2rem; background-color: lightgray; }
-p {color: black;}
-`;
-
 type RootStackParamList = {
     Home: undefined;
     CreateNoteScreen: {
@@ -24,7 +18,6 @@ type RootStackParamList = {
 };
 
 type Props = BottomTabNavigationProp<RootStackParamList, 'CreateNoteScreen'>;
-
 
 export function CreateNoteScreen({ route }: Props) {
 

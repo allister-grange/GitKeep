@@ -1,27 +1,22 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import { Text, SafeAreaView, StatusBar, StyleSheet, ScrollView, View } from 'react-native';
 import { Appearance, useColorScheme } from 'react-native-appearance';
 import { Note } from '../Components/Notes/Note';
 import Markdown from 'react-native-showdown';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-const markdown = `
-# Welcome to React Native Showdown!
+type RootStackParamList = {
+    Home: undefined;
+    PreviewMarkdownScreen: {
+        css: string,
+        markdown: string,
+    };
+    Feed: { sort: 'latest' | 'top' } | undefined;
+};
 
-To get started, edit the markdown in \`App.tsx\`.
+type Props = StackNavigationProp<RootStackParamList, 'PreviewMarkdownScreen'>;
 
-| Column 1 | Column 2 |
-|----------|----------|
-| A1       | B1       |
-| A2       | B2       |
-`;
-
-  const css = `
-h1 { color: red; }
-code { font-size: 1.2rem; background-color: lightgray; }
-`;
-
-const EditNoteScreen = () => {
-
+export function PreviewMarkdownScreen({ route }: Props) {
 
     Appearance.getColorScheme();
     const colorScheme = useColorScheme();
@@ -31,7 +26,7 @@ const EditNoteScreen = () => {
 
     return (
         <SafeAreaView style={[styles.container, themeContainerStyle]}>
-            <Markdown markdown={markdown} css={css} />
+            <Markdown markdown={route.params.markdown} css={route.params.css} />
         </SafeAreaView>
     );
 }
@@ -39,7 +34,6 @@ const EditNoteScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-
     },
     lightContainer: {
         backgroundColor: '#fff',
@@ -60,5 +54,3 @@ const styles = StyleSheet.create({
         width: '100%',
     }
 });
-
-export default EditNoteScreen;

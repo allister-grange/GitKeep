@@ -7,7 +7,6 @@ import { AppearanceProvider } from 'react-native-appearance'
 import { Ionicons } from '@expo/vector-icons';
 import { NavigationContainer, TabActions } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import EditNoteScreen from './src/Pages/EditNoteScreen';
 import CreateNoteScreen from './src/Pages/CreateNoteScreen';
 import { Appearance, useColorScheme } from 'react-native-appearance';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -15,6 +14,7 @@ import * as Linking from 'expo-linking'
 import RepoSelectScreen from './src/Pages/RepoSelectScreen';
 import * as SecureStore from 'expo-secure-store';
 import { useNavigation } from '@react-navigation/native';
+import { PreviewMarkdownScreen } from './src/Pages/PreviewMarkdownScreen';
 
 export default function App() {
   const Tab = createBottomTabNavigator();
@@ -54,6 +54,7 @@ export default function App() {
             <Stack.Screen name="RepoSelectScreen" component={RepoSelectScreen} options={{ headerShown: false }} />
             <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
             <Stack.Screen name="CreateNoteScreen" component={CreateNoteScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="PreviewMarkdownScreen" component={PreviewMarkdownScreen} options={{ headerShown: false }} />
           </Stack.Navigator>
         }
       </NavigationContainer>

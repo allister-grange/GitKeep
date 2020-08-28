@@ -14,12 +14,11 @@ const HomeScreen = () => {
   Appearance.getColorScheme();
   const colorScheme = useColorScheme();
   const navigation = useNavigation();
-  Appearance.getColorScheme();
   const [files, setFiles] = useState(new Array<FileData>());
   const [loadingNotes, setLoadingNotes] = useState(false);
   const [toastVisible, setToastVisible] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const isFocused = useIsFocused();
-  const [refreshing, setRefreshing] = React.useState(false);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -30,7 +29,6 @@ const HomeScreen = () => {
     setRefreshing(false);
   };
 
-
   const themeStatusBarStyle =
     colorScheme === 'light' ? 'dark-content' : 'light-content';
   const themeContainerStyle =
@@ -40,7 +38,7 @@ const HomeScreen = () => {
   const themeActivityIndicator =
     colorScheme === 'light' ? 'black' : 'white';
 
-  React.useEffect(() => {
+  useEffect(() => {
 
     async function pullDownFiles() {
 
@@ -99,7 +97,8 @@ const HomeScreen = () => {
       }
 
       <View style={styles.newNoteButtonContainer}>
-        <TouchableOpacity style={[styles.newNoteButton, themeNewNoteButtonStyle]} onPress={() => navigation.navigate('CreateNoteScreen')}>
+        <TouchableOpacity style={[styles.newNoteButton, themeNewNoteButtonStyle]}
+          onPress={() => navigation.navigate('CreateNoteScreen')}>
           <Ionicons outline={false} name={'md-add'} size={35} color={'orange'} />
         </TouchableOpacity>
       </View>
@@ -139,6 +138,7 @@ const styles = StyleSheet.create({
   },
   notesContatiner: {
     width: '100%',
+    height: '100%'
   },
   newNoteButton: {
     borderRadius: 25,

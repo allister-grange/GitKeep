@@ -1,5 +1,5 @@
-import React, { FunctionComponent } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import React, { FunctionComponent, useState, useEffect } from 'react';
+import { View, StyleSheet, Text, TouchableOpacity, SafeAreaView } from 'react-native';
 import { Appearance, useColorScheme } from 'react-native-appearance'
 import { useNavigation } from '@react-navigation/native';
 import Markdown from 'react-native-showdown';
@@ -9,7 +9,7 @@ import { FileData } from '../../Services/GitHub';
 import { YellowBox } from 'react-native';
 
 YellowBox.ignoreWarnings([
-  'Non-serializable values were found in the navigation state',
+    'Non-serializable values were found in the navigation state',
 ]);
 
 type PassedProps = {
@@ -24,32 +24,50 @@ export const Note: FunctionComponent<PassedProps> = ({ file, title, refreshNotes
     Appearance.getColorScheme();
     const colorScheme = useColorScheme();
     const navigation = useNavigation();
+    const [heightOfNote, setHeightOfNote] = useState(0);
+    const [previewing, setPreviewing] = useState(false);
 
     const themeContainerStyle =
         colorScheme === 'light' ? styles.lightContainer : styles.darkContainer;
     const css =
         colorScheme === 'light' ? lightCss : darkCss;
 
-    const fileContent = file.fileContent; 
+    const fileContent = file.fileContent;
 
-    const heightOfNote = fileContent.length > 400 ? 400 : fileContent.length + 20;
+    useEffect(() => {
+        setHeightOfNote(fileContent.length > 400 ? 400 : fileContent.length + 20);
+    }, [])
 
     return (
-        <View style={[styles.container, themeContainerStyle]}>
+        <View
+            // style={[styles.container, themeContainerStyle]}
+            style={[styles.container, previewing ? { height: '100%' } : { height: heightOfNote }]}>
             <TouchableOpacity
-                onPress={() => navigation.navigate('CreateNoteScreen',
+                onLongPress={() => navigation.navigate('CreateNoteScreen',
                     {
                         refreshNotes: refreshNotes,
                         file: file,
                         passedTitle: title,
                         isNewNote: false
                     })}
+                onPress={() => navigation.navigate('PreviewMarkdownScreen', 
+                {
+                    markdown: fileContent,
+                    css: css,
+                })}
             >
-                <View style={{ height: heightOfNote }}>
+                <View style={{ height: '100%' }}>
                     <Markdown showsHorizontalScrollIndicator={false}
                         showsVerticalScrollIndicator={false}
                         markdown={fileContent} css={css} />
                 </View>
+                {/* <SafeAreaView style={{ flex: 1 }}>
+                    <Markdown showsHorizontalScrollIndicator={false}
+                        showsVerticalScrollIndicator={false}
+                        markdown={fileContent} css={css} />
+
+                </SafeAreaView> */}
+
             </TouchableOpacity>
         </View>
 
@@ -58,7 +76,6 @@ export const Note: FunctionComponent<PassedProps> = ({ file, title, refreshNotes
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         justifyContent: 'center',
         borderRadius: 8,
         borderWidth: 1,
@@ -73,5 +90,5 @@ const styles = StyleSheet.create({
     },
     darkContainer: {
         borderColor: 'white',
-    },
+    }
 });
