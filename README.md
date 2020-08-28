@@ -17,10 +17,6 @@ https://docs.expo.io/guides/authentication/#github
 
 https://www.npmjs.com/package/react-native-root-toast
 
-## Todo
-
-Swap out hiding the toolbar for  real naviagtion
-
 
 ## How to manage repos
 
@@ -53,10 +49,10 @@ https://developer.github.com/v3/repos/#create-a-repository-for-the-authenticated
 
 ### Next steps 
 
-    1) Clean up the authentication flow
-    2) Get the screens nicely passing props to eachother 
-    3) Start on the integration with GitHub
-    4) Conver to this <https://www.npmjs.com/package/@octokit/core>
+    - [X] Clean up the authentication flow
+    - [X] Get the screens nicely passing props to eachother 
+    - [X] Start on the integration with GitHub
+    4) Convert to this <https://www.npmjs.com/package/@octokit/core>
     5) One tap on a note expands it out, hold on it to edit it 
     6) On a note there will be a delete icon in the upper right
     7) Pull up to refresh

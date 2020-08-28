@@ -6,6 +6,11 @@ import Markdown from 'react-native-showdown';
 import { darkCss } from './dark';
 import { lightCss } from './light';
 import { FileData } from '../../Services/GitHub';
+import { YellowBox } from 'react-native';
+
+YellowBox.ignoreWarnings([
+  'Non-serializable values were found in the navigation state',
+]);
 
 type PassedProps = {
     file: FileData,

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, SafeAreaView, StatusBar, StyleSheet, ScrollView, View, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { Text, SafeAreaView, StatusBar, StyleSheet, ScrollView, View, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
 import { Appearance, useColorScheme } from 'react-native-appearance';
 import { Note } from '../Components/Notes/Note';
 import * as SecureStore from 'expo-secure-store';
@@ -19,6 +19,17 @@ const HomeScreen = () => {
   const [loadingNotes, setLoadingNotes] = useState(false);
   const [toastVisible, setToastVisible] = useState(false);
   const isFocused = useIsFocused();
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchRepoContents()
+      .then(data => parseRepoData(data))
+      .then(files => setFiles(files))
+      .catch(err => alert(err));
+    setRefreshing(false);
+  };
+
 
   const themeStatusBarStyle =
     colorScheme === 'light' ? 'dark-content' : 'light-content';
@@ -75,7 +86,9 @@ const HomeScreen = () => {
         loadingNotes ?
           <ActivityIndicator color={themeActivityIndicator} size={40} />
           :
-          <ScrollView style={styles.notesContatiner}>
+          <ScrollView style={styles.notesContatiner} refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }>
             {
               files.map((file, idx) => (
                 <Note refreshNotes={refreshNotes} key={idx} file={file} />

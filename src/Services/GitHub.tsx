@@ -172,6 +172,5 @@ export const updateFileContent = async (file: FileData, newContent: string): Pro
 
     console.log("Pushed up new data to github");
     
-
     return repoData;
 }
