@@ -9,8 +9,9 @@ import * as SecureStore from 'expo-secure-store';
 import { Buffer } from 'buffer';
 
 export type FileData = {
-    fileInfo : any,
+    fileInfo: any,
     fileContent: string,
+    isDirectory: boolean,
 }
 
 // const proxyUrl = 'https://0.0.0.0:8080/'
@@ -32,7 +33,7 @@ export const getAuthenticatedUserName = async () => {
         .then(async (data) => {
             await SecureStore.setItemAsync('user_name', data.login);
         })
-        .catch(err => console.log(err))
+        .catch(err => alert(err))
 }
 
 export const getAccessToken = async (code: string) => {
@@ -50,11 +51,13 @@ export const getAccessToken = async (code: string) => {
         .then(async (data) => {
             await SecureStore.setItemAsync('github_token', data.access_token);
         })
-        .catch(err => console.log(err))
+        .catch(err => alert(err))
 }
 
 export const fetchUserRepos = async (): Promise<any> => {
     const token = await SecureStore.getItemAsync('github_token');
+
+    console.log("fetching user's repos");
 
     const url = 'https://api.github.com/user/repos'
 
@@ -67,7 +70,7 @@ export const fetchUserRepos = async (): Promise<any> => {
     await fetch(url, { method: 'GET', headers: headers })
         .then(res => res.json())
         .then(data => userRepos = data)
-        .catch(err => console.log(err))
+        .catch(err => alert(err))
 
     return userRepos;
 }
@@ -97,26 +100,28 @@ export const fetchRepoContents = async (): Promise<any> => {
         .then(async (data) => {
             repoData = data;
         })
-        .catch(err => console.log(err))
+        //usually these errors are related to bad auth, send them back to grab another token
+        // TODO change this to another call to get a fresh token for the
+        .catch(err => alert(err))
 
     return repoData;
 }
 
 export const parseRepoData = async (data: any): Promise<Array<FileData>> => {
     let files: Array<FileData> = new Array<FileData>();
-
+    
     if (!data)
         throw Error;
 
     data.forEach((file: any) => {
         if (file.type !== 'dir' && file.name.split('.').pop() === 'md') {
-            files.push({fileInfo: file, fileContent: ""});
+            files.push({fileInfo: file, fileContent: "", isDirectory: false});
         }
     });
 
     for(let fileInfo in files) {
-        await getFileContentOfUrl(files[fileInfo].fileInfo.url)
-            .then(fileContent => (files[fileInfo].fileContent = fileContent));
+            await getFileContentOfUrl(files[fileInfo].fileInfo.url)
+                .then(fileContent => (files[fileInfo].fileContent = fileContent));
     }
 
     return files;
@@ -136,7 +141,7 @@ export const getFileContentOfUrl = async (url: string): Promise<string> => {
     await fetch(url, { method: 'GET', headers: headers })
         .then(res => res.json())
         .then(data => fileContent = Buffer.from(data.content, 'base64').toString('ascii'))
-        .catch(err => console.log(err))
+        .catch(err => alert(err))
 
     return fileContent;
 }
@@ -168,7 +173,7 @@ export const updateFileContent = async (file: FileData, newContent: string): Pro
         .then(async (data) => {
             repoData = data;
         })
-        .catch(err => console.log(err))
+        .catch(err => alert(err))
 
     console.log("Pushed up new data to github");
     

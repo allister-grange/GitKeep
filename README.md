@@ -56,3 +56,4 @@ https://developer.github.com/v3/repos/#create-a-repository-for-the-authenticated
     5) One tap on a note expands it out, hold on it to edit it 
     6) On a note there will be a delete icon in the upper right
     7) Pull up to refresh
+    8) Display errors on the device so that I can determine what's going on

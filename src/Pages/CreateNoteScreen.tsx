@@ -31,6 +31,10 @@ export function CreateNoteScreen({ route }: Props) {
 
         //this means the content was edited by the user, so refresh it in git, todo add a toast below
         async function pushNoteToGit() {
+
+            if (!route.params.file.fileContent)
+                return;
+
             if (content !== "" && content !== route.params.file.fileContent) {
                 await updateFileContent(route.params.file, content)
                     .then(data => data)
@@ -40,6 +44,9 @@ export function CreateNoteScreen({ route }: Props) {
         }
 
         pushNoteToGit();
+
+        console.log("hello + " + JSON.stringify(route.params.file));
+        
 
         if (!isFocused) {
             setContent("");
@@ -62,12 +69,7 @@ export function CreateNoteScreen({ route }: Props) {
     return (
         <KeyboardAvoidingView style={[styles.container, themeContainerStyle]}>
             <View style={[styles.titleContainer, themeTitleContainer]}>
-                <TextInput
-                    value={title}
-                    placeholder="Title"
-                    style={[styles.title, themeTitleStyle]}
-                    onChangeText={(value) => setTitle(value)}
-                />
+                <Text style={[styles.title, themeTitleStyle]}>{route.params.file.fileInfo.path}</Text>
             </View>
             <View style={styles.contentContainer}>
                 <TextInput

@@ -23,7 +23,17 @@ const HomeScreen = () => {
   const onRefresh = async () => {
     setRefreshing(true);
     await fetchRepoContents()
-      .then(data => parseRepoData(data))
+      .then(data => {
+        // console.log("data = " + data);
+        // console.log(JSON.stringify(data));
+
+        if(data === {}){
+          console.log("GOT AN ERROR");
+        }
+          
+        
+        return parseRepoData(data)
+      })
       .then(files => setFiles(files))
       .catch(err => alert(err));
     setRefreshing(false);
@@ -89,7 +99,7 @@ const HomeScreen = () => {
           }>
             {
               files.map((file, idx) => (
-                <Note refreshNotes={refreshNotes} key={idx} file={file} />
+                  <Note refreshNotes={refreshNotes} key={idx} file={file} />
               ))
             }
           </ScrollView>
