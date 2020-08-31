@@ -6,7 +6,7 @@ import * as SecureStore from 'expo-secure-store';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useIsFocused } from '@react-navigation/native';
-import { getFileContentOfUrl, getRepoContents, parseRepoData, FileData, getRepoContentsFromTree } from '../Services/GitHub';
+import { parseRepoData, FileData, getRepoContentsFromTree } from '../Services/GitHub';
 import Toast from 'react-native-root-toast';
 
 const HomeScreen = () => {
@@ -57,10 +57,9 @@ const HomeScreen = () => {
   }, []);
 
   const getRepoData = async () => {
-    console.log("Using good method");
     
-    await getRepoContents()
-    .then(data => parseRepoData(data))
+    await getRepoContentsFromTree()
+    // .then(data => parseRepoData(data))
     .then(files => setFiles(files))
     .catch(err => alert(err));
   }

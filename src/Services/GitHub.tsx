@@ -30,7 +30,7 @@ export const getAuthenticatedUserName = async (): Promise<string> => {
 
     return await fetch(proxyUrl + url, { method: 'GET', headers: headers })
         .then(res => res.json())
-        .then(data => data.login )
+        .then(data => data.login)
         .catch(err => alert(err))
 }
 
@@ -84,17 +84,26 @@ export const getRepoContents = async (): Promise<any> => {
         "X-Requested-With": "XMLHttpRequest"
     });
 
-    return  fetch(proxyUrl + url, { method: 'GET', headers: headers })
+    return fetch(proxyUrl + url, { method: 'GET', headers: headers })
         .then(res => res.json())
         .then(data => data)
         .catch(err => alert(err))
 
-    }
+}
 
-export const getRepoContentsFromTree = async (): Promise<any> => {
+
+// Object {
+//     "mode": "100644",
+//     "path": "work/bs3/PowerShell/whiteboard of first session.jpg",
+//     "sha": "f00857147f42dbc8ef782af93fddb2cd4e54c56c",
+//     "size": 144157,
+//     "type": "blob",
+//     "url": "https://api.github.com/repos/allister-grange/Notes/git/blobs/f00857147f42dbc8ef782af93fddb2cd4e54c56c",
+//   },
+export const getRepoContentsFromTree = async (): Promise<Array<FileData>> => {
 
     console.log("getRepoContentsFromTree");
-
+    // let files: Array<FileData> = new Array<FileData>();
     const repoName = await SecureStore.getItemAsync('repo_name');
     const githubToken = await SecureStore.getItemAsync('github_token');
     const userName = await SecureStore.getItemAsync('user_name');
@@ -109,10 +118,58 @@ export const getRepoContentsFromTree = async (): Promise<any> => {
 
     const sha = await getMasterBranchTreeSha();
 
-    return await fetch(proxyUrl + url + sha + '?recursive=1', { method: 'GET', headers: headers })
+    const data = await fetch(proxyUrl + url + sha + '?recursive=1', { method: 'GET', headers: headers })
         .then(res => res.json())
-        .then(async (data) => data)
+        .then((data) => data)
         .catch(err => alert(err))
+
+
+    const files = parseFileData(data);
+    // console.log(shas);
+
+    //todo sort the concurrency of this and a foreach loop
+    for(let i = 0; i < files.length; i++){
+        await getFileContentFromSha(files[i].fileInfo.sha)
+        .then(res => files[i].fileContent = res)
+        .catch(err => alert(err));
+    }
+
+    return files;
+}
+
+const getFileContentFromSha = async (sha: string): Promise<any> => {
+    let files: Array<FileData> = new Array<FileData>();
+
+    const repoName = await SecureStore.getItemAsync('repo_name');
+    const githubToken = await SecureStore.getItemAsync('github_token');
+    const userName = await SecureStore.getItemAsync('user_name');
+
+    const headers = new Headers({
+        'Authorization': 'Token ' + githubToken,
+        'Accept': 'application/vnd.github.v3+json',
+        "X-Requested-With": "XMLHttpRequest"
+    });
+
+    const shaUrl = 'https://api.github.com/repos/' + userName + '/' + repoName + '/git/blobs/' + sha;
+
+    return await fetch(proxyUrl + shaUrl, { method: 'GET', headers: headers })
+        .then(res => res.json())
+        .then(data => Buffer.from(data.content, 'base64').toString('ascii') as string)
+        .catch(err => alert(err));
+}
+
+//parses the sha token and the path of the file
+const parseFileData = (data: any): Array<FileData> => {
+    let shas = new Array<FileData>();
+
+    for (let i = 0; i < data.tree.length; i++) {
+        let path = data.tree[i].path as string;
+        if (path.split('.').pop() === 'md'){
+            shas.push({fileInfo: {path: path, sha: data.tree[i].sha}, isDirectory: false, fileContent: ""})
+        }
+    }
+
+    return shas;
 }
 
 export const getMasterBranchTreeSha = async (): Promise<string> => {
