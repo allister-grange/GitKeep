@@ -54,8 +54,12 @@ export default function App() {
             if (response?.type === 'success') {
                 const { code } = response.params;
                 setLoadingToken(true);
-                await getAccessToken(code);
-                await getAuthenticatedUserName();
+                await getAccessToken(code)
+                    .then(res => SecureStore.setItemAsync('github_token', res))
+                    .catch(err => alert(err));
+                await getAuthenticatedUserName()
+                    .then(res => SecureStore.setItemAsync('user_name', res))
+                    .catch(err => alert(err));
                 navigation.navigate('RepoSelectScreen');
                 setLoadingToken(false);
             }

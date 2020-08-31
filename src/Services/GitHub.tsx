@@ -17,7 +17,7 @@ export type FileData = {
 // const proxyUrl = 'https://0.0.0.0:8080/'
 const proxyUrl = 'https://cors-anywhere.herokuapp.com/'
 
-export const getAuthenticatedUserName = async () => {
+export const getAuthenticatedUserName = async (): Promise<string> => {
     const url = 'https://api.github.com/user';
     const token = await SecureStore.getItemAsync('github_token');
 
@@ -28,29 +28,24 @@ export const getAuthenticatedUserName = async () => {
         "X-Requested-With": "XMLHttpRequest"
     });
 
-    await fetch(proxyUrl + url, { method: 'GET', headers: headers })
+    return await fetch(proxyUrl + url, { method: 'GET', headers: headers })
         .then(res => res.json())
-        .then(async (data) => {
-            await SecureStore.setItemAsync('user_name', data.login);
-        })
+        .then(data => data.login )
         .catch(err => alert(err))
 }
 
-export const getAccessToken = async (code: string) => {
+export const getAccessToken = async (code: string): Promise<string> => {
     const url = 'https://github.com/login/oauth/access_token';
 
-    //figure out this header, bit dodgy 
     const headers = new Headers({
         'Accept': 'application/json',
         'Content-Type': 'application/json',
         "X-Requested-With": "XMLHttpRequest"
     });
 
-    await fetch(proxyUrl + url + '?client_id=0ebefb6bb5e94c6193a0&client_secret=1905a7cc5a255be077df3fc6a848ba2de15e2913&code=' + code, { method: 'POST', headers: headers })
+    return await fetch(proxyUrl + url + '?client_id=0ebefb6bb5e94c6193a0&client_secret=1905a7cc5a255be077df3fc6a848ba2de15e2913&code=' + code, { method: 'POST', headers: headers })
         .then(res => res.json())
-        .then(async (data) => {
-            await SecureStore.setItemAsync('github_token', data.access_token);
-        })
+        .then(data => data.access_token)
         .catch(err => alert(err))
 }
 
@@ -65,22 +60,13 @@ export const fetchUserRepos = async (): Promise<any> => {
         'Authorization': 'Token ' + token
     })
 
-    let userRepos = {}
-
-    await fetch(url, { method: 'GET', headers: headers })
+    return await fetch(url, { method: 'GET', headers: headers })
         .then(res => res.json())
-        .then(data => {
-            console.log("repo data = " + JSON.stringify(data));
-
-            userRepos = data
-        }
-        )
+        .then(data => data)
         .catch(err => alert(err))
-
-    return userRepos;
 }
 
-export const fetchRepoContents = async (): Promise<any> => {
+export const getRepoContents = async (): Promise<any> => {
 
     console.log("fetching repo contents ");
 
@@ -98,72 +84,54 @@ export const fetchRepoContents = async (): Promise<any> => {
         "X-Requested-With": "XMLHttpRequest"
     });
 
-    let repoData = await fetch(proxyUrl + url, { method: 'GET', headers: headers })
+    return  fetch(proxyUrl + url, { method: 'GET', headers: headers })
         .then(res => res.json())
-        .then(async (data) => data)
+        .then(data => data)
         .catch(err => alert(err))
 
-    return repoData;
-}
+    }
 
 export const getRepoContentsFromTree = async (): Promise<any> => {
 
     console.log("getRepoContentsFromTree");
-    
+
     const repoName = await SecureStore.getItemAsync('repo_name');
     const githubToken = await SecureStore.getItemAsync('github_token');
     const userName = await SecureStore.getItemAsync('user_name');
-    
+
     const url = 'https://api.github.com/repos/' + userName + '/' + repoName + '/git/trees/';
-   
+
     const headers = new Headers({
         'Authorization': 'Token ' + githubToken,
         'Accept': 'application/vnd.github.VERSION.raw',
         "X-Requested-With": "XMLHttpRequest"
     });
 
-    const sha = await fetchMasterBranchTreeSha();
+    const sha = await getMasterBranchTreeSha();
 
-    let repoData = await fetch(proxyUrl + url + sha + '?recursive=1', { method: 'GET', headers: headers })
+    return await fetch(proxyUrl + url + sha + '?recursive=1', { method: 'GET', headers: headers })
         .then(res => res.json())
         .then(async (data) => data)
         .catch(err => alert(err))
-    
-    console.log(repoData);
-    
-    return repoData;
 }
 
-export const fetchMasterBranchTreeSha = async (): Promise<string> => {
+export const getMasterBranchTreeSha = async (): Promise<string> => {
     const repoName = await SecureStore.getItemAsync('repo_name');
     const githubToken = await SecureStore.getItemAsync('github_token');
     const userName = await SecureStore.getItemAsync('user_name');
 
     const shaUrl = 'https://api.github.com/repos/' + userName + '/' + repoName + '/branches/master'
-    
+
     const headers = new Headers({
         'Authorization': 'Token ' + githubToken,
         'Accept': 'application/vnd.github.VERSION.raw',
         "X-Requested-With": "XMLHttpRequest"
     });
 
-    let sha = "";
-
-    await fetch(proxyUrl + shaUrl, { method: 'GET', headers: headers })
-        .then(res =>
-
-            res.json()
-
-        )
-        .then(data => {
-
-            console.log(data.commit.sha);
-            sha = data.commit.sha
-
-        })
+    return await fetch(proxyUrl + shaUrl, { method: 'GET', headers: headers })
+        .then(res => res.json())
+        .then(data => data.commit.sha)
         .catch(err => alert(err));
-
-    return sha; 
 }
 
 export const parseRepoData = async (data: any): Promise<Array<FileData>> => {
