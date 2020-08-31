@@ -69,7 +69,12 @@ export const fetchUserRepos = async (): Promise<any> => {
 
     await fetch(url, { method: 'GET', headers: headers })
         .then(res => res.json())
-        .then(data => userRepos = data)
+        .then(data => {
+            console.log("repo data = " + JSON.stringify(data));
+
+            userRepos = data
+        }
+        )
         .catch(err => alert(err))
 
     return userRepos;
@@ -93,42 +98,96 @@ export const fetchRepoContents = async (): Promise<any> => {
         "X-Requested-With": "XMLHttpRequest"
     });
 
-    let repoData = {};
-
-    await fetch(proxyUrl + url, { method: 'GET', headers: headers })
+    let repoData = await fetch(proxyUrl + url, { method: 'GET', headers: headers })
         .then(res => res.json())
-        .then(async (data) => {
-            repoData = data;
-        })
-        //usually these errors are related to bad auth, send them back to grab another token
-        // TODO change this to another call to get a fresh token for the
+        .then(async (data) => data)
         .catch(err => alert(err))
 
     return repoData;
 }
 
+export const getRepoContentsFromTree = async (): Promise<any> => {
+
+    console.log("getRepoContentsFromTree");
+    
+    const repoName = await SecureStore.getItemAsync('repo_name');
+    const githubToken = await SecureStore.getItemAsync('github_token');
+    const userName = await SecureStore.getItemAsync('user_name');
+    
+    const url = 'https://api.github.com/repos/' + userName + '/' + repoName + '/git/trees/';
+   
+    const headers = new Headers({
+        'Authorization': 'Token ' + githubToken,
+        'Accept': 'application/vnd.github.VERSION.raw',
+        "X-Requested-With": "XMLHttpRequest"
+    });
+
+    const sha = await fetchMasterBranchTreeSha();
+
+    let repoData = await fetch(proxyUrl + url + sha + '?recursive=1', { method: 'GET', headers: headers })
+        .then(res => res.json())
+        .then(async (data) => data)
+        .catch(err => alert(err))
+    
+    console.log(repoData);
+    
+    return repoData;
+}
+
+export const fetchMasterBranchTreeSha = async (): Promise<string> => {
+    const repoName = await SecureStore.getItemAsync('repo_name');
+    const githubToken = await SecureStore.getItemAsync('github_token');
+    const userName = await SecureStore.getItemAsync('user_name');
+
+    const shaUrl = 'https://api.github.com/repos/' + userName + '/' + repoName + '/branches/master'
+    
+    const headers = new Headers({
+        'Authorization': 'Token ' + githubToken,
+        'Accept': 'application/vnd.github.VERSION.raw',
+        "X-Requested-With": "XMLHttpRequest"
+    });
+
+    let sha = "";
+
+    await fetch(proxyUrl + shaUrl, { method: 'GET', headers: headers })
+        .then(res =>
+
+            res.json()
+
+        )
+        .then(data => {
+
+            console.log(data.commit.sha);
+            sha = data.commit.sha
+
+        })
+        .catch(err => alert(err));
+
+    return sha; 
+}
+
 export const parseRepoData = async (data: any): Promise<Array<FileData>> => {
     let files: Array<FileData> = new Array<FileData>();
-    
+
     if (!data)
         throw Error;
 
     data.forEach((file: any) => {
         if (file.type !== 'dir' && file.name.split('.').pop() === 'md') {
-            files.push({fileInfo: file, fileContent: "", isDirectory: false});
+            files.push({ fileInfo: file, fileContent: "", isDirectory: false });
         }
     });
 
-    for(let fileInfo in files) {
-            await getFileContentOfUrl(files[fileInfo].fileInfo.url)
-                .then(fileContent => (files[fileInfo].fileContent = fileContent));
+    for (let fileInfo in files) {
+        await getFileContentOfUrl(files[fileInfo].fileInfo.url)
+            .then(fileContent => (files[fileInfo].fileContent = fileContent));
     }
 
     return files;
 }
 
 export const getFileContentOfUrl = async (url: string): Promise<string> => {
-    const token = await SecureStore.getItemAsync('github_token');    
+    const token = await SecureStore.getItemAsync('github_token');
 
     const headers = new Headers({
         'Authorization': 'Token ' + token,
@@ -176,6 +235,6 @@ export const updateFileContent = async (file: FileData, newContent: string): Pro
         .catch(err => alert(err))
 
     console.log("Pushed up new data to github");
-    
+
     return repoData;
 }

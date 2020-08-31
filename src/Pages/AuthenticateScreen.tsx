@@ -83,7 +83,7 @@ export default function App() {
                         onPress={() => promptAsync()}
                     />
                 }
-                <Text>{Linking.makeUrl()}</Text>
+                {/* <Text>{Linking.makeUrl()}</Text> */}
             </View>
         </SafeAreaView>
     );

@@ -43,10 +43,7 @@ export function CreateNoteScreen({ route }: Props) {
             }
         }
 
-        pushNoteToGit();
-
-        console.log("hello + " + JSON.stringify(route.params.file));
-        
+        pushNoteToGit();        
 
         if (!isFocused) {
             setContent("");

@@ -6,7 +6,7 @@ import * as SecureStore from 'expo-secure-store';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useIsFocused } from '@react-navigation/native';
-import { getFileContentOfUrl, fetchRepoContents, parseRepoData, FileData } from '../Services/GitHub';
+import { getFileContentOfUrl, fetchRepoContents, parseRepoData, FileData, getRepoContentsFromTree } from '../Services/GitHub';
 import Toast from 'react-native-root-toast';
 
 const HomeScreen = () => {
@@ -22,6 +22,7 @@ const HomeScreen = () => {
 
   const onRefresh = async () => {
     setRefreshing(true);
+    //todo should only have one method to get repo contents from Github.tsx
     await fetchRepoContents()
       .then(data => {
         // console.log("data = " + data);

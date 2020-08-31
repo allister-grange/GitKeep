@@ -38,6 +38,7 @@ const RepoSelectScreen = () => {
 
     const selectRepo = async (repoName: string) => {        
         await SecureStore.setItemAsync('repo_name', repoName);
+        // await SecureStore.setItemAsync('repo_tree_sha', repoSha);
         navigation.navigate('Home');
     }
 
