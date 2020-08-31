@@ -22,21 +22,7 @@ const HomeScreen = () => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    //todo should only have one method to get repo contents from Github.tsx
-    await fetchRepoContents()
-      .then(data => {
-        // console.log("data = " + data);
-        // console.log(JSON.stringify(data));
-
-        if(data === {}){
-          console.log("GOT AN ERROR");
-        }
-          
-        
-        return parseRepoData(data)
-      })
-      .then(files => setFiles(files))
-      .catch(err => alert(err));
+    await getRepoData();
     setRefreshing(false);
   };
 
@@ -61,10 +47,7 @@ const HomeScreen = () => {
 
       if (files.length === 0) {
         setLoadingNotes(true);
-        await fetchRepoContents()
-          .then(data => parseRepoData(data))
-          .then(files => setFiles(files))
-          .catch(err => alert(err));
+        await getRepoData();
         setLoadingNotes(false);
       }
     }
@@ -72,6 +55,15 @@ const HomeScreen = () => {
     if (isFocused)
       pullDownFiles();
   }, []);
+
+  const getRepoData = async () => {
+    console.log("Using good method");
+    
+    await fetchRepoContents()
+    .then(data => parseRepoData(data))
+    .then(files => setFiles(files))
+    .catch(err => alert(err));
+  }
 
   let toast = () => {
     setToastVisible(true);
@@ -81,10 +73,7 @@ const HomeScreen = () => {
   const refreshNotes = async () => {
     toast();
     console.log("refreshing notes");
-    await fetchRepoContents()
-      .then(data => parseRepoData(data))
-      .then(files => setFiles(files))
-      .catch(err => alert(err));
+    await getRepoData();
     console.log("done :)");
   }
 
