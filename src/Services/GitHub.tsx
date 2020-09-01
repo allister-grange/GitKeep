@@ -103,7 +103,6 @@ export const getRepoContents = async (): Promise<any> => {
 export const getRepoContentsFromTree = async (): Promise<Array<FileData>> => {
 
     console.log("getRepoContentsFromTree");
-    // let files: Array<FileData> = new Array<FileData>();
     const repoName = await SecureStore.getItemAsync('repo_name');
     const githubToken = await SecureStore.getItemAsync('github_token');
     const userName = await SecureStore.getItemAsync('user_name');
@@ -112,7 +111,7 @@ export const getRepoContentsFromTree = async (): Promise<Array<FileData>> => {
 
     const headers = new Headers({
         'Authorization': 'Token ' + githubToken,
-        'Accept': 'application/vnd.github.VERSION.raw',
+        'Accept': 'application/vnd.github.v3+json',
         "X-Requested-With": "XMLHttpRequest"
     });
 
@@ -123,16 +122,42 @@ export const getRepoContentsFromTree = async (): Promise<Array<FileData>> => {
         .then((data) => data)
         .catch(err => alert(err))
 
-
     const files = parseFileData(data);
-    // console.log(shas);
 
     //todo sort the concurrency of this and a foreach loop
-    for(let i = 0; i < files.length; i++){
-        await getFileContentFromSha(files[i].fileInfo.sha)
-        .then(res => files[i].fileContent = res)
-        .catch(err => alert(err));
-    }
+    // for (let i = 0; i < files.length; i++) {
+    //     await getFileContentFromSha(files[i].fileInfo.sha)
+    //         .then(res => {
+    //             if(res === "")
+    //                 files[i].fileContent = '#Empty Note'
+    //             else
+    //                 files[i].fileContent = res
+    //         }
+    //         )
+    //         .catch(err => alert(err));
+    // }
+
+    // console.log(files.length);
+
+    await Promise.all(files.map(f => fetch(proxyUrl + 'https://api.github.com/repos/' + userName + '/' + repoName + '/git/blobs/' + f.fileInfo.sha, { method: 'GET', headers: headers })))
+        .then(result => Promise.all(result.map(res => res.json())))
+        .then(res => {
+            for (let i = 0; i < res.length; i++) {
+                if (res[i].content === "") {
+                    files[i].fileContent = '#Empty Note'
+                }
+                else {
+                    files[i].fileContent = Buffer.from(res[i].content, 'base64').toString('ascii') as string
+                }
+                // console.log(Buffer.from(res[i].content, 'base64').toString('ascii') as string);
+
+            }
+            console.log("finished the converting :)");
+            
+        })
+        .catch(error => {
+            console.log(error);
+        });
 
     return files;
 }
@@ -164,8 +189,8 @@ const parseFileData = (data: any): Array<FileData> => {
 
     for (let i = 0; i < data.tree.length; i++) {
         let path = data.tree[i].path as string;
-        if (path.split('.').pop() === 'md'){
-            shas.push({fileInfo: {path: path, sha: data.tree[i].sha}, isDirectory: false, fileContent: ""})
+        if (path.split('.').pop() === 'md') {
+            shas.push({ fileInfo: { path: path, sha: data.tree[i].sha }, isDirectory: false, fileContent: "" })
         }
     }
 

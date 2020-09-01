@@ -57,11 +57,20 @@ const HomeScreen = () => {
   }, []);
 
   const getRepoData = async () => {
-    
+    let startTimeM = new Date().getTime()
     await getRepoContentsFromTree()
-    // .then(data => parseRepoData(data))
-    .then(files => setFiles(files))
-    .catch(err => alert(err));
+      .then(files => setFiles(files))
+      .catch(err => alert(err));
+    let durationM = new Date().getTime() - startTimeM
+    console.log(durationM);
+    //TIMINGS:
+    //Asus
+    //27159
+    //27376
+    //24345
+    //Tech
+    //21999
+    //23317
   }
 
   let toast = () => {
@@ -88,7 +97,7 @@ const HomeScreen = () => {
           }>
             {
               files.map((file, idx) => (
-                  <Note refreshNotes={refreshNotes} key={idx} file={file} />
+                <Note refreshNotes={refreshNotes} key={idx} file={file} />
               ))
             }
           </ScrollView>
