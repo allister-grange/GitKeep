@@ -122,48 +122,13 @@ export const getRepoContentsFromTree = async (): Promise<Array<FileData>> => {
         .then((data) => data)
         .catch(err => alert(err))
 
-    const files = parseFileData(data);
+    let files = parseFileData(data);
+    const filesWithContent = await getFileContentFromSha(files)
 
-    //todo sort the concurrency of this and a foreach loop
-    // for (let i = 0; i < files.length; i++) {
-    //     await getFileContentFromSha(files[i].fileInfo.sha)
-    //         .then(res => {
-    //             if(res === "")
-    //                 files[i].fileContent = '#Empty Note'
-    //             else
-    //                 files[i].fileContent = res
-    //         }
-    //         )
-    //         .catch(err => alert(err));
-    // }
-
-    // console.log(files.length);
-
-    await Promise.all(files.map(f => fetch(proxyUrl + 'https://api.github.com/repos/' + userName + '/' + repoName + '/git/blobs/' + f.fileInfo.sha, { method: 'GET', headers: headers })))
-        .then(result => Promise.all(result.map(res => res.json())))
-        .then(res => {
-            for (let i = 0; i < res.length; i++) {
-                if (res[i].content === "") {
-                    files[i].fileContent = '#Empty Note'
-                }
-                else {
-                    files[i].fileContent = Buffer.from(res[i].content, 'base64').toString('ascii') as string
-                }
-                // console.log(Buffer.from(res[i].content, 'base64').toString('ascii') as string);
-
-            }
-            console.log("finished the converting :)");
-            
-        })
-        .catch(error => {
-            console.log(error);
-        });
-
-    return files;
+    return filesWithContent;
 }
 
-const getFileContentFromSha = async (sha: string): Promise<any> => {
-    let files: Array<FileData> = new Array<FileData>();
+const getFileContentFromSha = async (files: FileData[]): Promise<FileData[]> => {
 
     const repoName = await SecureStore.getItemAsync('repo_name');
     const githubToken = await SecureStore.getItemAsync('github_token');
@@ -175,16 +140,33 @@ const getFileContentFromSha = async (sha: string): Promise<any> => {
         "X-Requested-With": "XMLHttpRequest"
     });
 
-    const shaUrl = 'https://api.github.com/repos/' + userName + '/' + repoName + '/git/blobs/' + sha;
+    const shaUrl = 'https://api.github.com/repos/' + userName + '/' + repoName + '/git/blobs/';
 
-    return await fetch(proxyUrl + shaUrl, { method: 'GET', headers: headers })
-        .then(res => res.json())
-        .then(data => Buffer.from(data.content, 'base64').toString('ascii') as string)
-        .catch(err => alert(err));
+    await Promise.all(files.map(f => fetch(proxyUrl + shaUrl + f.fileInfo.sha, { method: 'GET', headers: headers })))
+        .then(result => Promise.all(result.map(res => res.json())))
+        .then(res => {
+            for (let i = 0; i < res.length; i++) {
+                if (res[i].content === "") {
+                    files[i].fileContent = '#Empty Note'
+                }
+                else {
+                    files[i].fileContent = Buffer.from(res[i].content, 'base64').toString('ascii') as string
+                }
+            }            
+        })
+        .catch(error => {
+            console.log(error);
+        });
+
+    return files;
 }
 
 //parses the sha token and the path of the file
 const parseFileData = (data: any): Array<FileData> => {
+    if(!data.tree){
+        throw Error("No data to parse")
+    }
+
     let shas = new Array<FileData>();
 
     for (let i = 0; i < data.tree.length; i++) {
