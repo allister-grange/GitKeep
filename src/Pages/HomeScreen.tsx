@@ -73,15 +73,11 @@ const HomeScreen = () => {
     //23317
   }
 
-  let toast = () => {
-    setToastVisible(true);
-    setTimeout(() => setToastVisible(false), 2000);
-  };
-
   const refreshNotes = async () => {
-    toast();
+    setToastVisible(true);
     console.log("refreshing notes");
     await getRepoData();
+    setToastVisible(false);
     console.log("done :)");
   }
 

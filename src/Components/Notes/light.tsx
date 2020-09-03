@@ -100,17 +100,17 @@ export const lightCss = `@media print {
   h1,
   .air-h1 {
     margin-top: 0;
-    font-size: 3.998rem;
+    font-size: 2.8rem;
   }
   
   h2,
   .air-h2 {
-    font-size: 2.827rem;
+    font-size: 2.2rem;
   }
   
   h3,
   .air-h3 {
-    font-size: 1.999rem;
+    font-size: 1.799rem;
   }
   
   h4,

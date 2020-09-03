@@ -147,7 +147,7 @@ const getFileContentFromSha = async (files: FileData[]): Promise<FileData[]> => 
         .then(res => {
             for (let i = 0; i < res.length; i++) {
                 if (res[i].content === "") {
-                    files[i].fileContent = '#Empty Note'
+                    files[i].fileContent = "#Empty Note :("
                 }
                 else {
                     files[i].fileContent = Buffer.from(res[i].content, 'base64').toString('ascii') as string

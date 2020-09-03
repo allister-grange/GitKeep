@@ -7,6 +7,8 @@ import { darkCss } from './dark';
 import { lightCss } from './light';
 import { FileData } from '../../Services/GitHub';
 import { YellowBox } from 'react-native';
+import { WebViewMessageEvent } from 'react-native-webview';
+import { generateRandomAsync } from 'expo-auth-session/build/PKCE';
 
 YellowBox.ignoreWarnings([
     'Non-serializable values were found in the navigation state',
@@ -25,7 +27,7 @@ export const Note: FunctionComponent<PassedProps> = ({ file, title, refreshNotes
     const colorScheme = useColorScheme();
     const navigation = useNavigation();
     const [heightOfNote, setHeightOfNote] = useState(0);
-    const [previewing, setPreviewing] = useState(false);
+    // const [noteHeight, setNoteHeight] = useState(0);
 
     const themeContainerStyle =
         colorScheme === 'light' ? styles.lightContainer : styles.darkContainer;
@@ -35,13 +37,19 @@ export const Note: FunctionComponent<PassedProps> = ({ file, title, refreshNotes
     const fileContent = file.fileContent;
 
     useEffect(() => {
-        setHeightOfNote(fileContent.length > 400 ? 400 : fileContent.length + 20);
+        let random = Math.random()*100|0;
+        setHeightOfNote(fileContent.length > 400 ? 300 + random: 50 + random);
     }, [])
+
+    const onWebViewMessage = (event: WebViewMessageEvent) => {
+        console.log("called " + event.nativeEvent.data);
+        
+        setHeightOfNote(parseInt(event.nativeEvent.data));
+      }    
 
     return (
         <View
-            // style={[styles.container, themeContainerStyle]}
-            style={[styles.container, previewing ? { height: '100%' } : { height: heightOfNote }]}>
+            style={[styles.container, { height: heightOfNote}]}>
             <TouchableOpacity
                 onLongPress={() => navigation.navigate('CreateNoteScreen',
                     {
@@ -59,15 +67,15 @@ export const Note: FunctionComponent<PassedProps> = ({ file, title, refreshNotes
                 <View style={{ height: '100%' }}>
                     <Markdown showsHorizontalScrollIndicator={false}
                         showsVerticalScrollIndicator={false}
+                        scalesPageToFit={true}
+                        javaScriptEnabled={false}
+                        onMessage={(event) => {
+                            console.log(event);
+                            
+                            onWebViewMessage(event)
+                        }}
                         markdown={fileContent} css={css} />
                 </View>
-                {/* <SafeAreaView style={{ flex: 1 }}>
-                    <Markdown showsHorizontalScrollIndicator={false}
-                        showsVerticalScrollIndicator={false}
-                        markdown={fileContent} css={css} />
-
-                </SafeAreaView> */}
-
             </TouchableOpacity>
         </View>
 

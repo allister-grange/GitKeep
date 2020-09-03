@@ -36,7 +36,7 @@ export default function App() {
       const token = await SecureStore.getItemAsync('github_token');
 
       if (token) {
-        setInitialRoute("AuthScreen");
+        setInitialRoute("Home");
       }
     }
 

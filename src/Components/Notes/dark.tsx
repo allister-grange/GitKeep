@@ -93,42 +93,41 @@ h4,
   line-height: 1.42;
 }
 
-h1,
-.air-h1 {
-  margin-top: 0;
-  font-size: 3.998rem;
-}
-
-h2,
-.air-h2 {
-  font-size: 2.827rem;
-}
-
-h3,
-.air-h3 {
-  font-size: 1.999rem;
-}
-
-h4,
-.air-h4 {
-  font-size: 1.414rem;
-}
-
-h5,
-.air-h5 {
-  font-size: 1.121rem;
-}
-
-h6,
-.air-h6 {
-  font-size: .88rem;
-}
-
-small,
-.air-small {
-  font-size: .707em;
-}
-
+  h1,
+  .air-h1 {
+    margin-top: 0;
+    font-size: 2.8rem;
+  }
+  
+  h2,
+  .air-h2 {
+    font-size: 2.2rem;
+  }
+  
+  h3,
+  .air-h3 {
+    font-size: 1.799rem;
+  }
+  
+  h4,
+  .air-h4 {
+    font-size: 1.414rem;
+  }
+  
+  h5,
+  .air-h5 {
+    font-size: 1.121rem;
+  }
+  
+  h6,
+  .air-h6 {
+    font-size: .88rem;
+  }
+  
+  small,
+  .air-small {
+    font-size: .707em;
+  }
 /* https://github.com/mrmrs/fluidity */
 
 img,
