@@ -12,7 +12,7 @@ type RootStackParamList = {
         passedTitle?: string,
         file: FileData,
         isNewNote: boolean,
-        refreshNotes: () => {}
+        refreshNotes: (originalFile: FileData, newFile: string) => {}
     };
     Feed: { sort: 'latest' | 'top' } | undefined;
 };
@@ -36,10 +36,7 @@ export function CreateNoteScreen({ route }: Props) {
                 return;
 
             if (content !== "" && content !== route.params.file.fileContent) {
-                await updateFileContent(route.params.file, content)
-                    .then(data => data)
-                    .catch(error => console.log(error));
-                route.params.refreshNotes();
+                route.params.refreshNotes(route.params.file, content);
             }
         }
 

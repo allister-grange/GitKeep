@@ -36,7 +36,7 @@ export default function App() {
     const themeTextStyle =
         colorScheme === 'light' ? styles.lightText : styles.darkText;
     const themeActivityIndicator =
-        colorScheme === 'light' ? 'black' : 'white';
+        colorScheme === 'light' ? 'coral' : 'white';
 
 
     const [request, response, promptAsync] = useAuthRequest(

@@ -6,8 +6,7 @@ import * as SecureStore from 'expo-secure-store';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useIsFocused } from '@react-navigation/native';
-import { parseRepoData, FileData, getRepoContentsFromTree } from '../Services/GitHub';
-import Toast from 'react-native-root-toast';
+import { parseRepoData, FileData, getRepoContentsFromTree, updateFileContent } from '../Services/GitHub';
 
 const HomeScreen = () => {
 
@@ -16,7 +15,7 @@ const HomeScreen = () => {
   const navigation = useNavigation();
   const [files, setFiles] = useState(new Array<FileData>());
   const [loadingNotes, setLoadingNotes] = useState(false);
-  const [toastVisible, setToastVisible] = useState(false);
+  const [toastVisible, setToastVisible] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const isFocused = useIsFocused();
 
@@ -33,7 +32,7 @@ const HomeScreen = () => {
   const themeNewNoteButtonStyle =
     colorScheme === 'light' ? styles.lightThemeNewNoteButton : styles.darkThemeNewNoteButton;
   const themeActivityIndicator =
-    colorScheme === 'light' ? 'black' : 'white';
+    colorScheme === 'light' ? 'coral' : 'white';
 
   useEffect(() => {
 
@@ -73,9 +72,13 @@ const HomeScreen = () => {
     //23317
   }
 
-  const refreshNotes = async () => {
+  const refreshNotes = async (originalFile: FileData, newFile: string) => {
     setToastVisible(true);
     console.log("refreshing notes");
+    await updateFileContent(originalFile, newFile)
+      .then(data => data)
+      .catch(error => console.log(error));
+
     await getRepoData();
     setToastVisible(false);
     console.log("done :)");
@@ -84,6 +87,7 @@ const HomeScreen = () => {
   return (
     <SafeAreaView style={[styles.container, themeContainerStyle]}>
       <StatusBar barStyle={themeStatusBarStyle} />
+
       {
         loadingNotes ?
           <ActivityIndicator color={themeActivityIndicator} size={40} />
@@ -96,23 +100,20 @@ const HomeScreen = () => {
                 <Note refreshNotes={refreshNotes} key={idx} file={file} />
               ))
             }
+            
           </ScrollView>
 
       }
 
       <View style={styles.newNoteButtonContainer}>
         <TouchableOpacity style={[styles.newNoteButton, themeNewNoteButtonStyle]}
-          onPress={() => navigation.navigate('CreateNoteScreen')}>
+          onPress={() => navigation.navigate('CreateNoteScreen')} >
           <Ionicons outline={false} name={'md-add'} size={35} color={'orange'} />
         </TouchableOpacity>
       </View>
-      <Toast
-        visible={toastVisible}
-        position={Toast.positions.BOTTOM - 30}
-        shadow={false}
-        animation={false}
-        hideOnPress={true}
-      >Saving changes to git :)</Toast>
+
+
+
     </SafeAreaView>
   );
 }

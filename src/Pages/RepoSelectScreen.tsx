@@ -23,7 +23,7 @@ const RepoSelectScreen = () => {
     const themeTitleContainer =
         colorScheme === 'light' ? styles.lightTitleContainer : styles.darkTitleContainer;
     const themeActivityIndicator =
-        colorScheme === 'light' ? 'black' : 'white';
+        colorScheme === 'light' ? 'coral' : 'white';
 
     React.useEffect(() => {
         async function fetchData() {

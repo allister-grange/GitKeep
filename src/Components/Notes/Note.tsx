@@ -17,7 +17,7 @@ YellowBox.ignoreWarnings([
 type PassedProps = {
     file: FileData,
     title?: string,
-    refreshNotes: () => {},
+    refreshNotes: (originalFile: FileData, newFile: string) => {},
 };
 
 
@@ -70,8 +70,6 @@ export const Note: FunctionComponent<PassedProps> = ({ file, title, refreshNotes
                         scalesPageToFit={true}
                         javaScriptEnabled={false}
                         onMessage={(event) => {
-                            console.log(event);
-                            
                             onWebViewMessage(event)
                         }}
                         markdown={fileContent} css={css} />

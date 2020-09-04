@@ -266,7 +266,5 @@ export const updateFileContent = async (file: FileData, newContent: string): Pro
         })
         .catch(err => alert(err))
 
-    console.log("Pushed up new data to github");
-
     return repoData;
 }
