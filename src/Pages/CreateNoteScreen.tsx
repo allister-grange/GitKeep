@@ -3,8 +3,11 @@ import { KeyboardAvoidingView, StyleSheet, TextInput, View, Text } from 'react-n
 import { Appearance, useColorScheme } from 'react-native-appearance';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useIsFocused } from '@react-navigation/native';
+// import { Ionicons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 import Markdown from 'react-native-showdown';
 import { FileData, updateFileContent } from '../Services/GitHub';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 type RootStackParamList = {
     Home: undefined;
@@ -27,6 +30,18 @@ export function CreateNoteScreen({ route }: Props) {
     const [title, setTitle] = useState("");
     const isFocused = useIsFocused();
 
+    const themeContainerStyle =
+        colorScheme === 'light' ? styles.lightContainer : styles.darkContainer;
+    const themeTextStyle =
+        colorScheme === 'light' ? styles.lightText : styles.darkText;
+    const themeTitleStyle =
+        colorScheme === 'light' ? styles.lightTitle : styles.darkTitle;
+    const themeTitleContainer =
+        colorScheme === 'light' ? styles.lightTitleContainer : styles.darkTitleContainer;
+    const ellipsesColor =
+        colorScheme === 'light' ? 'black' : 'white';
+
+
     useEffect(() => {
 
         //this means the content was edited by the user, so refresh it in git, todo add a toast below
@@ -40,7 +55,7 @@ export function CreateNoteScreen({ route }: Props) {
             }
         }
 
-        pushNoteToGit();        
+        pushNoteToGit();
 
         if (!isFocused) {
             setContent("");
@@ -51,19 +66,15 @@ export function CreateNoteScreen({ route }: Props) {
 
     }, [isFocused])
 
-    const themeContainerStyle =
-        colorScheme === 'light' ? styles.lightContainer : styles.darkContainer;
-    const themeTextStyle =
-        colorScheme === 'light' ? styles.lightText : styles.darkText;
-    const themeTitleStyle =
-        colorScheme === 'light' ? styles.lightTitle : styles.darkTitle;
-    const themeTitleContainer =
-        colorScheme === 'light' ? styles.lightTitleContainer : styles.darkTitleContainer;
-
     return (
         <KeyboardAvoidingView style={[styles.container, themeContainerStyle]}>
             <View style={[styles.titleContainer, themeTitleContainer]}>
-                <Text style={[styles.title, themeTitleStyle]}>{route.params.file.fileInfo.path}</Text>
+                <View style={{ flex: 1 }}>
+                    <Text style={[styles.title, themeTitleStyle]}>{route.params.file.fileInfo.path}</Text>
+                </View>
+                <TouchableOpacity>
+                    <AntDesign style={styles.ellipses} name="ellipsis1" size={24} color={ellipsesColor} />
+                </TouchableOpacity>
             </View>
             <View style={styles.contentContainer}>
                 <TextInput
@@ -74,7 +85,7 @@ export function CreateNoteScreen({ route }: Props) {
                     onChangeText={(value) => setContent(value)}
                 />
             </View>
-        </KeyboardAvoidingView>
+        </KeyboardAvoidingView >
     );
 }
 
@@ -101,6 +112,8 @@ const styles = StyleSheet.create({
         paddingBottom: 15,
         paddingTop: 40,
         borderBottomWidth: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     lightTitleContainer: {
         borderColor: '#d3d3d3',
@@ -126,6 +139,9 @@ const styles = StyleSheet.create({
     textInput: {
         fontSize: 15
     },
+    ellipses: {
+        transform: [{ rotate: '90deg' }],
+    }
 });
 
 export default CreateNoteScreen;

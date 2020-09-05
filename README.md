@@ -52,8 +52,9 @@ https://developer.github.com/v3/repos/#create-a-repository-for-the-authenticated
     - [X] Clean up the authentication flow
     - [X] Get the screens nicely passing props to eachother 
     - [X] Start on the integration with GitHub
-    4) Convert to this <https://www.npmjs.com/package/@octokit/core>
-    5) One tap on a note expands it out, hold on it to edit it 
-    6) On a note there will be a delete icon in the upper right
-    7) Pull up to refresh
-    8) Display errors on the device so that I can determine what's going on
+    - [] Convert to this <https://www.npmjs.com/package/@octokit/core>
+    - [X] One tap on a note expands it out, hold on it to edit it 
+    - [] On a note there will be a three circle icon in the upper right, which will have delete, rename and move directory 
+    - [X] Pull up to refresh
+    - [] Some sort of alert that the app is refreshing when you edit a document (maybe an acitivity indicator then a tick once loaded)
+    - [] Get the new note screen working, with an option of what directory to put the new note in 

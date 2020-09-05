@@ -62,14 +62,6 @@ const HomeScreen = () => {
       .catch(err => alert(err));
     let durationM = new Date().getTime() - startTimeM
     console.log(durationM);
-    //TIMINGS:
-    //Asus
-    //27159
-    //27376
-    //24345
-    //Tech
-    //21999
-    //23317
   }
 
   const refreshNotes = async (originalFile: FileData, newFile: string) => {
@@ -111,8 +103,6 @@ const HomeScreen = () => {
           <Ionicons outline={false} name={'md-add'} size={35} color={'orange'} />
         </TouchableOpacity>
       </View>
-
-
 
     </SafeAreaView>
   );
