@@ -8,6 +8,8 @@ import { AntDesign } from '@expo/vector-icons';
 import Markdown from 'react-native-showdown';
 import { FileData, updateFileContent } from '../Services/GitHub';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { MenuProvider, Menu, MenuTrigger, MenuOptions, MenuOption } from 'react-native-popup-menu';
+
 
 type RootStackParamList = {
     Home: undefined;
@@ -27,11 +29,13 @@ export function CreateNoteScreen({ route }: Props) {
     Appearance.getColorScheme();
     const colorScheme = useColorScheme();
     const [content, setContent] = useState("");
-    const [title, setTitle] = useState("");
+    const [menuOpened, setMenuOpened] = useState(false);
     const isFocused = useIsFocused();
 
     const themeContainerStyle =
         colorScheme === 'light' ? styles.lightContainer : styles.darkContainer;
+    const menuContainerStyle =
+        colorScheme === 'light' ? styles.lightContainer : styles.darkMenuContainer;
     const themeTextStyle =
         colorScheme === 'light' ? styles.lightText : styles.darkText;
     const themeTitleStyle =
@@ -67,25 +71,40 @@ export function CreateNoteScreen({ route }: Props) {
     }, [isFocused])
 
     return (
-        <KeyboardAvoidingView style={[styles.container, themeContainerStyle]}>
-            <View style={[styles.titleContainer, themeTitleContainer]}>
-                <View style={{ flex: 1 }}>
-                    <Text style={[styles.title, themeTitleStyle]}>{route.params.file.fileInfo.path}</Text>
+        <MenuProvider>
+            <KeyboardAvoidingView style={[styles.container, themeContainerStyle]}>
+                <View style={[styles.titleContainer, themeTitleContainer]}>
+                    <View style={{ flex: 1 }}>
+                        <Text style={[styles.title, themeTitleStyle]}>{route.params.file.fileInfo.path}</Text>
+                    </View>
+                    <Menu>
+                        <MenuTrigger>
+                            <AntDesign style={styles.ellipses} name="ellipsis1" size={24} color={ellipsesColor} />
+                        </MenuTrigger>
+                        <MenuOptions customStyles={{optionsContainer: menuContainerStyle}}>
+                            <MenuOption onSelect={() => alert(`Save`)}>
+                                <Text style={[styles.textInput, themeTextStyle]}>Save</Text>
+                            </MenuOption>
+                            <MenuOption onSelect={() => alert(`Delete`)} >
+                                <Text style={[styles.textInput, themeTextStyle]}>Delete</Text>
+                            </MenuOption>
+                            <MenuOption onSelect={() => alert(`Not called`)} disabled={true}>
+                                <Text style={[styles.textInput, themeTextStyle]}>Disabled</Text>
+                            </MenuOption>
+                        </MenuOptions>
+                    </Menu>
                 </View>
-                <TouchableOpacity>
-                    <AntDesign style={styles.ellipses} name="ellipsis1" size={24} color={ellipsesColor} />
-                </TouchableOpacity>
-            </View>
-            <View style={styles.contentContainer}>
-                <TextInput
-                    value={content}
-                    placeholder="Content"
-                    multiline={true}
-                    style={[styles.textInput, themeTextStyle]}
-                    onChangeText={(value) => setContent(value)}
-                />
-            </View>
-        </KeyboardAvoidingView >
+                <View style={styles.contentContainer}>
+                    <TextInput
+                        value={content}
+                        placeholder="Content"
+                        multiline={true}
+                        style={[styles.textInput, themeTextStyle]}
+                        onChangeText={(value) => setContent(value)}
+                    />
+                </View>
+            </KeyboardAvoidingView>
+        </MenuProvider >
     );
 }
 
@@ -100,6 +119,9 @@ const styles = StyleSheet.create({
     },
     darkContainer: {
         backgroundColor: '#202020'
+    },
+    darkMenuContainer: {
+        backgroundColor: '#353535'
     },
     lightText: {
         color: 'black'
