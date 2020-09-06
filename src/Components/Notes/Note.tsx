@@ -27,7 +27,6 @@ export const Note: FunctionComponent<PassedProps> = ({ file, title, refreshNotes
     const colorScheme = useColorScheme();
     const navigation = useNavigation();
     const [heightOfNote, setHeightOfNote] = useState(0);
-    // const [noteHeight, setNoteHeight] = useState(0);
 
     const themeContainerStyle =
         colorScheme === 'light' ? styles.lightContainer : styles.darkContainer;
@@ -49,7 +48,7 @@ export const Note: FunctionComponent<PassedProps> = ({ file, title, refreshNotes
 
     return (
         <View
-            style={[styles.container, { height: heightOfNote}]}>
+            style={[styles.container, themeContainerStyle, { height: heightOfNote}]}>
             <TouchableOpacity
                 onLongPress={() => navigation.navigate('CreateNoteScreen',
                     {

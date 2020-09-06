@@ -1,5 +1,5 @@
 import React, { useState, FunctionComponent, useEffect } from 'react';
-import { KeyboardAvoidingView, StyleSheet, TextInput, View, Text } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, TextInput, View, Text, ActivityIndicator, Alert } from 'react-native';
 import { Appearance, useColorScheme } from 'react-native-appearance';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useIsFocused } from '@react-navigation/native';
@@ -29,7 +29,7 @@ export function CreateNoteScreen({ route }: Props) {
     Appearance.getColorScheme();
     const colorScheme = useColorScheme();
     const [content, setContent] = useState("");
-    const [menuOpened, setMenuOpened] = useState(false);
+    const [saving, setSaving] = useState(false);
     const isFocused = useIsFocused();
 
     const themeContainerStyle =
@@ -48,9 +48,8 @@ export function CreateNoteScreen({ route }: Props) {
 
     useEffect(() => {
 
-        //this means the content was edited by the user, so refresh it in git, todo add a toast below
+        //todo potentially think of a better way to do this 
         async function pushNoteToGit() {
-
             if (!route.params.file.fileContent)
                 return;
 
@@ -70,6 +69,23 @@ export function CreateNoteScreen({ route }: Props) {
 
     }, [isFocused])
 
+    const saveChangesToRepo = async () => {
+        //if the file has been edited since it was passed in
+        if (content !== "" && content !== route.params.file.fileContent) {
+            setSaving(true)
+            await updateFileContent(route.params.file, content)
+                //todo verify the save was succesful
+                .then(data => route.params.file.fileContent = content)
+                .catch(error => console.log(error));
+            
+            setSaving(false)
+        }
+        else{
+            alert("No file changes");
+        }
+
+    }
+
     return (
         <MenuProvider>
             <KeyboardAvoidingView style={[styles.container, themeContainerStyle]}>
@@ -81,15 +97,15 @@ export function CreateNoteScreen({ route }: Props) {
                         <MenuTrigger>
                             <AntDesign style={styles.ellipses} name="ellipsis1" size={24} color={ellipsesColor} />
                         </MenuTrigger>
-                        <MenuOptions customStyles={{optionsContainer: menuContainerStyle}}>
-                            <MenuOption onSelect={() => alert(`Save`)}>
-                                <Text style={[styles.textInput, themeTextStyle]}>Save</Text>
+                        <MenuOptions customStyles={{ optionsContainer: menuContainerStyle }}>
+                            <MenuOption onSelect={() => saveChangesToRepo()}>
+                                <Text style={[styles.menuText, themeTextStyle]}>Save</Text>
                             </MenuOption>
                             <MenuOption onSelect={() => alert(`Delete`)} >
-                                <Text style={[styles.textInput, themeTextStyle]}>Delete</Text>
+                                <Text style={[styles.menuText, themeTextStyle]}>Delete</Text>
                             </MenuOption>
-                            <MenuOption onSelect={() => alert(`Not called`)} disabled={true}>
-                                <Text style={[styles.textInput, themeTextStyle]}>Disabled</Text>
+                            <MenuOption onSelect={() => alert(`Not called`)}>
+                                <Text style={[styles.menuText, themeTextStyle]}>Rename</Text>
                             </MenuOption>
                         </MenuOptions>
                     </Menu>
@@ -104,6 +120,11 @@ export function CreateNoteScreen({ route }: Props) {
                     />
                 </View>
             </KeyboardAvoidingView>
+            {saving &&
+                <View style={styles.loadingIndicator}>
+                    <ActivityIndicator size='large' color={ellipsesColor} />
+                </View>
+            }
         </MenuProvider >
     );
 }
@@ -161,9 +182,22 @@ const styles = StyleSheet.create({
     textInput: {
         fontSize: 15
     },
+    menuText: {
+        fontSize: 20
+    },
     ellipses: {
         transform: [{ rotate: '90deg' }],
+    },
+    loadingIndicator: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        alignItems: 'center',
+        justifyContent: 'center'
     }
+
 });
 
 export default CreateNoteScreen;
