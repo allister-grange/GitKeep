@@ -29,7 +29,7 @@ export function CreateNoteScreen({ route }: Props) {
     Appearance.getColorScheme();
     const colorScheme = useColorScheme();
     const [content, setContent] = useState("");
-    const [saving, setSaving] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
     const isFocused = useIsFocused();
 
     const themeContainerStyle =
@@ -72,15 +72,15 @@ export function CreateNoteScreen({ route }: Props) {
     const saveChangesToRepo = async () => {
         //if the file has been edited since it was passed in
         if (content !== "" && content !== route.params.file.fileContent) {
-            setSaving(true)
+            setIsSaving(true)
             await updateFileContent(route.params.file, content)
                 //todo verify the save was succesful
                 .then(data => route.params.file.fileContent = content)
                 .catch(error => console.log(error));
-            
-            setSaving(false)
+
+            setIsSaving(false)
         }
-        else{
+        else {
             alert("No file changes");
         }
 
@@ -111,20 +111,22 @@ export function CreateNoteScreen({ route }: Props) {
                     </Menu>
                 </View>
                 <View style={styles.contentContainer}>
-                    <TextInput
-                        value={content}
-                        placeholder="Content"
-                        multiline={true}
-                        style={[styles.textInput, themeTextStyle]}
-                        onChangeText={(value) => setContent(value)}
-                    />
+                    {
+                        isSaving ?
+                            <View style={styles.loadingIndicator}>
+                                <ActivityIndicator size='large' color={ellipsesColor} />
+                            </View>
+                            :
+                            <TextInput
+                                value={content}
+                                placeholder="Content"
+                                multiline={true}
+                                style={[styles.textInput, themeTextStyle]}
+                                onChangeText={(value) => setContent(value)}
+                            />
+                    }
                 </View>
             </KeyboardAvoidingView>
-            {saving &&
-                <View style={styles.loadingIndicator}>
-                    <ActivityIndicator size='large' color={ellipsesColor} />
-                </View>
-            }
         </MenuProvider >
     );
 }
@@ -134,6 +136,12 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         paddingBottom: 40,
+    },
+    isSavingContainer: {
+        flex: 1,
+        alignItems: 'center',
+        paddingBottom: 40,
+        opacity: 0.9
     },
     lightContainer: {
         backgroundColor: 'white'
@@ -193,7 +201,7 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         top: 0,
-        bottom: 0,
+        bottom: 230,
         alignItems: 'center',
         justifyContent: 'center'
     }
