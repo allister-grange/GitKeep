@@ -58,3 +58,4 @@ https://developer.github.com/v3/repos/#create-a-repository-for-the-authenticated
     - [X] Pull up to refresh
     - [] Some sort of alert that the app is refreshing when you edit a document (maybe an acitivity indicator then a tick once loaded)
     - [] Get the new note screen working, with an option of what directory to put the new note in 
+    - [] https://github.com/arnnis/react-native-fast-toast

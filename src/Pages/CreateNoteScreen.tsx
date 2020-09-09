@@ -83,7 +83,11 @@ export function CreateNoteScreen({ route }: Props) {
         else {
             alert("No file changes");
         }
+    }
 
+    const deleteNote = async () => {
+        //if the file has been edited since it was passed in
+        alert("You sure dog?")
     }
 
     return (

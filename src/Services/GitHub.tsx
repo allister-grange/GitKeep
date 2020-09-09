@@ -237,6 +237,39 @@ export const getFileContentOfUrl = async (url: string): Promise<string> => {
     return fileContent;
 }
 
+export const deleteFile = async (file: FileData, path: string): Promise<any> => {
+
+    const repoName = await SecureStore.getItemAsync('repo_name');
+    const githubToken = await SecureStore.getItemAsync('github_token');
+    const userName = await SecureStore.getItemAsync('user_name');
+
+    const url = 'https://api.github.com/repos/' + userName + '/' + repoName + '/contents/' + file.fileInfo.path;
+    // const fileContent = Buffer.from(newContent).toString('base64');
+
+    const headers = new Headers({
+        'Authorization': 'Token ' + githubToken,
+        'Accept': 'application/vnd.github.VERSION.raw',
+        "X-Requested-With": "XMLHttpRequest",
+    });
+
+    const body = JSON.stringify({
+        "message": 'Updated from GitKeep :)',
+        "sha": file.fileInfo.sha
+    })
+
+    let repoData = {};
+
+    await fetch(proxyUrl + url, { method: 'DELETE', headers: headers, body: body })
+        .then(res => res.json())
+        .then(async (data) => {
+            repoData = data;
+        })
+        .catch(err => alert(err))
+
+    return repoData;
+
+}
+
 export const updateFileContent = async (file: FileData, newContent: string): Promise<any> => {
     const repoName = await SecureStore.getItemAsync('repo_name');
     const githubToken = await SecureStore.getItemAsync('github_token');
