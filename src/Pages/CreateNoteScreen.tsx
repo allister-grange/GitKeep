@@ -1,4 +1,4 @@
-import React, { useState, FunctionComponent, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { KeyboardAvoidingView, StyleSheet, TextInput, View, Text, ActivityIndicator, Alert } from 'react-native';
 import { Appearance, useColorScheme } from 'react-native-appearance';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
@@ -9,7 +9,7 @@ import Markdown from 'react-native-showdown';
 import { FileData, updateFileContent } from '../Services/GitHub';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { MenuProvider, Menu, MenuTrigger, MenuOptions, MenuOption } from 'react-native-popup-menu';
-
+import Toast from "react-native-fast-toast";
 
 type RootStackParamList = {
     Home: undefined;
@@ -31,6 +31,7 @@ export function CreateNoteScreen({ route }: Props) {
     const [content, setContent] = useState("");
     const [isSaving, setIsSaving] = useState(false);
     const isFocused = useIsFocused();
+    const toast = useRef(null);
 
     const themeContainerStyle =
         colorScheme === 'light' ? styles.lightContainer : styles.darkContainer;
@@ -72,67 +73,76 @@ export function CreateNoteScreen({ route }: Props) {
     const saveChangesToRepo = async () => {
         //if the file has been edited since it was passed in
         if (content !== "" && content !== route.params.file.fileContent) {
-            setIsSaving(true)
+            console.log("here");
+            console.log(toast);
+            
+            toast.current.show("Saving your notes", {});
             await updateFileContent(route.params.file, content)
                 //todo verify the save was succesful
-                .then(data => route.params.file.fileContent = content)
-                .catch(error => console.log(error));
+                .then(data => {
+                    route.params.file.fileContent = content
+                    toast.current.show("Notes saved ✔", {
+                        type: "success",
 
-            setIsSaving(false)
-        }
+                    })
+                })
+                .catch(error => toast.current.show("Error on saving note ✘", {
+                    type: "danger",
+                }));
+    }
         else {
-            alert("No file changes");
-        }
+        alert("No file changes");
     }
+}
 
-    const deleteNote = async () => {
-        //if the file has been edited since it was passed in
-        alert("You sure dog?")
-    }
+const deleteNote = async () => {
+    alert("You sure dog?")
+}
 
-    return (
-        <MenuProvider>
-            <KeyboardAvoidingView style={[styles.container, themeContainerStyle]}>
-                <View style={[styles.titleContainer, themeTitleContainer]}>
-                    <View style={{ flex: 1 }}>
-                        <Text style={[styles.title, themeTitleStyle]}>{route.params.file.fileInfo.path}</Text>
-                    </View>
-                    <Menu>
-                        <MenuTrigger>
-                            <AntDesign style={styles.ellipses} name="ellipsis1" size={24} color={ellipsesColor} />
-                        </MenuTrigger>
-                        <MenuOptions customStyles={{ optionsContainer: menuContainerStyle }}>
-                            <MenuOption onSelect={() => saveChangesToRepo()}>
-                                <Text style={[styles.menuText, themeTextStyle]}>Save</Text>
-                            </MenuOption>
-                            <MenuOption onSelect={() => alert(`Delete`)} >
-                                <Text style={[styles.menuText, themeTextStyle]}>Delete</Text>
-                            </MenuOption>
-                            <MenuOption onSelect={() => alert(`Not called`)}>
-                                <Text style={[styles.menuText, themeTextStyle]}>Rename</Text>
-                            </MenuOption>
-                        </MenuOptions>
-                    </Menu>
+return (
+    <MenuProvider>
+        <KeyboardAvoidingView style={[styles.container, themeContainerStyle]}>
+            <View style={[styles.titleContainer, themeTitleContainer]}>
+                <View style={{ flex: 1 }}>
+                    <Text style={[styles.title, themeTitleStyle]}>{route.params.file.fileInfo.path}</Text>
                 </View>
-                <View style={styles.contentContainer}>
-                    {
-                        isSaving ?
-                            <View style={styles.loadingIndicator}>
-                                <ActivityIndicator size='large' color={ellipsesColor} />
-                            </View>
-                            :
-                            <TextInput
-                                value={content}
-                                placeholder="Content"
-                                multiline={true}
-                                style={[styles.textInput, themeTextStyle]}
-                                onChangeText={(value) => setContent(value)}
-                            />
-                    }
-                </View>
-            </KeyboardAvoidingView>
-        </MenuProvider >
-    );
+                <Menu>
+                    <MenuTrigger>
+                        <AntDesign style={styles.ellipses} name="ellipsis1" size={24} color={ellipsesColor} />
+                    </MenuTrigger>
+                    <MenuOptions customStyles={{ optionsContainer: menuContainerStyle }}>
+                        <MenuOption onSelect={() => saveChangesToRepo()}>
+                            <Text style={[styles.menuText, themeTextStyle]}>Save</Text>
+                        </MenuOption>
+                        <MenuOption onSelect={() => alert(`Delete`)} >
+                            <Text style={[styles.menuText, themeTextStyle]}>Delete</Text>
+                        </MenuOption>
+                        <MenuOption onSelect={() => alert(`Not called`)}>
+                            <Text style={[styles.menuText, themeTextStyle]}>Rename</Text>
+                        </MenuOption>
+                    </MenuOptions>
+                </Menu>
+            </View>
+            <View style={styles.contentContainer}>
+                {
+                    isSaving ?
+                        <View style={styles.loadingIndicator}>
+                            <ActivityIndicator size='large' color={'coral'} />
+                        </View>
+                        :
+                        <TextInput
+                            value={content}
+                            placeholder="Content"
+                            multiline={true}
+                            style={[styles.textInput, themeTextStyle]}
+                            onChangeText={(value) => setContent(value)}
+                        />
+                }
+            </View>
+        </KeyboardAvoidingView>
+        <Toast ref={toast} />
+    </MenuProvider >
+);
 }
 
 const styles = StyleSheet.create({

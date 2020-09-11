@@ -22,8 +22,6 @@ const RepoSelectScreen = () => {
         colorScheme === 'light' ? styles.lightText : styles.darkText;
     const themeTitleContainer =
         colorScheme === 'light' ? styles.lightTitleContainer : styles.darkTitleContainer;
-    const themeActivityIndicator =
-        colorScheme === 'light' ? 'coral' : 'white';
 
     React.useEffect(() => {
         async function fetchData() {
@@ -59,7 +57,7 @@ const RepoSelectScreen = () => {
                 {
                     loadingRepos ?
                         <View style={styles.activityContainer}>
-                            <ActivityIndicator color={themeActivityIndicator} size={40}/>
+                            <ActivityIndicator color={'coral'} size={40}/>
                         </View>
                         :
                         repoData.map((repo: any) => {

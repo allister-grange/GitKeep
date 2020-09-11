@@ -33,8 +33,6 @@ const HomeScreen = () => {
     colorScheme === 'light' ? styles.lightContainer : styles.darkContainer;
   const themeNewNoteButtonStyle =
     colorScheme === 'light' ? styles.lightThemeNewNoteButton : styles.darkThemeNewNoteButton;
-  const themeActivityIndicator =
-    colorScheme === 'light' ? 'coral' : 'white';
 
   useEffect(() => {
 
@@ -67,7 +65,7 @@ const HomeScreen = () => {
   }
 
   const refreshNotes = async (originalFile: FileData, newFile: string) => {
-    let id = toast.current.show("Saving your notes", {});
+    toast.current.show("Saving your notes", {});
 
     await updateFileContent(originalFile, newFile)
       .then(data => data)
@@ -85,7 +83,7 @@ const HomeScreen = () => {
 
       {
         loadingNotes ?
-          <ActivityIndicator color={themeActivityIndicator} size={40} />
+          <ActivityIndicator color={'coral'} size={40} />
           :
           <ScrollView style={styles.notesContatiner} refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

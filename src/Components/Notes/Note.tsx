@@ -36,19 +36,13 @@ export const Note: FunctionComponent<PassedProps> = ({ file, title, refreshNotes
     const fileContent = file.fileContent;
 
     useEffect(() => {
-        let random = Math.random()*100|0;
-        setHeightOfNote(fileContent.length > 400 ? 300 + random: 50 + random);
+        let random = Math.random() * 100 | 0;
+        setHeightOfNote(fileContent.length > 400 ? 300 + random : 80 + random);
     }, [])
-
-    const onWebViewMessage = (event: WebViewMessageEvent) => {
-        console.log("called " + event.nativeEvent.data);
-        
-        setHeightOfNote(parseInt(event.nativeEvent.data));
-      }    
 
     return (
         <View
-            style={[styles.container, themeContainerStyle, { height: heightOfNote}]}>
+            style={[styles.container, themeContainerStyle, { height: heightOfNote }]}>
             <TouchableOpacity
                 onLongPress={() => navigation.navigate('CreateNoteScreen',
                     {
@@ -57,20 +51,17 @@ export const Note: FunctionComponent<PassedProps> = ({ file, title, refreshNotes
                         passedTitle: title,
                         isNewNote: false
                     })}
-                onPress={() => navigation.navigate('PreviewMarkdownScreen', 
-                {
-                    markdown: fileContent,
-                    css: css,
-                })}
+                onPress={() => navigation.navigate('PreviewMarkdownScreen',
+                    {
+                        markdown: fileContent,
+                        css: css,
+                    })}
             >
                 <View style={{ height: '100%' }}>
                     <Markdown showsHorizontalScrollIndicator={false}
                         showsVerticalScrollIndicator={false}
                         scalesPageToFit={true}
                         javaScriptEnabled={false}
-                        onMessage={(event) => {
-                            onWebViewMessage(event)
-                        }}
                         markdown={fileContent} css={css} />
                 </View>
             </TouchableOpacity>

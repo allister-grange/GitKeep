@@ -35,9 +35,6 @@ export default function App() {
         colorScheme === 'light' ? styles.lightTitleContainer : styles.darkTitleContainer;
     const themeTextStyle =
         colorScheme === 'light' ? styles.lightText : styles.darkText;
-    const themeActivityIndicator =
-        colorScheme === 'light' ? 'coral' : 'white';
-
 
     const [request, response, promptAsync] = useAuthRequest(
         {
@@ -80,7 +77,7 @@ export default function App() {
             </View>
             <View style={styles.providerButtonsContainer}>
                 {loadingToken ?
-                    <ActivityIndicator color={themeActivityIndicator} size={40} />
+                    <ActivityIndicator color={'coral'} size={40} />
                     :
                     <GitHubLoginButton
                         disabled={!request}
