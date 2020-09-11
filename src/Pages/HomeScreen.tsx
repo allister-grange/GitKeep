@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Text, SafeAreaView, StatusBar, StyleSheet, ScrollView, View, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
 import { Appearance, useColorScheme } from 'react-native-appearance';
 import { Note } from '../Components/Notes/Note';
@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useIsFocused } from '@react-navigation/native';
 import { parseRepoData, FileData, getRepoContentsFromTree, updateFileContent } from '../Services/GitHub';
+import Toast from "react-native-fast-toast";
 
 const HomeScreen = () => {
 
@@ -18,6 +19,7 @@ const HomeScreen = () => {
   const [toastVisible, setToastVisible] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const isFocused = useIsFocused();
+  const toast = useRef(null);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -65,15 +67,16 @@ const HomeScreen = () => {
   }
 
   const refreshNotes = async (originalFile: FileData, newFile: string) => {
-    setToastVisible(true);
-    console.log("refreshing notes");
+    let id = toast.current.show("Saving your notes", {});
+
     await updateFileContent(originalFile, newFile)
       .then(data => data)
       .catch(error => console.log(error));
-
     await getRepoData();
-    setToastVisible(false);
-    console.log("done :)");
+
+    toast.current.show("Notes saved ✔", {
+      type: "success",
+    });
   }
 
   return (
@@ -92,7 +95,7 @@ const HomeScreen = () => {
                 <Note refreshNotes={refreshNotes} key={idx} file={file} />
               ))
             }
-            
+
           </ScrollView>
 
       }
@@ -103,6 +106,7 @@ const HomeScreen = () => {
           <Ionicons outline={false} name={'md-add'} size={35} color={'orange'} />
         </TouchableOpacity>
       </View>
+      <Toast ref={toast} />
 
     </SafeAreaView>
   );
