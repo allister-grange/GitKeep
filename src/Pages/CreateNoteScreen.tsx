@@ -6,10 +6,11 @@ import { useIsFocused } from '@react-navigation/native';
 // import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import Markdown from 'react-native-showdown';
-import { FileData, updateFileContent } from '../Services/GitHub';
+import { FileData, updateFileContent, deleteFile } from '../Services/GitHub';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { MenuProvider, Menu, MenuTrigger, MenuOptions, MenuOption } from 'react-native-popup-menu';
 import Toast from "react-native-fast-toast";
+import { useNavigation } from '@react-navigation/native';
 
 type RootStackParamList = {
     Home: undefined;
@@ -17,7 +18,8 @@ type RootStackParamList = {
         passedTitle?: string,
         file: FileData,
         isNewNote: boolean,
-        refreshNotes: (originalFile: FileData, newFile: string) => {}
+        refreshNotes: (originalFile: FileData, newFile: string) => {},
+        deleteNote: (file: FileData) =>  {}
     };
     Feed: { sort: 'latest' | 'top' } | undefined;
 };
@@ -32,6 +34,7 @@ export function CreateNoteScreen({ route }: Props) {
     const [isSaving, setIsSaving] = useState(false);
     const isFocused = useIsFocused();
     const toast = useRef(null);
+    const navigation = useNavigation();
 
     const themeContainerStyle =
         colorScheme === 'light' ? styles.lightContainer : styles.darkContainer;
@@ -45,6 +48,24 @@ export function CreateNoteScreen({ route }: Props) {
         colorScheme === 'light' ? styles.lightTitleContainer : styles.darkTitleContainer;
     const ellipsesColor =
         colorScheme === 'light' ? 'black' : 'white';
+
+    const DeleteAlert = () =>
+        Alert.alert(
+            "Delete Note",
+            "Are you sure you want to delete this note? It is stored in git so it will be recoverable.",
+            [
+                {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel pressed"),
+                    style: "cancel"
+                },
+                { text: "Delete", onPress: () => {
+                    route.params.deleteNote(route.params.file);
+                    navigation.navigate('Home');
+                }}
+            ],
+            { cancelable: false }
+        );
 
 
     useEffect(() => {
@@ -75,7 +96,7 @@ export function CreateNoteScreen({ route }: Props) {
         if (content !== "" && content !== route.params.file.fileContent) {
             console.log("here");
             console.log(toast);
-            
+
             toast.current.show("Saving your notes", {});
             await updateFileContent(route.params.file, content)
                 //todo verify the save was succesful
@@ -89,60 +110,60 @@ export function CreateNoteScreen({ route }: Props) {
                 .catch(error => toast.current.show("Error on saving note ✘", {
                     type: "danger",
                 }));
-    }
+        }
         else {
-        alert("No file changes");
+            alert("No file changes");
+        }
     }
-}
 
-const deleteNote = async () => {
-    alert("You sure dog?")
-}
+    // const deleteNote = async () => {
+    //     alert("You sure dog?")
+    // }
 
-return (
-    <MenuProvider>
-        <KeyboardAvoidingView style={[styles.container, themeContainerStyle]}>
-            <View style={[styles.titleContainer, themeTitleContainer]}>
-                <View style={{ flex: 1 }}>
-                    <Text style={[styles.title, themeTitleStyle]}>{route.params.file.fileInfo.path}</Text>
+    return (
+        <MenuProvider>
+            <KeyboardAvoidingView style={[styles.container, themeContainerStyle]}>
+                <View style={[styles.titleContainer, themeTitleContainer]}>
+                    <View style={{ flex: 1 }}>
+                        <Text style={[styles.title, themeTitleStyle]}>{route.params.file.fileInfo.path}</Text>
+                    </View>
+                    <Menu>
+                        <MenuTrigger>
+                            <AntDesign style={styles.ellipses} name="ellipsis1" size={24} color={ellipsesColor} />
+                        </MenuTrigger>
+                        <MenuOptions customStyles={{ optionsContainer: menuContainerStyle }}>
+                            <MenuOption onSelect={() => saveChangesToRepo()}>
+                                <Text style={[styles.menuText, themeTextStyle]}>Save</Text>
+                            </MenuOption>
+                            <MenuOption onSelect={() => DeleteAlert()} >
+                                <Text style={[styles.menuText, themeTextStyle]}>Delete</Text>
+                            </MenuOption>
+                            <MenuOption onSelect={() => alert(`Not called`)}>
+                                <Text style={[styles.menuText, themeTextStyle]}>Rename</Text>
+                            </MenuOption>
+                        </MenuOptions>
+                    </Menu>
                 </View>
-                <Menu>
-                    <MenuTrigger>
-                        <AntDesign style={styles.ellipses} name="ellipsis1" size={24} color={ellipsesColor} />
-                    </MenuTrigger>
-                    <MenuOptions customStyles={{ optionsContainer: menuContainerStyle }}>
-                        <MenuOption onSelect={() => saveChangesToRepo()}>
-                            <Text style={[styles.menuText, themeTextStyle]}>Save</Text>
-                        </MenuOption>
-                        <MenuOption onSelect={() => alert(`Delete`)} >
-                            <Text style={[styles.menuText, themeTextStyle]}>Delete</Text>
-                        </MenuOption>
-                        <MenuOption onSelect={() => alert(`Not called`)}>
-                            <Text style={[styles.menuText, themeTextStyle]}>Rename</Text>
-                        </MenuOption>
-                    </MenuOptions>
-                </Menu>
-            </View>
-            <View style={styles.contentContainer}>
-                {
-                    isSaving ?
-                        <View style={styles.loadingIndicator}>
-                            <ActivityIndicator size='large' color={'coral'} />
-                        </View>
-                        :
-                        <TextInput
-                            value={content}
-                            placeholder="Content"
-                            multiline={true}
-                            style={[styles.textInput, themeTextStyle]}
-                            onChangeText={(value) => setContent(value)}
-                        />
-                }
-            </View>
-        </KeyboardAvoidingView>
-        <Toast ref={toast} />
-    </MenuProvider >
-);
+                <View style={styles.contentContainer}>
+                    {
+                        isSaving ?
+                            <View style={styles.loadingIndicator}>
+                                <ActivityIndicator size='large' color={'coral'} />
+                            </View>
+                            :
+                            <TextInput
+                                value={content}
+                                placeholder="Content"
+                                multiline={true}
+                                style={[styles.textInput, themeTextStyle]}
+                                onChangeText={(value) => setContent(value)}
+                            />
+                    }
+                </View>
+            </KeyboardAvoidingView>
+            <Toast ref={toast} />
+        </MenuProvider >
+    );
 }
 
 const styles = StyleSheet.create({

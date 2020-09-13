@@ -6,7 +6,7 @@ import * as SecureStore from 'expo-secure-store';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useIsFocused } from '@react-navigation/native';
-import { parseRepoData, FileData, getRepoContentsFromTree, updateFileContent } from '../Services/GitHub';
+import { parseRepoData, FileData, getRepoContentsFromTree, updateFileContent, deleteFile } from '../Services/GitHub';
 import Toast from "react-native-fast-toast";
 
 const HomeScreen = () => {
@@ -77,6 +77,25 @@ const HomeScreen = () => {
     });
   }
 
+  const deleteNote = async (file: FileData) => {
+    toast.current.show("Deleting Note", {});
+
+    await deleteFile(file)
+      .then(data => {
+        toast.current.show("Note deleted ✔", {
+          type: "success",
+        })
+        getRepoData();
+      }
+      )
+      .catch(error => {
+        toast.current.show("Failed to delete note :(", {
+          type: "warning",
+        })
+        console.log(error)
+      });
+  }
+
   return (
     <SafeAreaView style={[styles.container, themeContainerStyle]}>
       <StatusBar barStyle={themeStatusBarStyle} />
@@ -90,7 +109,7 @@ const HomeScreen = () => {
           }>
             {
               files.map((file, idx) => (
-                <Note refreshNotes={refreshNotes} key={idx} file={file} />
+                <Note refreshNotes={refreshNotes} deleteNote={deleteNote} key={idx} file={file} />
               ))
             }
 

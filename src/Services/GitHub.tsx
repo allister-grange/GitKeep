@@ -237,7 +237,7 @@ export const getFileContentOfUrl = async (url: string): Promise<string> => {
     return fileContent;
 }
 
-export const deleteFile = async (file: FileData, path: string): Promise<any> => {
+export const deleteFile = async (file: FileData): Promise<any> => {
 
     const repoName = await SecureStore.getItemAsync('repo_name');
     const githubToken = await SecureStore.getItemAsync('github_token');

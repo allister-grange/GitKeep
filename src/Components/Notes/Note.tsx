@@ -17,11 +17,12 @@ YellowBox.ignoreWarnings([
 type PassedProps = {
     file: FileData,
     title?: string,
+    deleteNote: (file: FileData) => {},
     refreshNotes: (originalFile: FileData, newFile: string) => {},
 };
 
 
-export const Note: FunctionComponent<PassedProps> = ({ file, title, refreshNotes }) => {
+export const Note: FunctionComponent<PassedProps> = ({ file, title, refreshNotes, deleteNote }) => {
 
     Appearance.getColorScheme();
     const colorScheme = useColorScheme();
@@ -47,6 +48,7 @@ export const Note: FunctionComponent<PassedProps> = ({ file, title, refreshNotes
                 onLongPress={() => navigation.navigate('CreateNoteScreen',
                     {
                         refreshNotes: refreshNotes,
+                        deleteNote: deleteNote, 
                         file: file,
                         passedTitle: title,
                         isNewNote: false
