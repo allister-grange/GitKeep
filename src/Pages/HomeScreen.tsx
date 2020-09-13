@@ -33,6 +33,8 @@ const HomeScreen = () => {
     colorScheme === 'light' ? styles.lightContainer : styles.darkContainer;
   const themeNewNoteButtonStyle =
     colorScheme === 'light' ? styles.lightThemeNewNoteButton : styles.darkThemeNewNoteButton;
+  const themeTextStyle =
+    colorScheme === 'light' ? styles.lightText : styles.darkText;
 
   useEffect(() => {
 
@@ -108,9 +110,15 @@ const HomeScreen = () => {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }>
             {
-              files.map((file, idx) => (
-                <Note refreshNotes={refreshNotes} deleteNote={deleteNote} key={idx} file={file} />
-              ))
+              files.length >= 1 ?
+                files.map((file, idx) => (
+                  <Note refreshNotes={refreshNotes} deleteNote={deleteNote} key={idx} file={file} />
+                ))
+                :
+                <View style={styles.emptyRepoContainer}>
+                  <Text style={[styles.emptyRepoText, themeTextStyle]}>there are no .md notes in this repo,</Text>
+                  <Text style={[styles.emptyRepoText, themeTextStyle]}>make one!</Text>
+                </View>
             }
 
           </ScrollView>
@@ -171,11 +179,23 @@ const styles = StyleSheet.create({
   darkThemeNewNoteButton: {
     backgroundColor: '#303030',
   },
+  lightText: {
+    color: 'black'
+  },
+  darkText: {
+    color: 'white'
+  },
   newNoteButtonContainer: {
     bottom: '3%',
     right: '7%',
     alignSelf: 'center',
     height: '10%',
     position: 'absolute',
+  },
+  emptyRepoText: {
+    alignSelf: 'center',
+  },
+  emptyRepoContainer: {
+    paddingTop: '90%'
   }
 });
