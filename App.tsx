@@ -7,7 +7,7 @@ import { AppearanceProvider } from 'react-native-appearance'
 import { Ionicons } from '@expo/vector-icons';
 import { NavigationContainer, TabActions } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import CreateNoteScreen from './src/Pages/CreateNoteScreen';
+import EditNoteScreen from './src/Pages/EditNoteScreen';
 import { Appearance, useColorScheme } from 'react-native-appearance';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as Linking from 'expo-linking'
@@ -53,7 +53,7 @@ export default function App() {
             <Stack.Screen name="AuthScreen" component={AuthenticateScreen} options={{ headerShown: false }} />
             <Stack.Screen name="RepoSelectScreen" component={RepoSelectScreen} options={{ headerShown: false }} />
             <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="CreateNoteScreen" component={CreateNoteScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="EditNoteScreen" component={EditNoteScreen} options={{ headerShown: false }} />
             <Stack.Screen name="PreviewMarkdownScreen" component={PreviewMarkdownScreen} options={{ headerShown: false }} />
           </Stack.Navigator>
         }

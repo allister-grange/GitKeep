@@ -85,7 +85,7 @@ export function CreateNoteScreen({ route }: Props) {
         if (!isFocused) {
             setContent("");
         }
-        else {
+        else if(route.params.file){
             setContent(route.params.file.fileContent);
         }
 

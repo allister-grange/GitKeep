@@ -127,7 +127,7 @@ const HomeScreen = () => {
 
       <View style={styles.newNoteButtonContainer}>
         <TouchableOpacity style={[styles.newNoteButton, themeNewNoteButtonStyle]}
-          onPress={() => navigation.navigate('CreateNoteScreen')} >
+          onPress={() => navigation.navigate('EditNoteScreen')} >
           <Ionicons outline={false} name={'md-add'} size={35} color={'orange'} />
         </TouchableOpacity>
       </View>

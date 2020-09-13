@@ -45,7 +45,7 @@ export const Note: FunctionComponent<PassedProps> = ({ file, title, refreshNotes
         <View
             style={[styles.container, themeContainerStyle, { height: heightOfNote }]}>
             <TouchableOpacity
-                onLongPress={() => navigation.navigate('CreateNoteScreen',
+                onLongPress={() => navigation.navigate('EditNoteScreen',
                     {
                         refreshNotes: refreshNotes,
                         deleteNote: deleteNote, 
