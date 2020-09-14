@@ -6,7 +6,7 @@ import { useIsFocused } from '@react-navigation/native';
 // import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import Markdown from 'react-native-showdown';
-import { FileData, updateFileContent, deleteFile } from '../Services/GitHub';
+import { FileData } from '../Services/GitHub';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { MenuProvider, Menu, MenuTrigger, MenuOptions, MenuOption } from 'react-native-popup-menu';
 import Toast from "react-native-fast-toast";
@@ -14,24 +14,23 @@ import { useNavigation } from '@react-navigation/native';
 
 type RootStackParamList = {
     Home: undefined;
-    EditNoteScreen: {
-        file: FileData,
-        refreshNotes: (originalFile: FileData, newFile: string) => {},
-        deleteNote: (file: FileData) => {}
+    CreateNoteScreen: {
+        saveNewNote: (content: string, title: string) => {},
     };
     Feed: { sort: 'latest' | 'top' } | undefined;
 };
 
-type Props = BottomTabNavigationProp<RootStackParamList, 'EditNoteScreen'>;
+type Props = BottomTabNavigationProp<RootStackParamList, 'CreateNoteScreen'>;
 
-export function EditNoteScreen({ route }: Props) {
+export function CreateNoteScreen({ route }: Props) {
 
     Appearance.getColorScheme();
     const colorScheme = useColorScheme();
     const [content, setContent] = useState("");
-    const isFocused = useIsFocused();
+    const [title, setTitle] = useState("");
+    const [isSaving, setIsSaving] = useState(false);
     const toast = useRef(null);
-    const navigation = useNavigation();
+    const isFocused = useIsFocused();
 
     const themeContainerStyle =
         colorScheme === 'light' ? styles.lightContainer : styles.darkContainer;
@@ -46,36 +45,12 @@ export function EditNoteScreen({ route }: Props) {
     const ellipsesColor =
         colorScheme === 'light' ? 'black' : 'white';
 
-    const DeleteAlert = () =>
-        Alert.alert(
-            "Delete Note",
-            "Are you sure you want to delete this note? It is stored in git so it will be recoverable.",
-            [
-                {
-                    text: "Cancel",
-                    onPress: () => console.log("Cancel pressed"),
-                    style: "cancel"
-                },
-                {
-                    text: "Delete", onPress: () => {
-                        route.params.deleteNote(route.params.file);
-                        navigation.navigate('Home');
-                    }
-                }
-            ],
-            { cancelable: false }
-        );
-
-
     useEffect(() => {
 
         //todo potentially think of a better way to do this 
         async function pushNoteToGit() {
-            if (!route.params.file.fileContent)
-                return;
-
-            if (content !== "" && content !== route.params.file.fileContent) {
-                route.params.refreshNotes(route.params.file, content);
+            if (content !== "" && title !== "") {
+                route.params.saveNewNote(content, title)
             }
         }
 
@@ -83,48 +58,57 @@ export function EditNoteScreen({ route }: Props) {
 
         if (!isFocused) {
             setContent("");
-        }
-        else if (route.params.file) {
-            setContent(route.params.file.fileContent);
+            setTitle("");
         }
 
     }, [isFocused])
 
+    const savingToast = () => {
+        toast.current.show("Saving your notes", {});
+    }
+
+    const successToast = () => {
+        toast.current.show("Note saved ✔", {
+            type: "success",
+        });
+    }
+
+    const errorToast = () => {
+        toast.current.show("Error on saving note ✘", {
+            type: "danger",
+        });
+    }
+
     const saveChangesToRepo = async () => {
         //if the file has been edited since it was passed in
-        if (content !== "" && content !== route.params.file.fileContent) {
-            console.log("here");
-            console.log(toast);
-
-            toast.current.show("Saving your notes", {});
-            await updateFileContent(route.params.file, content)
-                //todo verify the save was succesful
+        if (content !== "" && title !== "") {
+            savingToast();
+            await createNewNote(content, title)
                 .then(data => {
-                    route.params.file.fileContent = content
-                    toast.current.show("Note saved ✔", {
-                        type: "success",
-
-                    })
+                    successToast();
                 })
-                .catch(error => toast.current.show("Error on saving note ✘", {
-                    type: "danger",
-                }));
+                .catch(error => {
+                    console.log(error);
+                    errorToast();
+                });
         }
         else {
             alert("No file changes");
         }
     }
 
-    // const deleteNote = async () => {
-    //     alert("You sure dog?")
-    // }
-
     return (
         <MenuProvider>
             <KeyboardAvoidingView style={[styles.container, themeContainerStyle]}>
                 <View style={[styles.titleContainer, themeTitleContainer]}>
                     <View style={{ flex: 1 }}>
-                        <Text style={[styles.title, themeTitleStyle]}>{route.params.file.fileInfo.path}</Text>
+                        <TextInput
+                            value={title}
+                            placeholder="File Title"
+                            multiline={true}
+                            style={[styles.title, themeTitleStyle]}
+                            onChangeText={(value) => setTitle(value)}
+                        />
                     </View>
                     <Menu>
                         <MenuTrigger>
@@ -134,23 +118,24 @@ export function EditNoteScreen({ route }: Props) {
                             <MenuOption onSelect={() => saveChangesToRepo()}>
                                 <Text style={[styles.menuText, themeTextStyle]}>Save</Text>
                             </MenuOption>
-                            <MenuOption onSelect={() => DeleteAlert()} >
-                                <Text style={[styles.menuText, themeTextStyle]}>Delete</Text>
-                            </MenuOption>
-                            <MenuOption onSelect={() => alert(`Not called`)}>
-                                <Text style={[styles.menuText, themeTextStyle]}>Rename</Text>
-                            </MenuOption>
                         </MenuOptions>
                     </Menu>
                 </View>
                 <View style={styles.contentContainer}>
-                    <TextInput
-                        value={content}
-                        placeholder="Content"
-                        multiline={true}
-                        style={[styles.textInput, themeTextStyle]}
-                        onChangeText={(value) => setContent(value)}
-                    />
+                    {
+                        isSaving ?
+                            <View style={styles.loadingIndicator}>
+                                <ActivityIndicator size='large' color={'coral'} />
+                            </View>
+                            :
+                            <TextInput
+                                value={content}
+                                placeholder="Content"
+                                multiline={true}
+                                style={[styles.textInput, themeTextStyle]}
+                                onChangeText={(value) => setContent(value)}
+                            />
+                    }
                 </View>
             </KeyboardAvoidingView>
             <Toast ref={toast} />
@@ -235,4 +220,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default EditNoteScreen;
+export default CreateNoteScreen;

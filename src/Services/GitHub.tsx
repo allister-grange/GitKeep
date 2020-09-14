@@ -290,14 +290,38 @@ export const updateFileContent = async (file: FileData, newContent: string): Pro
         "sha": file.fileInfo.sha
     })
 
-    let repoData = {};
-
-    await fetch(proxyUrl + url, { method: 'PUT', headers: headers, body: body })
+    return await fetch(proxyUrl + url, { method: 'PUT', headers: headers, body: body })
         .then(res => res.json())
-        .then(async (data) => {
-            repoData = data;
+        .then(data => data)
+        .catch(err => alert(err))
+}
+
+export const createNewNote = async (fileContent: string, fileTitle: string): Promise<any> => {
+    const repoName = await SecureStore.getItemAsync('repo_name');
+    const githubToken = await SecureStore.getItemAsync('github_token');
+    const userName = await SecureStore.getItemAsync('user_name');
+
+    const url = 'https://api.github.com/repos/' + userName + '/' + repoName + '/contents/' + fileTitle +'.md';
+    
+    const convertedFileContent = Buffer.from(fileContent).toString('base64');
+
+    const headers = new Headers({
+        'Authorization': 'Token ' + githubToken,
+        'Accept': 'application/vnd.github.VERSION.raw',
+        "X-Requested-With": "XMLHttpRequest",
+    });
+
+    const body = JSON.stringify({
+        "message": 'Created with GitKeep :)',
+        "content": convertedFileContent,
+    })
+
+    return await fetch(proxyUrl + url, { method: 'PUT', headers: headers, body: body })
+        .then(res => res.json())
+        .then(data => {
+            console.log(data);
+            
+            data
         })
         .catch(err => alert(err))
-
-    return repoData;
 }

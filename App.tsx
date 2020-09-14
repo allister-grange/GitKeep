@@ -15,6 +15,7 @@ import RepoSelectScreen from './src/Pages/RepoSelectScreen';
 import * as SecureStore from 'expo-secure-store';
 import { useNavigation } from '@react-navigation/native';
 import { PreviewMarkdownScreen } from './src/Pages/PreviewMarkdownScreen';
+import CreateNoteScreen from './src/Pages/CreateNoteScreen';
 
 export default function App() {
   const Tab = createBottomTabNavigator();
@@ -55,6 +56,7 @@ export default function App() {
             <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
             <Stack.Screen name="EditNoteScreen" component={EditNoteScreen} options={{ headerShown: false }} />
             <Stack.Screen name="PreviewMarkdownScreen" component={PreviewMarkdownScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="CreateNoteScreen" component={CreateNoteScreen} options={{ headerShown: false }} />
           </Stack.Navigator>
         }
       </NavigationContainer>

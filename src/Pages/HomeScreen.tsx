@@ -6,7 +6,7 @@ import * as SecureStore from 'expo-secure-store';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useIsFocused } from '@react-navigation/native';
-import { parseRepoData, FileData, getRepoContentsFromTree, updateFileContent, deleteFile } from '../Services/GitHub';
+import { parseRepoData, FileData, getRepoContentsFromTree, updateFileContent, deleteFile, createNewNote } from '../Services/GitHub';
 import Toast from "react-native-fast-toast";
 
 const HomeScreen = () => {
@@ -66,34 +66,53 @@ const HomeScreen = () => {
     console.log(durationM);
   }
 
-  const refreshNotes = async (originalFile: FileData, newFile: string) => {
-    toast.current.show("Saving your notes", {});
+  const generalToast = (message: string) => {
+    toast.current.show(message, {});
+  }
 
-    await updateFileContent(originalFile, newFile)
-      .then(data => data)
-      .catch(error => console.log(error));
-    await getRepoData();
+  const errorToast = (message: string) => {
+    toast.current.show(message, {
+      type: "warning",
+    });
+  }
 
-    toast.current.show("Notes saved ✔", {
+  const successToast = (message: string) => {
+    toast.current.show(message, {
       type: "success",
     });
   }
 
+  const saveNewNote = async (content: string, title: string) => {
+    generalToast("Saving your note");
+
+    await createNewNote(content, title)
+      .then(data => successToast("Saved you note ✔"))
+      .catch(error => errorToast("Error on loading notes"));
+    await getRepoData();
+    
+  }
+
+  const refreshNotes = async (originalFile: FileData, newFile: string) => {
+    generalToast("Saving your notes");
+
+    await updateFileContent(originalFile, newFile)
+      .then(data => successToast("Notes saved ✔"))
+      .catch(error => errorToast("Error on loading notes"));
+    await getRepoData();
+
+  }
+
   const deleteNote = async (file: FileData) => {
-    toast.current.show("Deleting Note", {});
+    generalToast("Deleting Note");
 
     await deleteFile(file)
       .then(data => {
-        toast.current.show("Note deleted ✔", {
-          type: "success",
-        })
+        successToast("Note deleted ✔");
         getRepoData();
       }
       )
       .catch(error => {
-        toast.current.show("Failed to delete note :(", {
-          type: "warning",
-        })
+        errorToast("Failed to delete note :(");
         console.log(error)
       });
   }
@@ -127,7 +146,7 @@ const HomeScreen = () => {
 
       <View style={styles.newNoteButtonContainer}>
         <TouchableOpacity style={[styles.newNoteButton, themeNewNoteButtonStyle]}
-          onPress={() => navigation.navigate('EditNoteScreen')} >
+          onPress={() => navigation.navigate('CreateNoteScreen', { saveNewNote: saveNewNote })} >
           <Ionicons outline={false} name={'md-add'} size={35} color={'orange'} />
         </TouchableOpacity>
       </View>
