@@ -55,7 +55,8 @@ const HomeScreen = () => {
 
     if (isFocused)
       pullDownFiles();
-  }, []);
+
+  }, [isFocused]);
 
   const getRepoData = async () => {
     let startTimeM = new Date().getTime()
@@ -89,7 +90,7 @@ const HomeScreen = () => {
       .then(data => successToast("Saved you note ✔"))
       .catch(error => errorToast("Error on loading notes"));
     await getRepoData();
-    
+
   }
 
   const refreshNotes = async (originalFile: FileData, newFile: string) => {
@@ -139,11 +140,8 @@ const HomeScreen = () => {
                   <Text style={[styles.emptyRepoText, themeTextStyle]}>make one!</Text>
                 </View>
             }
-
           </ScrollView>
-
       }
-
       <View style={styles.newNoteButtonContainer}>
         <TouchableOpacity style={[styles.newNoteButton, themeNewNoteButtonStyle]}
           onPress={() => navigation.navigate('CreateNoteScreen', { saveNewNote: saveNewNote })} >

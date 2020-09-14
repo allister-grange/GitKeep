@@ -6,7 +6,7 @@ import { useIsFocused } from '@react-navigation/native';
 // import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import Markdown from 'react-native-showdown';
-import { FileData } from '../Services/GitHub';
+import { FileData, createNewNote } from '../Services/GitHub';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { MenuProvider, Menu, MenuTrigger, MenuOptions, MenuOption } from 'react-native-popup-menu';
 import Toast from "react-native-fast-toast";
@@ -28,7 +28,7 @@ export function CreateNoteScreen({ route }: Props) {
     const colorScheme = useColorScheme();
     const [content, setContent] = useState("");
     const [title, setTitle] = useState("");
-    const [isSaving, setIsSaving] = useState(false);
+    const [savedContent, setSavedContent] = useState("");
     const toast = useRef(null);
     const isFocused = useIsFocused();
 
@@ -49,7 +49,7 @@ export function CreateNoteScreen({ route }: Props) {
 
         //todo potentially think of a better way to do this 
         async function pushNoteToGit() {
-            if (content !== "" && title !== "") {
+            if (content !== "" && title !== "" && savedContent !== content) {
                 route.params.saveNewNote(content, title)
             }
         }
@@ -59,22 +59,23 @@ export function CreateNoteScreen({ route }: Props) {
         if (!isFocused) {
             setContent("");
             setTitle("");
+            setSavedContent("");
         }
 
     }, [isFocused])
 
-    const savingToast = () => {
-        toast.current.show("Saving your notes", {});
+    const savingToast = (message: string) => {
+        toast.current.show(message, {});
     }
 
-    const successToast = () => {
-        toast.current.show("Note saved ✔", {
+    const successToast = (message: string) => {
+        toast.current.show(message, {
             type: "success",
         });
     }
 
-    const errorToast = () => {
-        toast.current.show("Error on saving note ✘", {
+    const errorToast = (message: string) => {
+        toast.current.show(message, {
             type: "danger",
         });
     }
@@ -82,14 +83,15 @@ export function CreateNoteScreen({ route }: Props) {
     const saveChangesToRepo = async () => {
         //if the file has been edited since it was passed in
         if (content !== "" && title !== "") {
-            savingToast();
+            savingToast("Saving your notes");
             await createNewNote(content, title)
                 .then(data => {
-                    successToast();
+                    successToast("Note saved ✔");
+                    setSavedContent(content);
                 })
                 .catch(error => {
                     console.log(error);
-                    errorToast();
+                    errorToast("Error on saving note ✘");
                 });
         }
         else {
@@ -122,20 +124,13 @@ export function CreateNoteScreen({ route }: Props) {
                     </Menu>
                 </View>
                 <View style={styles.contentContainer}>
-                    {
-                        isSaving ?
-                            <View style={styles.loadingIndicator}>
-                                <ActivityIndicator size='large' color={'coral'} />
-                            </View>
-                            :
-                            <TextInput
-                                value={content}
-                                placeholder="Content"
-                                multiline={true}
-                                style={[styles.textInput, themeTextStyle]}
-                                onChangeText={(value) => setContent(value)}
-                            />
-                    }
+                    <TextInput
+                        value={content}
+                        placeholder="Content"
+                        multiline={true}
+                        style={[styles.textInput, themeTextStyle]}
+                        onChangeText={(value) => setContent(value)}
+                    />
                 </View>
             </KeyboardAvoidingView>
             <Toast ref={toast} />
