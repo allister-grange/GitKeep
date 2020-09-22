@@ -27,6 +27,8 @@
       "backgroundColor": "#ffffff"
     },
     "userInterfaceStyle": "automatic",
-    "scheme": "gitkeep"
+    "scheme": "gitkeep",
+    "description": "",
+    "githubUrl": "https://github.com/allister-grange/gitkeep"
   }
 }
