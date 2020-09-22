@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { KeyboardAvoidingView, StyleSheet, TextInput, View, Text, ActivityIndicator, Alert } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, TextInput, View, Text, Platform, Alert, SafeAreaView } from 'react-native';
 import { Appearance, useColorScheme } from 'react-native-appearance';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useIsFocused } from '@react-navigation/native';
@@ -121,7 +121,7 @@ export function EditNoteScreen({ route }: Props) {
 
     return (
         <MenuProvider>
-            <KeyboardAvoidingView style={[styles.container, themeContainerStyle]}>
+            <SafeAreaView style={[styles.container, themeContainerStyle]}>
                 <View style={[styles.titleContainer, themeTitleContainer]}>
                     <View style={{ flex: 1 }}>
                         <Text style={[styles.title, themeTitleStyle]}>{route.params.file.fileInfo.path}</Text>
@@ -152,7 +152,7 @@ export function EditNoteScreen({ route }: Props) {
                         onChangeText={(value) => setContent(value)}
                     />
                 </View>
-            </KeyboardAvoidingView>
+            </SafeAreaView>
             <Toast ref={toast} />
         </MenuProvider >
     );
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     titleContainer: {
         width: '90%',
         paddingBottom: 15,
-        paddingTop: 40,
+        paddingTop: Platform.OS === 'android' ? 25 : 0,
         borderBottomWidth: 1,
         flexDirection: 'row',
         alignItems: 'center',

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Text, SafeAreaView, StatusBar, StyleSheet, ScrollView, View, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
+import { Text, SafeAreaView, Platform, StatusBar, StyleSheet, ScrollView, View, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
 import { Appearance, useColorScheme } from 'react-native-appearance';
 import { Note } from '../Components/Notes/Note';
 import * as SecureStore from 'expo-secure-store';
@@ -189,6 +189,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     shadowRadius: 3,
     elevation: 7,
+    shadowOffset: { width: 1, height: 3 },
+    shadowColor: 'grey',
+    shadowOpacity: 0.8,
   },
   lightThemeNewNoteButton: {
     backgroundColor: 'white',
