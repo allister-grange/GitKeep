@@ -24,7 +24,7 @@
     },
     "androidNavigationBar": {
       "barStyle": "dark-content",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#202020"
     },
     "userInterfaceStyle": "automatic",
     "scheme": "gitkeep",
