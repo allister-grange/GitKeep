@@ -28,6 +28,9 @@ export default function App() {
   const Stack = createStackNavigator();
   const prefix = Linking.makeUrl('/');
 
+  const themeContainerStyle =
+    colorScheme === 'light' ? styles.lightContainer : styles.darkContainer;
+
   const linking = {
     prefixes: [prefix],
   };
@@ -49,13 +52,12 @@ export default function App() {
       <StatusBar style={statusBarStyle} />
       <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
         {
-          <Stack.Navigator
-            initialRouteName={initialRoute}>
+          <Stack.Navigator initialRouteName={initialRoute}>
             <Stack.Screen name="AuthScreen" component={AuthenticateScreen} options={{ headerShown: false }} />
             <Stack.Screen name="RepoSelectScreen" component={RepoSelectScreen} options={{ headerShown: false }} />
             <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="EditNoteScreen" component={EditNoteScreen} options={{ headerShown: false }} />
             <Stack.Screen name="PreviewMarkdownScreen" component={PreviewMarkdownScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="EditNoteScreen" component={EditNoteScreen} options={{ headerShown: false }} />
             <Stack.Screen name="CreateNoteScreen" component={CreateNoteScreen} options={{ headerShown: false }} />
           </Stack.Navigator>
         }
@@ -63,3 +65,12 @@ export default function App() {
     </AppearanceProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  lightContainer: {
+    backgroundColor: '#fff',
+  },
+  darkContainer: {
+    backgroundColor: '#202020',
+  },
+})

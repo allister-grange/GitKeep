@@ -144,7 +144,6 @@ textarea {
 
 body {
   color: white;
-
   line-height: 1.6;
   background-color: #202020;
   font-family: 'Open Sans', Helvetica, sans-serif;
@@ -152,6 +151,12 @@ body {
   margin: 1rem auto 1rem;
   max-width: 48rem;
   text-align: center;
+  // -webkit-touch-callout: none;
+  // -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 img {

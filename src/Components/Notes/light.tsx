@@ -154,6 +154,12 @@ export const lightCss = `@media print {
     margin: 1rem auto 1rem;
     max-width: 48rem;
     text-align: center;
+    // -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
   }
   
   img {

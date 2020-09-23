@@ -29,6 +29,13 @@
     "userInterfaceStyle": "automatic",
     "scheme": "gitkeep",
     "description": "",
-    "githubUrl": "https://github.com/allister-grange/gitkeep"
+    "githubUrl": "https://github.com/allister-grange/gitkeep",
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/git-branch-icon.png"
+      },
+      "package": "com.grangeal.gitkeep",
+      "versionCode": 1.0
+    }
   }
 }
