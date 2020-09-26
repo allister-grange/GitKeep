@@ -1,5 +1,5 @@
 import React from 'react';
-import { Animated, StyleSheet, TextInput } from 'react-native';
+import { Animated, StyleSheet, TextInput, ActivityIndicator } from 'react-native';
 import { Dimensions } from 'react-native';
 
 const SearchComponent = (props: any) => {
@@ -27,7 +27,9 @@ const SearchComponent = (props: any) => {
                     }
                 ],
                 opacity: searchBarOpacity,
-            }
+                flexDirection: 'row',
+                flex: 1,
+            },
         ]}>
             <TextInput
                 placeholder='Search'
@@ -35,6 +37,9 @@ const SearchComponent = (props: any) => {
                 placeholderTextColor={'#888888'}
                 onChange={(event) => props.changeSearchTerm(event.nativeEvent.text)}
             />
+            {                
+                props.isSearching && <ActivityIndicator color={'coral'}/>
+            }
         </Animated.View>
     )
 }
@@ -46,9 +51,7 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width - 40,
         left: 20,
         zIndex: 1,
-        backgroundColor: 'white'
-    },
-    formField: {
+        backgroundColor: 'white',
         borderWidth: 1,
         padding: 12,
         paddingLeft: 20,
@@ -56,7 +59,11 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         borderColor: '#888888',
         fontSize: 18,
-        height: 50
+        height: 50,
+
+    },
+    formField: {
+        flex: 1,
     }
 })
 

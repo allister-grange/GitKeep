@@ -64,6 +64,8 @@ export const Note: FunctionComponent<PassedProps> = ({ file, title, refreshNotes
                         showsVerticalScrollIndicator={false}
                         scalesPageToFit={true}
                         javaScriptEnabled={false}
+                        onLoad={() => {console.log("loaded biotch");
+                        }}
                         markdown={fileContent} css={css} />
                 </View>
             </TouchableOpacity>

@@ -23,6 +23,7 @@ const HomeScreen = () => {
   const [loadingNotes, setLoadingNotes] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [displayingAllFiles, setDisplayingAllFiles] = useState(true);
+  const [searchLoadingIndicator, setSearchLoadingIndicator] = useState(false);
 
   const clampedScroll = Animated.diffClamp(
     Animated.add(
@@ -71,7 +72,7 @@ const HomeScreen = () => {
 
     if (isFocused)
       pullDownFiles();
-
+    
   }, [isFocused]);
 
   const getRepoData = async () => {
@@ -136,27 +137,31 @@ const HomeScreen = () => {
 
   const changeSearchTerm = (searchTerm: string) => {
 
-    if(searchTerm === ""){
-      setDisplayingAllFiles(true)
-      return
+    if (searchTerm === "") {
+      setDisplayingAllFiles(true);
+      return;
     }
-    
+
+    setSearchLoadingIndicator(true);
     let foundFiles = new Array<FileData>();
+
     files.map(file => {
       file.isDisplaying = file.fileContent.indexOf(searchTerm) !== -1;
-      foundFiles.push(file)
+      foundFiles.push(file);
     })
-    
-    setFiles(foundFiles)
-    setDisplayingAllFiles(false)
+
+    setFiles(foundFiles);
+    setDisplayingAllFiles(false);    
+    setSearchLoadingIndicator(false);
   }
 
   return (
     <SafeAreaView style={[styles.container, themeContainerStyle]}>
       <StatusBar barStyle={themeStatusBarStyle} />
-      {/* <Animated.View style={{zIndex: 1, justifyContent: 'center'}}> */}
-      <SearchComponent changeSearchTerm={changeSearchTerm} clampedScroll={clampedScroll} />
-      {/* </Animated.View> */}
+      { !refreshing && <SearchComponent isSearching={searchLoadingIndicator}
+        changeSearchTerm={changeSearchTerm}
+        clampedScroll={clampedScroll} />
+      }
       {
         loadingNotes ?
           <ActivityIndicator color={'coral'} size={40} />
@@ -170,21 +175,16 @@ const HomeScreen = () => {
             )}
             contentInsetAdjustmentBehavior="automatic"
             refreshControl={
-              <RefreshControl style={{
-                zIndex: 99,
-                position: 'absolute',
-                elevation: 2,
-              }} refreshing={refreshing} onRefresh={onRefresh} />
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }>
             {
               files.length >= 1 ?
-                files.map((file, idx) => 
-                  {
-                    if(displayingAllFiles)
-                      return <Note refreshNotes={refreshNotes} deleteNote={deleteNote} key={idx} file={file} />
-                    else if(file.isDisplaying) 
-                      return <Note refreshNotes={refreshNotes} deleteNote={deleteNote} key={idx} file={file} />
-                  }
+                files.map((file, idx) => {
+                  if (displayingAllFiles)
+                    return <Note refreshNotes={refreshNotes} deleteNote={deleteNote} key={idx} file={file} />
+                  else if (file.isDisplaying)
+                    return <Note refreshNotes={refreshNotes} deleteNote={deleteNote} key={idx} file={file} />
+                }
                 )
                 :
                 <View style={styles.emptyRepoContainer}>
