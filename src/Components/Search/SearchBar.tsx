@@ -1,5 +1,5 @@
 import React from 'react';
-import { Animated, StyleSheet, TextInput, ActivityIndicator } from 'react-native';
+import { Animated, Platform, StyleSheet, TextInput, ActivityIndicator } from 'react-native';
 import { Dimensions } from 'react-native';
 
 const SearchComponent = (props: any) => {
@@ -47,7 +47,7 @@ const SearchComponent = (props: any) => {
 const styles = StyleSheet.create({
     container: {
         position: 'absolute',
-        top: 50,
+        top: Platform.OS === 'android' ? 25 : 50,
         width: Dimensions.get('window').width - 40,
         left: 20,
         zIndex: 1,

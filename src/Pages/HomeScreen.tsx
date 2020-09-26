@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
-import { Text, SafeAreaView, Animated, StatusBar, StyleSheet, ScrollView, View, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
+import { Text, SafeAreaView, Animated, StatusBar, StyleSheet, Platform, View, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
 import { Appearance, useColorScheme } from 'react-native-appearance';
 import { Note } from '../Components/Notes/Note';
 import * as SecureStore from 'expo-secure-store';
@@ -9,6 +9,7 @@ import { useIsFocused } from '@react-navigation/native';
 import { parseRepoData, FileData, getRepoContentsFromTree, updateFileContent, deleteFile, createNewNote } from '../Services/GitHub';
 import Toast from "react-native-fast-toast";
 import SearchComponent from '../Components/Search/SearchBar';
+import { Dimensions } from 'react-native';
 
 const HomeScreen = () => {
 
@@ -19,6 +20,7 @@ const HomeScreen = () => {
   const toast = useRef(null);
 
   const [scrollYValue, setScrollYValue] = useState(new Animated.Value(0));
+  const [scrollYNumber, setScrollYNumber] = useState(0);
   const [files, setFiles] = useState(new Array<FileData>());
   const [loadingNotes, setLoadingNotes] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -54,7 +56,6 @@ const HomeScreen = () => {
     colorScheme === 'light' ? styles.lightText : styles.darkText;
 
   useEffect(() => {
-
     async function pullDownFiles() {
 
       if (!await SecureStore.getItemAsync('github_token'))
@@ -72,7 +73,7 @@ const HomeScreen = () => {
 
     if (isFocused)
       pullDownFiles();
-    
+
   }, [isFocused]);
 
   const getRepoData = async () => {
@@ -136,7 +137,6 @@ const HomeScreen = () => {
   }
 
   const changeSearchTerm = (searchTerm: string) => {
-
     if (searchTerm === "") {
       setDisplayingAllFiles(true);
       return;
@@ -151,14 +151,14 @@ const HomeScreen = () => {
     })
 
     setFiles(foundFiles);
-    setDisplayingAllFiles(false);    
+    setDisplayingAllFiles(false);
     setSearchLoadingIndicator(false);
   }
 
   return (
     <SafeAreaView style={[styles.container, themeContainerStyle]}>
       <StatusBar barStyle={themeStatusBarStyle} />
-      { !refreshing && <SearchComponent isSearching={searchLoadingIndicator}
+      {!refreshing &&  <SearchComponent isSearching={searchLoadingIndicator}
         changeSearchTerm={changeSearchTerm}
         clampedScroll={clampedScroll} />
       }
@@ -168,11 +168,14 @@ const HomeScreen = () => {
           :
           <Animated.ScrollView
             style={styles.notesContatiner}
-            onScroll={Animated.event(
+            onScroll={
+              Animated.event(
               [{ nativeEvent: { contentOffset: { y: scrollYValue } } }],
-              { useNativeDriver: true },
-              // () => { },          // Optional async listener
-            )}
+              {
+                useNativeDriver: true,
+              }
+            )
+          }
             contentInsetAdjustmentBehavior="automatic"
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -231,7 +234,8 @@ const styles = StyleSheet.create({
   },
   notesContatiner: {
     width: '100%',
-    height: '100%'
+    height: '100%',
+    paddingTop: Platform.OS === 'android' ? 85 : 60,
   },
   newNoteButton: {
     borderRadius: 25,
