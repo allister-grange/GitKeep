@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
 import { Text, SafeAreaView, Animated, StatusBar, StyleSheet, ScrollView, View, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
 import { Appearance, useColorScheme } from 'react-native-appearance';
 import { Note } from '../Components/Notes/Note';
@@ -12,17 +12,17 @@ import SearchComponent from '../Components/Search/SearchBar';
 
 const HomeScreen = () => {
 
-  const [searchedTerm, setSearchedTerm] = useState('');
-  const [scrollYValue, setScrollYValue] = useState(new Animated.Value(0));
   Appearance.getColorScheme();
   const colorScheme = useColorScheme();
   const navigation = useNavigation();
-  const [files, setFiles] = useState(new Array<FileData>());
-  const [loadingNotes, setLoadingNotes] = useState(false);
-  const [toastVisible, setToastVisible] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
   const isFocused = useIsFocused();
   const toast = useRef(null);
+
+  const [scrollYValue, setScrollYValue] = useState(new Animated.Value(0));
+  const [files, setFiles] = useState(new Array<FileData>());
+  const [loadingNotes, setLoadingNotes] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [displayingAllFiles, setDisplayingAllFiles] = useState(true);
 
   const clampedScroll = Animated.diffClamp(
     Animated.add(
@@ -135,14 +135,27 @@ const HomeScreen = () => {
   }
 
   const changeSearchTerm = (searchTerm: string) => {
-    console.log(searchTerm);
-  } 
+
+    if(searchTerm === ""){
+      setDisplayingAllFiles(true)
+      return
+    }
+    
+    let foundFiles = new Array<FileData>();
+    files.map(file => {
+      file.isDisplaying = file.fileContent.indexOf(searchTerm) !== -1;
+      foundFiles.push(file)
+    })
+    
+    setFiles(foundFiles)
+    setDisplayingAllFiles(false)
+  }
 
   return (
     <SafeAreaView style={[styles.container, themeContainerStyle]}>
       <StatusBar barStyle={themeStatusBarStyle} />
       {/* <Animated.View style={{zIndex: 1, justifyContent: 'center'}}> */}
-        <SearchComponent changeSearchTerm={changeSearchTerm} clampedScroll={clampedScroll} />
+      <SearchComponent changeSearchTerm={changeSearchTerm} clampedScroll={clampedScroll} />
       {/* </Animated.View> */}
       {
         loadingNotes ?
@@ -158,16 +171,21 @@ const HomeScreen = () => {
             contentInsetAdjustmentBehavior="automatic"
             refreshControl={
               <RefreshControl style={{
-                zIndex: 99, 
+                zIndex: 99,
                 position: 'absolute',
-                elevation: 2, 
+                elevation: 2,
               }} refreshing={refreshing} onRefresh={onRefresh} />
             }>
             {
               files.length >= 1 ?
-                files.map((file, idx) => (
-                  <Note refreshNotes={refreshNotes} deleteNote={deleteNote} key={idx} file={file} />
-                ))
+                files.map((file, idx) => 
+                  {
+                    if(displayingAllFiles)
+                      return <Note refreshNotes={refreshNotes} deleteNote={deleteNote} key={idx} file={file} />
+                    else if(file.isDisplaying) 
+                      return <Note refreshNotes={refreshNotes} deleteNote={deleteNote} key={idx} file={file} />
+                  }
+                )
                 :
                 <View style={styles.emptyRepoContainer}>
                   <Text style={[styles.emptyRepoText, themeTextStyle]}>there are no .md notes in this repo,</Text>

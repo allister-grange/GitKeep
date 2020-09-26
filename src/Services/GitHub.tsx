@@ -12,6 +12,7 @@ export type FileData = {
     fileInfo: any,
     fileContent: string,
     isDirectory: boolean,
+    isDisplaying: boolean
 }
 
 // const proxyUrl = 'https://0.0.0.0:8080/'
@@ -91,15 +92,6 @@ export const getRepoContents = async (): Promise<any> => {
 
 }
 
-
-// Object {
-//     "mode": "100644",
-//     "path": "work/bs3/PowerShell/whiteboard of first session.jpg",
-//     "sha": "f00857147f42dbc8ef782af93fddb2cd4e54c56c",
-//     "size": 144157,
-//     "type": "blob",
-//     "url": "https://api.github.com/repos/allister-grange/Notes/git/blobs/f00857147f42dbc8ef782af93fddb2cd4e54c56c",
-//   },
 export const getRepoContentsFromTree = async (): Promise<Array<FileData>> => {
 
     console.log("getRepoContentsFromTree");
@@ -172,7 +164,7 @@ const parseFileData = (data: any): Array<FileData> => {
     for (let i = 0; i < data.tree.length; i++) {
         let path = data.tree[i].path as string;
         if (path.split('.').pop() === 'md') {
-            shas.push({ fileInfo: { path: path, sha: data.tree[i].sha }, isDirectory: false, fileContent: "" })
+            shas.push({ fileInfo: { path: path, sha: data.tree[i].sha }, isDirectory: false, fileContent: "", isDisplaying: false })
         }
     }
 
@@ -206,7 +198,7 @@ export const parseRepoData = async (data: any): Promise<Array<FileData>> => {
 
     data.forEach((file: any) => {
         if (file.type !== 'dir' && file.name.split('.').pop() === 'md') {
-            files.push({ fileInfo: file, fileContent: "", isDirectory: false });
+            files.push({ fileInfo: file, fileContent: "", isDirectory: false, isDisplaying: false });
         }
     });
 
