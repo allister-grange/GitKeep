@@ -10,6 +10,7 @@ import { parseRepoData, FileData, getRepoContentsFromTree, updateFileContent, de
 import Toast from "react-native-fast-toast";
 import SearchComponent from '../Components/Search/SearchBar';
 import { Dimensions } from 'react-native';
+import { MenuProvider } from 'react-native-popup-menu';
 
 const HomeScreen = () => {
 
@@ -156,6 +157,8 @@ const HomeScreen = () => {
   }
 
   return (
+    <MenuProvider>
+
     <SafeAreaView style={[styles.container, themeContainerStyle]}>
       <StatusBar barStyle={themeStatusBarStyle} />
       {!refreshing &&  <SearchComponent isSearching={searchLoadingIndicator}
@@ -206,6 +209,7 @@ const HomeScreen = () => {
       <Toast ref={toast} />
 
     </SafeAreaView>
+    </MenuProvider>
   );
 }
 

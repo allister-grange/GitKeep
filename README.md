@@ -60,6 +60,7 @@ https://developer.github.com/v3/repos/#create-a-repository-for-the-authenticated
     - [] Get the new note screen working, with an option of what directory to put the new note in 
     - [] https://github.com/arnnis/react-native-fast-toast
     - [] Set height of note to zero (or hide it), until webview is ready
+    - Menu on a three ellepsis menu on the search bar (option to re-choose your repo)
 
 ### To Deploy to phone 
 
