@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Text, SafeAreaView, Platform, StatusBar, StyleSheet, ScrollView, View, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
+import { Text, SafeAreaView, Animated, StatusBar, StyleSheet, ScrollView, View, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
 import { Appearance, useColorScheme } from 'react-native-appearance';
 import { Note } from '../Components/Notes/Note';
 import * as SecureStore from 'expo-secure-store';
@@ -8,9 +8,12 @@ import { useNavigation } from '@react-navigation/native';
 import { useIsFocused } from '@react-navigation/native';
 import { parseRepoData, FileData, getRepoContentsFromTree, updateFileContent, deleteFile, createNewNote } from '../Services/GitHub';
 import Toast from "react-native-fast-toast";
+import SearchComponent from '../Components/Search/SearchBar';
 
 const HomeScreen = () => {
 
+  const [searchedTerm, setSearchedTerm] = useState('');
+  const [scrollYValue, setScrollYValue] = useState(new Animated.Value(0));
   Appearance.getColorScheme();
   const colorScheme = useColorScheme();
   const navigation = useNavigation();
@@ -20,6 +23,19 @@ const HomeScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   const isFocused = useIsFocused();
   const toast = useRef(null);
+
+  const clampedScroll = Animated.diffClamp(
+    Animated.add(
+      scrollYValue.interpolate({
+        inputRange: [0, 1],
+        outputRange: [0, 1],
+        extrapolateLeft: 'clamp',
+      }),
+      new Animated.Value(0),
+    ),
+    0,
+    80,
+  );
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -118,17 +134,35 @@ const HomeScreen = () => {
       });
   }
 
+  const changeSearchTerm = (searchTerm: string) => {
+    console.log(searchTerm);
+  } 
+
   return (
     <SafeAreaView style={[styles.container, themeContainerStyle]}>
       <StatusBar barStyle={themeStatusBarStyle} />
-
+      {/* <Animated.View style={{zIndex: 1, justifyContent: 'center'}}> */}
+        <SearchComponent changeSearchTerm={changeSearchTerm} clampedScroll={clampedScroll} />
+      {/* </Animated.View> */}
       {
         loadingNotes ?
           <ActivityIndicator color={'coral'} size={40} />
           :
-          <ScrollView style={styles.notesContatiner} refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }>
+          <Animated.ScrollView
+            style={styles.notesContatiner}
+            onScroll={Animated.event(
+              [{ nativeEvent: { contentOffset: { y: scrollYValue } } }],
+              { useNativeDriver: true },
+              // () => { },          // Optional async listener
+            )}
+            contentInsetAdjustmentBehavior="automatic"
+            refreshControl={
+              <RefreshControl style={{
+                zIndex: 99, 
+                position: 'absolute',
+                elevation: 2, 
+              }} refreshing={refreshing} onRefresh={onRefresh} />
+            }>
             {
               files.length >= 1 ?
                 files.map((file, idx) => (
@@ -140,7 +174,7 @@ const HomeScreen = () => {
                   <Text style={[styles.emptyRepoText, themeTextStyle]}>make one!</Text>
                 </View>
             }
-          </ScrollView>
+          </Animated.ScrollView>
       }
       <View style={styles.newNoteButtonContainer}>
         <TouchableOpacity style={[styles.newNoteButton, themeNewNoteButtonStyle]}
