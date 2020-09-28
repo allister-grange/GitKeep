@@ -4,11 +4,13 @@ import { Dimensions } from 'react-native';
 import { MenuProvider, Menu, MenuTrigger, MenuOptions, MenuOption } from 'react-native-popup-menu';
 import { AntDesign } from '@expo/vector-icons';
 import { Appearance, useColorScheme } from 'react-native-appearance';
+import { useNavigation } from '@react-navigation/native';
 
 const SearchComponent = (props: any) => {
     const { clampedScroll } = props;
     Appearance.getColorScheme();
     const colorScheme = useColorScheme();
+    const navigation = useNavigation();
 
     const searchBarTranslate = clampedScroll.interpolate({
         inputRange: [0, 50],
@@ -58,14 +60,8 @@ const SearchComponent = (props: any) => {
                             <AntDesign style={styles.ellipses} name="ellipsis1" size={24} color={'black'} />
                         </MenuTrigger>
                         <MenuOptions customStyles={{ optionsContainer: menuContainerStyle }}>
-                            <MenuOption onSelect={() => alert(`Not called`)}>
-                                <Text style={[styles.menuText, themeTextStyle]}>Save</Text>
-                            </MenuOption>
-                            <MenuOption onSelect={() => alert(`Not called`)} >
-                                <Text style={[styles.menuText, themeTextStyle]}>Delete</Text>
-                            </MenuOption>
-                            <MenuOption onSelect={() => alert(`Not called`)}>
-                                <Text style={[styles.menuText, themeTextStyle]}>Rename</Text>
+                            <MenuOption onSelect={() => navigation.navigate('RepoSelectScreen')}>
+                                <Text style={[styles.menuText, themeTextStyle]}>Change Repo</Text>
                             </MenuOption>
                         </MenuOptions>
                     </Menu>

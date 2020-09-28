@@ -132,9 +132,6 @@ export function EditNoteScreen({ route }: Props) {
                         <MenuOption onSelect={() => DeleteAlert()} >
                             <Text style={[styles.menuText, themeTextStyle]}>Delete</Text>
                         </MenuOption>
-                        <MenuOption onSelect={() => alert(`Not called`)}>
-                            <Text style={[styles.menuText, themeTextStyle]}>Rename</Text>
-                        </MenuOption>
                     </MenuOptions>
                 </Menu>
             </View>
