@@ -247,14 +247,14 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    // shadowRadius: 3,
-    elevation: 7,
-    // shadowOffset: { width: 1, height: 1 },
-    // shadowColor: '#808080',
-    // shadowOpacity: 0.8,
   },
   lightThemeNewNoteButton: {
     backgroundColor: 'white',
+    shadowRadius: 3,
+    elevation: 7,
+    shadowOffset: { width: 1, height: 1 },
+    shadowColor: '#808080',
+    shadowOpacity: 0.8
   },
   darkThemeNewNoteButton: {
     backgroundColor: '#303030',
