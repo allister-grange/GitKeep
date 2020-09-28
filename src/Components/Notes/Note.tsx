@@ -19,10 +19,11 @@ type PassedProps = {
     title?: string,
     deleteNote: (file: FileData) => {},
     refreshNotes: (originalFile: FileData, newFile: string) => {},
+    showingContentView: boolean
 };
 
 
-export const Note: FunctionComponent<PassedProps> = ({ file, title, refreshNotes, deleteNote }) => {
+export const Note: FunctionComponent<PassedProps> = ({ file, title, refreshNotes, deleteNote, showingContentView }) => {
 
     Appearance.getColorScheme();
     const colorScheme = useColorScheme();
@@ -33,6 +34,8 @@ export const Note: FunctionComponent<PassedProps> = ({ file, title, refreshNotes
         colorScheme === 'light' ? styles.lightContainer : styles.darkContainer;
     const css =
         colorScheme === 'light' ? lightCss : darkCss;
+    const textColor =
+        colorScheme === 'light' ? styles.lightText : styles.darkText;
 
     const fileContent = file.fileContent;
 
@@ -60,13 +63,19 @@ export const Note: FunctionComponent<PassedProps> = ({ file, title, refreshNotes
                     })}
             >
                 <View style={{ height: '100%' }}>
-                    <Markdown showsHorizontalScrollIndicator={false}
-                        showsVerticalScrollIndicator={false}
-                        scalesPageToFit={true}
-                        javaScriptEnabled={false}
-                        onLoad={() => {console.log("loaded biotch");
-                        }}
-                        markdown={fileContent} css={css} />
+                    {
+                        showingContentView ? 
+                            <Markdown showsHorizontalScrollIndicator={false}
+                            showsVerticalScrollIndicator={false}
+                            scalesPageToFit={true}
+                            javaScriptEnabled={false}
+                            onLoad={() => {console.log("loaded biotch");
+                            }}
+                            markdown={fileContent} css={css} />
+                        :
+                        <Text style={textColor}>{fileContent}</Text>
+                    }
+
                 </View>
             </TouchableOpacity>
         </View>
@@ -90,5 +99,11 @@ const styles = StyleSheet.create({
     },
     darkContainer: {
         borderColor: 'white',
+    },
+    lightText: {
+        color: 'black'
+    },
+    darkText: {
+        color: 'white'
     }
 });

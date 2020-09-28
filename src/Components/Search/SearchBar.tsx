@@ -30,43 +30,45 @@ const SearchComponent = (props: any) => {
         colorScheme === 'light' ? styles.lightText : styles.darkText;
 
     return (
-            <Animated.View style={[
-                styles.container,
-                {
-                    transform: [
-                        {
-                            translateY: searchBarTranslate
-                        }
-                    ],
-                    opacity: searchBarOpacity,
-                    flexDirection: 'row',
-                    flex: 1,
-                },
-            ]}>
-                {/* <MenuProvider> */}
-                    <View style={{flex:1}}>
-                    <TextInput
-                        placeholder='Search'
-                        style={styles.formField}
-                        placeholderTextColor={'#888888'}
-                        onChange={(event) => props.changeSearchTerm(event.nativeEvent.text)}
-                    />
-                    </View>
-                    {/* {                
+        <Animated.View style={[
+            styles.container,
+            {
+                transform: [
+                    {
+                        translateY: searchBarTranslate
+                    }
+                ],
+                opacity: searchBarOpacity,
+                flexDirection: 'row',
+                flex: 1,
+            },
+        ]}>
+            <View style={{ flex: 1 }}>
+                <TextInput
+                    placeholder='Search'
+                    style={styles.formField}
+                    placeholderTextColor={'#888888'}
+                    onChange={(event) => props.changeSearchTerm(event.nativeEvent.text)}
+                />
+            </View>
+            {/* {                
                         props.isSearching && <ActivityIndicator color={'coral'}/>
                     } */}
-                    <Menu>
-                        <MenuTrigger>
-                            <AntDesign style={styles.ellipses} name="ellipsis1" size={24} color={'black'} />
-                        </MenuTrigger>
-                        <MenuOptions customStyles={{ optionsContainer: menuContainerStyle }}>
-                            <MenuOption onSelect={() => navigation.navigate('RepoSelectScreen')}>
-                                <Text style={[styles.menuText, themeTextStyle]}>Change Repo</Text>
-                            </MenuOption>
-                        </MenuOptions>
-                    </Menu>
+            <Menu>
+                <MenuTrigger>
+                    <AntDesign style={styles.ellipses} name="ellipsis1" size={24} color={'black'} />
+                </MenuTrigger>
+                <MenuOptions customStyles={{ optionsContainer: menuContainerStyle }}>
+                    <MenuOption onSelect={() => navigation.navigate('RepoSelectScreen')}>
+                        <Text style={[styles.menuText, themeTextStyle]}>Change Repo</Text>
+                    </MenuOption>
+                    <MenuOption onSelect={props.toggleContentView}>
+                        <Text style={[styles.menuText, themeTextStyle]}>Toggle Content View</Text>
+                    </MenuOption>
+                </MenuOptions>
+            </Menu>
 
-            </Animated.View>
+        </Animated.View>
     )
 }
 
@@ -93,7 +95,7 @@ const styles = StyleSheet.create({
         color: 'black'
     },
     menuText: {
-        fontSize: 20
+        fontSize: 17
     },
     ellipses: {
         transform: [{ rotate: '90deg' }],

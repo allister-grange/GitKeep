@@ -16,6 +16,7 @@ import * as SecureStore from 'expo-secure-store';
 import { useNavigation } from '@react-navigation/native';
 import { PreviewMarkdownScreen } from './src/Pages/PreviewMarkdownScreen';
 import CreateNoteScreen from './src/Pages/CreateNoteScreen';
+import { MenuProvider } from 'react-native-popup-menu';
 
 export default function App() {
   const Tab = createBottomTabNavigator();
@@ -40,7 +41,7 @@ export default function App() {
       const token = await SecureStore.getItemAsync('github_token');
 
       if (token) {
-        setInitialRoute("AuthScreen");
+        setInitialRoute("Home");
       }
     }
 
@@ -48,21 +49,23 @@ export default function App() {
   }, [])
 
   return (
-    <AppearanceProvider>
-      <StatusBar style={statusBarStyle} />
-      <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
-        {
-          <Stack.Navigator initialRouteName={initialRoute}>
-            <Stack.Screen name="AuthScreen" component={AuthenticateScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="RepoSelectScreen" component={RepoSelectScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="PreviewMarkdownScreen" component={PreviewMarkdownScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="EditNoteScreen" component={EditNoteScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="CreateNoteScreen" component={CreateNoteScreen} options={{ headerShown: false }} />
-          </Stack.Navigator>
-        }
-      </NavigationContainer>
-    </AppearanceProvider>
+    <MenuProvider>
+      <AppearanceProvider>
+        <StatusBar style={statusBarStyle} />
+        <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
+          {
+            <Stack.Navigator initialRouteName={initialRoute}>
+              <Stack.Screen name="AuthScreen" component={AuthenticateScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="RepoSelectScreen" component={RepoSelectScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="PreviewMarkdownScreen" component={PreviewMarkdownScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="EditNoteScreen" component={EditNoteScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="CreateNoteScreen" component={CreateNoteScreen} options={{ headerShown: false }} />
+            </Stack.Navigator>
+          }
+        </NavigationContainer>
+      </AppearanceProvider>
+    </MenuProvider>
   );
 }
 

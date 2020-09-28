@@ -27,6 +27,7 @@ const HomeScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [displayingAllFiles, setDisplayingAllFiles] = useState(true);
   const [searchLoadingIndicator, setSearchLoadingIndicator] = useState(false);
+  const [showingContentView, setShowingContentView] = useState(true);
 
   const clampedScroll = Animated.diffClamp(
     Animated.add(
@@ -156,60 +157,60 @@ const HomeScreen = () => {
     setSearchLoadingIndicator(false);
   }
 
+  const toggleContentView = () => {
+    setShowingContentView(!showingContentView)
+  }
+
   return (
-    <MenuProvider>
-
-    <SafeAreaView style={[styles.container, themeContainerStyle]}>
-      <StatusBar barStyle={themeStatusBarStyle} />
-      {!refreshing &&  <SearchComponent isSearching={searchLoadingIndicator}
-        changeSearchTerm={changeSearchTerm}
-        clampedScroll={clampedScroll} />
-      }
-      {
-        loadingNotes ?
-          <ActivityIndicator color={'coral'} size={40} />
-          :
-          <Animated.ScrollView
-            style={styles.notesContatiner}
-            onScroll={
-              Animated.event(
-              [{ nativeEvent: { contentOffset: { y: scrollYValue } } }],
-              {
-                useNativeDriver: true,
-              }
-            )
-          }
-            contentInsetAdjustmentBehavior="automatic"
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }>
-            {
-              files.length >= 1 ?
-                files.map((file, idx) => {
-                  if (displayingAllFiles)
-                    return <Note refreshNotes={refreshNotes} deleteNote={deleteNote} key={idx} file={file} />
-                  else if (file.isDisplaying)
-                    return <Note refreshNotes={refreshNotes} deleteNote={deleteNote} key={idx} file={file} />
+      <SafeAreaView style={[styles.container, themeContainerStyle]}>
+        <StatusBar barStyle={themeStatusBarStyle} />
+        {!refreshing &&  <SearchComponent toggleContentView={toggleContentView} isSearching={searchLoadingIndicator}
+          changeSearchTerm={changeSearchTerm}
+          clampedScroll={clampedScroll} />
+        }
+        {
+          loadingNotes ?
+            <ActivityIndicator color={'coral'} size={40} />
+            :
+            <Animated.ScrollView
+              style={styles.notesContatiner}
+              onScroll={
+                Animated.event(
+                [{ nativeEvent: { contentOffset: { y: scrollYValue } } }],
+                {
+                  useNativeDriver: true,
                 }
-                )
-                :
-                <View style={styles.emptyRepoContainer}>
-                  <Text style={[styles.emptyRepoText, themeTextStyle]}>there are no .md notes in this repo,</Text>
-                  <Text style={[styles.emptyRepoText, themeTextStyle]}>make one!</Text>
-                </View>
+              )
             }
-          </Animated.ScrollView>
-      }
-      <View style={styles.newNoteButtonContainer}>
-        <TouchableOpacity style={[styles.newNoteButton, themeNewNoteButtonStyle]}
-          onPress={() => navigation.navigate('CreateNoteScreen', { saveNewNote: saveNewNote })} >
-          <Ionicons outline={false} name={'md-add'} size={35} color={'orange'} />
-        </TouchableOpacity>
-      </View>
-      <Toast ref={toast} />
+              contentInsetAdjustmentBehavior="automatic"
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }>
+              {
+                files.length >= 1 ?
+                  files.map((file, idx) => {
+                    if (displayingAllFiles)
+                      return <Note showingContentView={showingContentView} refreshNotes={refreshNotes} deleteNote={deleteNote} key={idx} file={file} />
+                    else if (file.isDisplaying)
+                      return <Note showingContentView={showingContentView} refreshNotes={refreshNotes} deleteNote={deleteNote} key={idx} file={file} />
+                  })
+                  :
+                  <View style={styles.emptyRepoContainer}>
+                    <Text style={[styles.emptyRepoText, themeTextStyle]}>there are no .md notes in this repo,</Text>
+                    <Text style={[styles.emptyRepoText, themeTextStyle]}>make one!</Text>
+                  </View>
+              }
+            </Animated.ScrollView>
+        }
+        <View style={styles.newNoteButtonContainer}>
+          <TouchableOpacity style={[styles.newNoteButton, themeNewNoteButtonStyle]}
+            onPress={() => navigation.navigate('CreateNoteScreen', { saveNewNote: saveNewNote })} >
+            <Ionicons outline={false} name={'md-add'} size={35} color={'orange'} />
+          </TouchableOpacity>
+        </View>
+        <Toast ref={toast} />
 
-    </SafeAreaView>
-    </MenuProvider>
+      </SafeAreaView>
   );
 }
 
