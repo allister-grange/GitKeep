@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState, useEffect } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, SafeAreaView, ActivityIndicator } from 'react-native';
 import { Appearance, useColorScheme } from 'react-native-appearance'
 import { useNavigation } from '@react-navigation/native';
 import Markdown from 'react-native-showdown';
@@ -51,7 +51,7 @@ export const Note: FunctionComponent<PassedProps> = ({ file, title, refreshNotes
                 onLongPress={() => navigation.navigate('EditNoteScreen',
                     {
                         refreshNotes: refreshNotes,
-                        deleteNote: deleteNote, 
+                        deleteNote: deleteNote,
                         file: file,
                         passedTitle: title,
                         isNewNote: false
@@ -62,18 +62,20 @@ export const Note: FunctionComponent<PassedProps> = ({ file, title, refreshNotes
                         css: css,
                     })}
             >
-                <View style={{ height: '100%' }}>
+                <View style={{ height: '100%', justifyContent: "center" }}>
                     {
-                        showingContentView ? 
+                        showingContentView ?
                             <Markdown showsHorizontalScrollIndicator={false}
-                            showsVerticalScrollIndicator={false}
-                            scalesPageToFit={true}
-                            javaScriptEnabled={false}
-                            onLoad={() => {console.log("loaded biotch");
-                            }}
-                            markdown={fileContent} css={css} />
-                        :
-                        <Text style={textColor}>{fileContent}</Text>
+                                showsVerticalScrollIndicator={false}
+                                scalesPageToFit={true}
+                                javaScriptEnabled={false}
+                                // startInLoadingState={true}
+                                // renderLoading={() => {
+                                //     return <ActivityIndicator />;
+                                // }}
+                                markdown={fileContent} css={css} />
+                            :
+                            <Text style={textColor}>{fileContent}</Text>
                     }
 
                 </View>

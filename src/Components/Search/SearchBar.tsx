@@ -1,5 +1,5 @@
 import React from 'react';
-import { Animated, Platform, StyleSheet, TextInput, ActivityIndicator, View, Text } from 'react-native';
+import { Animated, Platform, StyleSheet, TextInput, ActivityIndicator, View, Text, Alert } from 'react-native';
 import { Dimensions } from 'react-native';
 import { MenuProvider, Menu, MenuTrigger, MenuOptions, MenuOption } from 'react-native-popup-menu';
 import { AntDesign } from '@expo/vector-icons';
@@ -28,6 +28,25 @@ const SearchComponent = (props: any) => {
         colorScheme === 'light' ? styles.lightContainer : styles.darkMenuContainer;
     const themeTextStyle =
         colorScheme === 'light' ? styles.lightText : styles.darkText;
+
+    const SignoutAlert = () =>
+        Alert.alert(
+            "Sign out",
+            "Are you sure you want to sign out?",
+            [
+                {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel pressed"),
+                    style: "cancel"
+                },
+                {
+                    text: "Yes", onPress: () => {
+                        navigation.navigate('AuthScreen');
+                    }
+                }
+            ],
+            { cancelable: false }
+        );
 
     return (
         <Animated.View style={[
@@ -59,11 +78,14 @@ const SearchComponent = (props: any) => {
                     <AntDesign style={styles.ellipses} name="ellipsis1" size={24} color={'black'} />
                 </MenuTrigger>
                 <MenuOptions customStyles={{ optionsContainer: menuContainerStyle }}>
+                    <MenuOption onSelect={props.toggleContentView}>
+                        <Text style={[styles.menuText, themeTextStyle]}>Toggle Content View</Text>
+                    </MenuOption>
                     <MenuOption onSelect={() => navigation.navigate('RepoSelectScreen')}>
                         <Text style={[styles.menuText, themeTextStyle]}>Change Repo</Text>
                     </MenuOption>
-                    <MenuOption onSelect={props.toggleContentView}>
-                        <Text style={[styles.menuText, themeTextStyle]}>Toggle Content View</Text>
+                    <MenuOption onSelect={() => SignoutAlert()}>
+                        <Text style={[styles.menuText, themeTextStyle]}>Sign Out</Text>
                     </MenuOption>
                 </MenuOptions>
             </Menu>
@@ -95,7 +117,7 @@ const styles = StyleSheet.create({
         color: 'black'
     },
     menuText: {
-        fontSize: 17
+        fontSize: 18
     },
     ellipses: {
         transform: [{ rotate: '90deg' }],
