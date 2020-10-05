@@ -44,7 +44,7 @@ export const getAccessToken = async (code: string): Promise<string> => {
         "X-Requested-With": "XMLHttpRequest"
     });
 
-    return await fetch(proxyUrl + url + '?client_id=0ebefb6bb5e94c6193a0&client_secret=1905a7cc5a255be077df3fc6a848ba2de15e2913&code=' + code, { method: 'POST', headers: headers })
+    return await fetch(proxyUrl + url + '?client_id=f650074141df1680eea5&client_secret=2ec5a989d9a9263c5b6415c7fe5a9b92b9927656&code=' + code, { method: 'POST', headers: headers })
         .then(res => res.json())
         .then(data => data.access_token)
         .catch(err => alert(err))

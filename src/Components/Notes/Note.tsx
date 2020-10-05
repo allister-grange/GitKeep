@@ -75,7 +75,7 @@ export const Note: FunctionComponent<PassedProps> = ({ file, title, refreshNotes
                                 // }}
                                 markdown={fileContent} css={css} />
                             :
-                            <Text style={textColor}>{fileContent}</Text>
+                            <Text style={[textColor, {flexShrink: 1}]}>{fileContent}</Text>
                     }
 
                 </View>

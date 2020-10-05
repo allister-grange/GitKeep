@@ -15,7 +15,7 @@ WebBrowser.maybeCompleteAuthSession();
 const discovery = {
     authorizationEndpoint: 'https://github.com/login/oauth/authorize',
     tokenEndpoint: 'https://github.com/login/oauth/access_token',
-    revocationEndpoint: 'https://github.com/settings/connections/applications/0ebefb6bb5e94c6193a0',
+    revocationEndpoint: 'https://github.com/settings/connections/applications/f650074141df1680eea5',
 };
 
 // https://auth.expo.io/@allig256/GitKeep
@@ -38,7 +38,7 @@ export default function App() {
 
     const [request, response, promptAsync] = useAuthRequest(
         {
-            clientId: '0ebefb6bb5e94c6193a0',
+            clientId: 'f650074141df1680eea5',
             scopes: ['user', 'repo'],
             redirectUri: Linking.makeUrl()
         },
