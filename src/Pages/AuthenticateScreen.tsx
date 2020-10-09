@@ -8,6 +8,7 @@ import * as Linking from 'expo-linking'
 import { useNavigation } from '@react-navigation/native';
 import { Appearance, useColorScheme } from 'react-native-appearance';
 import { getAccessToken, getAuthenticatedUserName } from '../Services/GitHub';
+import env from '../Utilities/env';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -15,7 +16,7 @@ WebBrowser.maybeCompleteAuthSession();
 const discovery = {
     authorizationEndpoint: 'https://github.com/login/oauth/authorize',
     tokenEndpoint: 'https://github.com/login/oauth/access_token',
-    revocationEndpoint: 'https://github.com/settings/connections/applications/f650074141df1680eea5',
+    revocationEndpoint: 'https://github.com/settings/connections/applications/' + env.GITHUB_CLIENT,
 };
 
 // https://auth.expo.io/@allig256/GitKeep
@@ -38,7 +39,7 @@ export default function App() {
 
     const [request, response, promptAsync] = useAuthRequest(
         {
-            clientId: 'f650074141df1680eea5',
+            clientId: env.GITHUB_CLIENT,
             scopes: ['user', 'repo'],
             redirectUri: Linking.makeUrl()
         },
@@ -48,6 +49,7 @@ export default function App() {
     React.useEffect(() => {
 
         async function fetchMyToken() {
+
             if (response?.type === 'success') {
                 const { code } = response.params;
                 setLoadingToken(true);
@@ -63,6 +65,7 @@ export default function App() {
         }
 
         fetchMyToken()
+        
     }, [response]);
 
     return (

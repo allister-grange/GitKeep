@@ -7,6 +7,7 @@
  * */
 import * as SecureStore from 'expo-secure-store';
 import { Buffer } from 'buffer';
+import env from '../Utilities/env';
 
 export type FileData = {
     fileInfo: any,
@@ -44,7 +45,7 @@ export const getAccessToken = async (code: string): Promise<string> => {
         "X-Requested-With": "XMLHttpRequest"
     });
 
-    return await fetch(proxyUrl + url + '?client_id=f650074141df1680eea5&client_secret=2ec5a989d9a9263c5b6415c7fe5a9b92b9927656&code=' + code, { method: 'POST', headers: headers })
+    return await fetch(proxyUrl + url + '?client_id=' + env.GITHUB_CLIENT + ' &client_secret=' + env.GITHUB_SECRET + '&code=' + code, { method: 'POST', headers: headers })
         .then(res => res.json())
         .then(data => data.access_token)
         .catch(err => alert(err))
