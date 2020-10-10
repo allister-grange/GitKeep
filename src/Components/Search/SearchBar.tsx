@@ -5,6 +5,8 @@ import { MenuProvider, Menu, MenuTrigger, MenuOptions, MenuOption } from 'react-
 import { AntDesign } from '@expo/vector-icons';
 import { Appearance, useColorScheme } from 'react-native-appearance';
 import { useNavigation } from '@react-navigation/native';
+import { Feather } from '@expo/vector-icons';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const SearchComponent = (props: any) => {
     const { clampedScroll } = props;
@@ -70,6 +72,17 @@ const SearchComponent = (props: any) => {
                     onChange={(event) => props.changeSearchTerm(event.nativeEvent.text)}
                 />
             </View>
+            {
+                props.showingGridView ?
+                    <TouchableOpacity onPress={props.changeGridView}>
+                        <Feather name="grid" size={24} color="black" />
+                    </TouchableOpacity>
+                    :
+                    <TouchableOpacity onPress={props.changeGridView}>
+                        <Feather name="square" size={24} color="black" />
+                    </TouchableOpacity>
+            }
+
             {/* {                
                         props.isSearching && <ActivityIndicator color={'coral'}/>
                     } */}
