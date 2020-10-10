@@ -157,7 +157,8 @@ const getFileContentFromSha = async (files: FileData[]): Promise<FileData[]> => 
 //parses the sha token and the path of the file
 const parseFileData = (data: any): Array<FileData> => {
     if(!data.tree){
-        throw Error("No data to parse")
+        console.log("No data to parse from the sha tree");
+        return new Array<FileData>();
     }
 
     let shas = new Array<FileData>();
@@ -187,7 +188,10 @@ export const getMasterBranchTreeSha = async (): Promise<string> => {
 
     return await fetch(proxyUrl + shaUrl, { method: 'GET', headers: headers })
         .then(res => res.json())
-        .then(data => data.commit.sha)
+        .then(data => {
+            if(!data.commit) return
+            return data.commit.sha
+        })
         .catch(err => alert(err));
 }
 

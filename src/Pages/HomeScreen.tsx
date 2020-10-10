@@ -168,6 +168,15 @@ const HomeScreen = () => {
     setShowingContentView(!showingContentView)
   }
 
+  const renderItem = (fileToRender: any, index: number) => {
+    const file = fileToRender.item;
+
+    if (displayingAllFiles)
+      return <Note showingContentView={showingContentView} refreshNotes={refreshNotes} deleteNote={deleteNote} key={fileToRender.index} file={file} />
+    else if (file.isDisplaying)
+      return <Note showingContentView={showingContentView} refreshNotes={refreshNotes} deleteNote={deleteNote} key={fileToRender.index} file={file} />
+  }
+
   return (
     <SafeAreaView style={[styles.container, themeContainerStyle]}>
       <StatusBar barStyle={themeStatusBarStyle} />
@@ -178,11 +187,23 @@ const HomeScreen = () => {
           showingGridView={showingGridView}
           clampedScroll={clampedScroll} />
       }
+
+      {
+        files.length <= 0 &&
+        <View style={styles.emptyRepoContainer}>
+          <Text style={[styles.emptyRepoText, themeTextStyle]}>there are no .md notes in this repo,</Text>
+          <Text style={[styles.emptyRepoText, themeTextStyle]}>make one!</Text>
+        </View>
+      }
+      
       {
         loadingNotes ?
           <ActivityIndicator color={'coral'} size={40} />
           :
-          <Animated.ScrollView
+          <Animated.FlatList
+            data={files}
+            keyExtractor={(file: any) => file.index}
+            renderItem={renderItem}
             style={[styles.notesContatiner, themeGridStyle]}
             onScroll={
               Animated.event(
@@ -195,23 +216,9 @@ const HomeScreen = () => {
             contentInsetAdjustmentBehavior="automatic"
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }>
-            {
-              files.length >= 1 ?
-                files.map((file, idx) => {
-                  if (displayingAllFiles)
-                    return <Note showingContentView={showingContentView} refreshNotes={refreshNotes} deleteNote={deleteNote} key={idx} file={file} />
-                  else if (file.isDisplaying)
-                    return <Note showingContentView={showingContentView} refreshNotes={refreshNotes} deleteNote={deleteNote} key={idx} file={file} />
-                })
-                :
-                <View style={styles.emptyRepoContainer}>
-                  <Text style={[styles.emptyRepoText, themeTextStyle]}>there are no .md notes in this repo,</Text>
-                  <Text style={[styles.emptyRepoText, themeTextStyle]}>make one!</Text>
-                </View>
-            }
-          </Animated.ScrollView>
+            } />
       }
+
       <View style={styles.newNoteButtonContainer}>
         <TouchableOpacity style={[styles.newNoteButton, themeNewNoteButtonStyle]}
           onPress={() => navigation.navigate('CreateNoteScreen', { saveNewNote: saveNewNote })} >
@@ -233,7 +240,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   gridView: {
-    
+
   },
   lightContainer: {
     backgroundColor: '#fff',
