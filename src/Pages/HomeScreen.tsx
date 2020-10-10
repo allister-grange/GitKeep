@@ -189,13 +189,13 @@ const HomeScreen = () => {
       }
 
       {
-        files.length <= 0 &&
+        files.length <= 0 && !loadingNotes && 
         <View style={styles.emptyRepoContainer}>
           <Text style={[styles.emptyRepoText, themeTextStyle]}>there are no .md notes in this repo,</Text>
           <Text style={[styles.emptyRepoText, themeTextStyle]}>make one!</Text>
         </View>
       }
-      
+
       {
         loadingNotes ?
           <ActivityIndicator color={'coral'} size={40} />
