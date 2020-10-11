@@ -7,8 +7,9 @@ import { Appearance, useColorScheme } from 'react-native-appearance';
 import { useNavigation } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-const SearchComponent = (props: any) => {
+const SearchBar = (props: any) => {
     const { clampedScroll } = props;
     Appearance.getColorScheme();
     const colorScheme = useColorScheme();
@@ -43,7 +44,8 @@ const SearchComponent = (props: any) => {
                 },
                 {
                     text: "Yes", onPress: () => {
-                        navigation.navigate('AuthScreen');
+                        props.setLoggedOut();
+                        // navigation.navigate('AuthScreen');
                     }
                 }
             ],
@@ -107,6 +109,8 @@ const SearchComponent = (props: any) => {
     )
 }
 
+export default SearchBar
+
 const styles = StyleSheet.create({
     container: {
         position: 'absolute',
@@ -151,5 +155,3 @@ const styles = StyleSheet.create({
         color: 'white'
     },
 })
-
-export default SearchComponent;

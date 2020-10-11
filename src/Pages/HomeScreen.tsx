@@ -11,8 +11,20 @@ import Toast from "react-native-fast-toast";
 import SearchComponent from '../Components/Search/SearchBar';
 import { Dimensions } from 'react-native';
 import { MenuProvider } from 'react-native-popup-menu';
+import { StackNavigationProp } from '@react-navigation/stack';
+import SearchBar from '../Components/Search/SearchBar';
 
-const HomeScreen = () => {
+type RootStackParamList = {
+  Home: undefined;
+  HomeScreen: {
+      setLoggedOut: (state: boolean) => {},
+  };
+  Feed: { sort: 'latest' | 'top' } | undefined;
+};
+
+type Props = StackNavigationProp<RootStackParamList, 'HomeScreen'>;
+
+export default function HomeScreen({ route }: Props) {
 
   Appearance.getColorScheme();
   const colorScheme = useColorScheme();
@@ -179,7 +191,8 @@ const HomeScreen = () => {
     <SafeAreaView style={[styles.container, themeContainerStyle]}>
       <StatusBar barStyle={themeStatusBarStyle} />
       {!refreshing &&
-        <SearchComponent
+        <SearchBar
+          setLoggedOut={route.params.setLoggedOut}
           toggleContentView={toggleContentView}
           isSearching={searchLoadingIndicator}
           changeSearchTerm={changeSearchTerm}
@@ -232,8 +245,6 @@ const HomeScreen = () => {
     </SafeAreaView>
   );
 }
-
-export default HomeScreen;
 
 const styles = StyleSheet.create({
   container: {

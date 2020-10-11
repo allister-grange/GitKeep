@@ -5,10 +5,11 @@ import { Button, View, Text, Platform, StyleSheet, SafeAreaView, ActivityIndicat
 import { GitHubLoginButton } from '../Components/LoginButtons/GitHubLoginButton';
 import * as SecureStore from 'expo-secure-store';
 import * as Linking from 'expo-linking'
-import { useNavigation } from '@react-navigation/native';
+import { BaseRouter, useNavigation } from '@react-navigation/native';
 import { Appearance, useColorScheme } from 'react-native-appearance';
 import { getAccessToken, getAuthenticatedUserName } from '../Services/GitHub';
 import env from '../Utilities/env';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -21,7 +22,18 @@ const discovery = {
 
 // https://auth.expo.io/@allig256/GitKeep
 
-export default function App() {
+type RootStackParamList = {
+    Home: undefined;
+    AuthenticateScreen: {
+        setIsSignedIn: (state: boolean) => {},
+    };
+    Feed: { sort: 'latest' | 'top' } | undefined;
+};
+
+type Props = StackNavigationProp<RootStackParamList, 'AuthenticateScreen'>;
+
+
+export default function AuthenticateScreen({ route }: Props) {
 
     const navigation = useNavigation();
     Appearance.getColorScheme();
@@ -59,7 +71,8 @@ export default function App() {
                 await getAuthenticatedUserName()
                     .then(res => SecureStore.setItemAsync('user_name', res))
                     .catch(err => alert(err));
-                navigation.navigate('RepoSelectScreen');
+                // navigation.navigate('RepoSelectScreen');
+                route.params.setIsLoggedIn();
                 setLoadingToken(false);
             }
         }
