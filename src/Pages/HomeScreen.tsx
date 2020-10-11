@@ -179,7 +179,10 @@ const HomeScreen = () => {
     <SafeAreaView style={[styles.container, themeContainerStyle]}>
       <StatusBar barStyle={themeStatusBarStyle} />
       {!refreshing &&
-        <SearchComponent toggleContentView={toggleContentView} isSearching={searchLoadingIndicator}
+        <SearchComponent
+          toggleContentView={toggleContentView}
+          isSearching={searchLoadingIndicator}
+          changeSearchTerm={changeSearchTerm}
           changeGridView={changeGridView}
           numOfColumns={numOfColumns}
           clampedScroll={clampedScroll} />
