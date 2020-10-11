@@ -73,12 +73,12 @@ const SearchComponent = (props: any) => {
                 />
             </View>
             {
-                props.showingGridView ?
-                    <TouchableOpacity onPress={props.changeGridView}>
+                props.numOfColumns === 1 ?
+                    <TouchableOpacity onPress={() => props.changeGridView(2)}>
                         <Feather name="grid" size={24} color="black" />
                     </TouchableOpacity>
                     :
-                    <TouchableOpacity onPress={props.changeGridView}>
+                    <TouchableOpacity onPress={() => props.changeGridView(1)}>
                         <Feather name="square" size={24} color="black" />
                     </TouchableOpacity>
             }

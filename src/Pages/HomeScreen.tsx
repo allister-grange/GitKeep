@@ -28,7 +28,7 @@ const HomeScreen = () => {
   const [displayingAllFiles, setDisplayingAllFiles] = useState(true);
   const [searchLoadingIndicator, setSearchLoadingIndicator] = useState(false);
   const [showingContentView, setShowingContentView] = useState(true);
-  const [showingGridView, setShowingGridView] = useState(false);
+  const [numOfColumns, setNumOfColumns] = useState(1);
 
   const clampedScroll = Animated.diffClamp(
     Animated.add(
@@ -57,8 +57,6 @@ const HomeScreen = () => {
     colorScheme === 'light' ? styles.lightThemeNewNoteButton : styles.darkThemeNewNoteButton;
   const themeTextStyle =
     colorScheme === 'light' ? styles.lightText : styles.darkText;
-  const themeGridStyle =
-    showingGridView === true && styles.gridView;
 
   useEffect(() => {
     async function pullDownFiles() {
@@ -81,8 +79,8 @@ const HomeScreen = () => {
 
   }, [isFocused]);
 
-  const changeGridView = () => {
-    setShowingGridView(!showingGridView)
+  const changeGridView = (numOfColumns: number) => {
+    setNumOfColumns(numOfColumns)
   }
 
   const getRepoData = async () => {
@@ -183,13 +181,12 @@ const HomeScreen = () => {
       {!refreshing &&
         <SearchComponent toggleContentView={toggleContentView} isSearching={searchLoadingIndicator}
           changeGridView={changeGridView}
-          setShowingGridView={setShowingGridView}
-          showingGridView={showingGridView}
+          numOfColumns={numOfColumns}
           clampedScroll={clampedScroll} />
       }
 
       {
-        files.length <= 0 && !loadingNotes && 
+        files.length <= 0 && !loadingNotes &&
         <View style={styles.emptyRepoContainer}>
           <Text style={[styles.emptyRepoText, themeTextStyle]}>there are no .md notes in this repo,</Text>
           <Text style={[styles.emptyRepoText, themeTextStyle]}>make one!</Text>
@@ -202,9 +199,11 @@ const HomeScreen = () => {
           :
           <Animated.FlatList
             data={files}
-            keyExtractor={(file: any) => file.index}
+            numColumns={numOfColumns}
+            key={numOfColumns}
+            keyExtractor={(file: any) => file.fileInfo.sha}
             renderItem={renderItem}
-            style={[styles.notesContatiner, themeGridStyle]}
+            style={styles.notesContatiner}
             onScroll={
               Animated.event(
                 [{ nativeEvent: { contentOffset: { y: scrollYValue } } }],
@@ -238,9 +237,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  gridView: {
-
   },
   lightContainer: {
     backgroundColor: '#fff',
