@@ -17,7 +17,7 @@ import SearchBar from '../Components/Search/SearchBar';
 type RootStackParamList = {
   Home: undefined;
   HomeScreen: {
-      setLoggedOut: (state: boolean) => {}
+    setIsSignedIn: (state: boolean) => {}
   };
   Feed: { sort: 'latest' | 'top' } | undefined;
 };
@@ -192,7 +192,7 @@ export default function HomeScreen({ route }: Props) {
       <StatusBar barStyle={themeStatusBarStyle} />
       {!refreshing &&
         <SearchBar
-          setLoggedOut={route.params.setLoggedOut}
+          setIsSignedIn={route.params.setIsSignedIn}
           toggleContentView={toggleContentView}
           isSearching={searchLoadingIndicator}
           changeSearchTerm={changeSearchTerm}

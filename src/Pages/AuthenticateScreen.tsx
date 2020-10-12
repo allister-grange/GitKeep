@@ -72,7 +72,7 @@ export default function AuthenticateScreen({ route }: Props) {
                     .then(res => SecureStore.setItemAsync('user_name', res))
                     .catch(err => alert(err));
                 // navigation.navigate('RepoSelectScreen');
-                route.params.setIsLoggedIn();
+                route.params.setIsSignedIn(true);
                 setLoadingToken(false);
             }
         }

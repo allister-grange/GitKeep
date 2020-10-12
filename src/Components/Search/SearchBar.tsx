@@ -46,7 +46,8 @@ const SearchBar = (props: any) => {
                 {
                     text: "Yes", onPress: () => {
                         SecureStore.deleteItemAsync('github_token');
-                        props.setLoggedOut();
+                        SecureStore.deleteItemAsync('repo_name');
+                        props.setIsSignedIn(false);
                     }
                 }
             ],

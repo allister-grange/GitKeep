@@ -39,15 +39,6 @@ export default function App() {
     prefixes: [prefix],
   };
 
-  //todo remove these 
-  const setIsLoggedIn = () => {
-    setIsSignedIn(true);
-  }
-
-  const setLoggedOut = () => {
-    setIsSignedIn(false);
-  }
-
   useEffect(() => {
     getGitHubTokenFromStorage();
   }, [])
@@ -55,9 +46,6 @@ export default function App() {
   async function getGitHubTokenFromStorage() {
     const token = await SecureStore.getItemAsync('github_token');
     const repoName = await SecureStore.getItemAsync('repo_name');
-
-    console.log(token);
-
 
     if (token) {
       setIsSignedIn(true);
@@ -92,7 +80,7 @@ export default function App() {
 
                 <>
                   <Stack.Screen name="RepoSelectScreen" component={RepoSelectScreen} options={{ headerShown: false }} />
-                  <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} initialParams={{ setLoggedOut: setLoggedOut }} />
+                  <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} initialParams={{ setIsSignedIn: setIsSignedIn }} />
                   <Stack.Screen name="PreviewMarkdownScreen" component={PreviewMarkdownScreen} options={{ headerShown: false }} />
                   <Stack.Screen name="EditNoteScreen" component={EditNoteScreen} options={{ headerShown: false }} />
                   <Stack.Screen name="CreateNoteScreen" component={CreateNoteScreen} options={{ headerShown: false }} />
@@ -103,7 +91,7 @@ export default function App() {
                 isLoaded && isSignedIn && repoName &&
 
                 <>
-                  <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} initialParams={{ setLoggedOut: setLoggedOut }} />
+                  <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} initialParams={{ setIsSignedIn: setIsSignedIn }} />
                   <Stack.Screen name="RepoSelectScreen" component={RepoSelectScreen} options={{ headerShown: false }} />
                   <Stack.Screen name="PreviewMarkdownScreen" component={PreviewMarkdownScreen} options={{ headerShown: false }} />
                   <Stack.Screen name="EditNoteScreen" component={EditNoteScreen} options={{ headerShown: false }} />
@@ -114,7 +102,7 @@ export default function App() {
               {
                 isLoaded && !isSignedIn &&
                 <>
-                  <Stack.Screen name="AuthScreen" component={AuthenticateScreen} options={{ headerShown: false }} initialParams={{ setIsLoggedIn: setIsLoggedIn }} />
+                  <Stack.Screen name="AuthScreen" component={AuthenticateScreen} options={{ headerShown: false }} initialParams={{ setIsSignedIn: setIsSignedIn }} />
                 </>
               }
             </Stack.Navigator>
