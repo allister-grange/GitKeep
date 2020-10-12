@@ -18,6 +18,7 @@ import { PreviewMarkdownScreen } from './src/Pages/PreviewMarkdownScreen';
 import CreateNoteScreen from './src/Pages/CreateNoteScreen';
 import { MenuProvider } from 'react-native-popup-menu';
 import LoadingScreen from './src/Pages/LoadingScreen';
+import CreateNewRepoScreen from './src/Pages/CreateNewRepoScreen';
 
 export default function App() {
   const Tab = createBottomTabNavigator();
@@ -83,6 +84,7 @@ export default function App() {
                   <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} initialParams={{ setIsSignedIn: setIsSignedIn }} />
                   <Stack.Screen name="PreviewMarkdownScreen" component={PreviewMarkdownScreen} options={{ headerShown: false }} />
                   <Stack.Screen name="EditNoteScreen" component={EditNoteScreen} options={{ headerShown: false }} />
+                  <Stack.Screen name="CreateNewRepoScreen" component={CreateNewRepoScreen} options={{ headerShown: false }} />
                   <Stack.Screen name="CreateNoteScreen" component={CreateNoteScreen} options={{ headerShown: false }} />
                 </>
               }

@@ -45,6 +45,8 @@ export function EditNoteScreen({ route }: Props) {
         colorScheme === 'light' ? styles.lightTitleContainer : styles.darkTitleContainer;
     const ellipsesColor =
         colorScheme === 'light' ? 'black' : 'white';
+    const themePlaceHolderStyle =
+        colorScheme === 'light' ? '#505050' : '#C7C7C7';
 
     const DeleteAlert = () =>
         Alert.alert(
@@ -116,36 +118,38 @@ export function EditNoteScreen({ route }: Props) {
     }
 
     return (
-            <SafeAreaView style={[styles.container, themeContainerStyle]}>
-                <View style={[styles.titleContainer, themeTitleContainer]}>
-                    <View style={{ flex: 1 }}>
-                        <Text style={[styles.title, themeTitleStyle]}>{route.params.file.fileInfo.path}</Text>
-                    </View>
-                    <Menu>
-                        <MenuTrigger>
-                            <AntDesign style={styles.ellipses} name="ellipsis1" size={24} color={ellipsesColor} />
-                        </MenuTrigger>
-                        <MenuOptions customStyles={{ optionsContainer: menuContainerStyle }}>
-                            <MenuOption onSelect={() => saveChangesToRepo()}>
-                                <Text style={[styles.menuText, themeTextStyle]}>Save</Text>
-                            </MenuOption>
-                            <MenuOption onSelect={() => DeleteAlert()} >
-                                <Text style={[styles.menuText, themeTextStyle]}>Delete</Text>
-                            </MenuOption>
-                        </MenuOptions>
-                    </Menu>
+        <SafeAreaView style={[styles.container, themeContainerStyle]}>
+            <View style={[styles.titleContainer, themeTitleContainer]}>
+                <View style={{ flex: 1 }}>
+                    <Text style={[styles.title, themeTitleStyle]}>{route.params.file.fileInfo.path}</Text>
                 </View>
-                <View style={styles.contentContainer}>
-                    <TextInput
-                        value={content}
-                        placeholder="Content"
-                        multiline={true}
-                        style={[styles.textInput, themeTextStyle]}
-                        onChangeText={(value) => setContent(value)}
-                    />
-                </View>
-                <Toast ref={toast} />
-            </SafeAreaView>
+                <Menu>
+                    <MenuTrigger>
+                        <AntDesign style={styles.ellipses} name="ellipsis1" size={24} color={ellipsesColor} />
+                    </MenuTrigger>
+                    <MenuOptions customStyles={{ optionsContainer: menuContainerStyle }}>
+                        <MenuOption onSelect={() => saveChangesToRepo()}>
+                            <Text style={[styles.menuText, themeTextStyle]}>Save</Text>
+                        </MenuOption>
+                        <MenuOption onSelect={() => DeleteAlert()} >
+                            <Text style={[styles.menuText, themeTextStyle]}>Delete</Text>
+                        </MenuOption>
+                    </MenuOptions>
+                </Menu>
+            </View>
+            <View style={styles.contentContainer}>
+                <TextInput
+                    value={content}
+                    placeholder="Content"
+                    multiline={true}
+                    placeholderTextColor={themePlaceHolderStyle}
+                    style={[styles.textInput, themeTextStyle]}
+                    onChangeText={(value) => setContent(value)}
+
+                />
+            </View>
+            <Toast ref={toast} />
+        </SafeAreaView>
     );
 }
 

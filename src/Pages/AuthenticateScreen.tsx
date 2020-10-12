@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as WebBrowser from 'expo-web-browser';
 import { makeRedirectUri, useAuthRequest, getRedirectUrl } from 'expo-auth-session';
-import { Button, View, Text, Platform, StyleSheet, SafeAreaView, ActivityIndicator } from 'react-native';
+import { View, Text, Platform, StyleSheet, SafeAreaView, ActivityIndicator } from 'react-native';
 import { GitHubLoginButton } from '../Components/LoginButtons/GitHubLoginButton';
 import * as SecureStore from 'expo-secure-store';
 import * as Linking from 'expo-linking'

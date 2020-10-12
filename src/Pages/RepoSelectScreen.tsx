@@ -44,7 +44,7 @@ const RepoSelectScreen = () => {
             <ScrollView>
                 <DisplayRepoInfo
                     title={'Create a new repo'}
-                    onPress={() => navigation.navigate('Home')}
+                    onPress={() => navigation.navigate('CreateNewRepoScreen')}
                     description={'Start a new repository for your notes from scratch'}
                     privateRepo={false}
                 />

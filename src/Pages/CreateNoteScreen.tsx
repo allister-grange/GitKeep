@@ -46,6 +46,9 @@ export function CreateNoteScreen({ route }: Props) {
         colorScheme === 'light' ? styles.lightTitleContainer : styles.darkTitleContainer;
     const ellipsesColor =
         colorScheme === 'light' ? 'black' : 'white';
+    const themePlaceHolderStyle =
+        colorScheme === 'light' ? '#505050' : '#C7C7C7';
+
 
     useEffect(() => {
 
@@ -131,6 +134,7 @@ export function CreateNoteScreen({ route }: Props) {
                     multiline={true}
                     style={[styles.textInput, themeTextStyle]}
                     onChangeText={(value) => setContent(value)}
+                    placeholderTextColor={themePlaceHolderStyle}
                 />
             </View>
             <Toast ref={toast} />
