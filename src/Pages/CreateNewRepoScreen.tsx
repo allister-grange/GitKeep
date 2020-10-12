@@ -5,6 +5,7 @@ import { DisplayRepoInfo } from '../Components/Repos/DisplayRepoInfo';
 import { useNavigation } from '@react-navigation/native';
 import * as SecureStore from 'expo-secure-store';
 import { fetchUserRepos } from '../Services/GitHub';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const CreateNewRepoScreen = () => {
 
@@ -19,6 +20,8 @@ const CreateNewRepoScreen = () => {
         colorScheme === 'light' ? styles.lightText : styles.darkText;
     const themeTitleContainer =
         colorScheme === 'light' ? styles.lightTitleContainer : styles.darkTitleContainer;
+    const themeButtonContainer =
+        colorScheme === 'light' ? styles.lightButtonContainer : styles.darkButtonContainer;
     const themePlaceHolderStyle =
         colorScheme === 'light' ? '#505050' : '#C7C7C7';
     const themeButtonColor =
@@ -44,12 +47,13 @@ const CreateNewRepoScreen = () => {
             />
             {
                 repoName !== "" && 
-                <Button 
+                <TouchableOpacity 
                     onPress={createNewRepo}
-                    title="create repo"
-                    color={themeButtonColor}
+                    style={[styles.buttonContainer, themeButtonContainer]}
                     accessibilityLabel="Create a new repo with this name"
-                />
+                >
+                    <Text style={[themeTextStyle]}>create repo</Text>
+                </TouchableOpacity>
             }
         </SafeAreaView>
     );
@@ -63,6 +67,7 @@ const styles = StyleSheet.create({
     input: {
         fontSize: 20,
         borderWidth: 2,
+        borderRadius: 5,
         margin: 20,
         padding: 10,
         width: '50%'
@@ -89,6 +94,17 @@ const styles = StyleSheet.create({
     darkContainer: {
         backgroundColor: '#202020'
     },
+    buttonContainer: {
+        borderWidth: 2,
+        padding: 10,
+        borderRadius: 5
+    },
+    lightButtonContainer: {
+        borderColor: '#d3d3d3',
+    },
+    darkButtonContainer: {
+        borderColor: 'white',
+    }
 });
 
 export default CreateNewRepoScreen;
