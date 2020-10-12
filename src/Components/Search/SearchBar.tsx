@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { StackNavigationProp } from '@react-navigation/stack';
+import * as SecureStore from 'expo-secure-store';
 
 const SearchBar = (props: any) => {
     const { clampedScroll } = props;
@@ -44,8 +45,8 @@ const SearchBar = (props: any) => {
                 },
                 {
                     text: "Yes", onPress: () => {
+                        SecureStore.deleteItemAsync('github_token');
                         props.setLoggedOut();
-                        // navigation.navigate('AuthScreen');
                     }
                 }
             ],

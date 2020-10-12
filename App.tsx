@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import HomeScreen from './src/Pages/HomeScreen';
 import AuthenticateScreen from './src/Pages/AuthenticateScreen';
 import { AppearanceProvider } from 'react-native-appearance'
@@ -17,6 +17,7 @@ import { useNavigation } from '@react-navigation/native';
 import { PreviewMarkdownScreen } from './src/Pages/PreviewMarkdownScreen';
 import CreateNoteScreen from './src/Pages/CreateNoteScreen';
 import { MenuProvider } from 'react-native-popup-menu';
+import LoadingScreen from './src/Pages/LoadingScreen';
 
 export default function App() {
   const Tab = createBottomTabNavigator();
@@ -24,6 +25,8 @@ export default function App() {
   const colorScheme = useColorScheme();
 
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [repoName, setRepoName] = useState(false);
 
   const statusBarStyle = colorScheme === 'dark' ? 'dark' : 'light';
   const Stack = createStackNavigator();
@@ -42,8 +45,6 @@ export default function App() {
   }
 
   const setLoggedOut = () => {
-    console.log("logged out ");
-
     setIsSignedIn(false);
   }
 
@@ -53,17 +54,21 @@ export default function App() {
 
   async function getGitHubTokenFromStorage() {
     const token = await SecureStore.getItemAsync('github_token');
+    const repoName = await SecureStore.getItemAsync('repo_name');
 
     console.log(token);
 
 
     if (token) {
-      console.log("hello");
-
-      // setIsSignedIn(true);
+      setIsSignedIn(true);
+      if(repoName){
+        setRepoName(true);
+      }
+      setIsLoaded(true);
     }
     else {
-      // setIsSignedIn(false);
+      setIsSignedIn(false);
+      setIsLoaded(true);
     }
   }
 
@@ -76,19 +81,41 @@ export default function App() {
             <Stack.Navigator >
 
               {
-                isSignedIn ? (
-                  <>
-                    <Stack.Screen name="RepoSelectScreen" component={RepoSelectScreen} options={{ headerShown: false }} />
-                    <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} initialParams={{ setLoggedOut: setLoggedOut }} />
-                    <Stack.Screen name="PreviewMarkdownScreen" component={PreviewMarkdownScreen} options={{ headerShown: false }} />
-                    <Stack.Screen name="EditNoteScreen" component={EditNoteScreen} options={{ headerShown: false }} />
-                    <Stack.Screen name="CreateNoteScreen" component={CreateNoteScreen} options={{ headerShown: false }} />
-                  </>
-                ) : (
-                    <>
-                      <Stack.Screen name="AuthScreen" component={AuthenticateScreen} options={{ headerShown: false }} initialParams={{ setIsLoggedIn: setIsLoggedIn }} />
-                    </>
-                  )
+                !isLoaded && 
+                <>
+                 <Stack.Screen name="LoadingScreen" component={LoadingScreen} options={{ headerShown: false }} />
+                </>
+              }
+
+              {
+                isLoaded && isSignedIn && !repoName && 
+
+                <>
+                  <Stack.Screen name="RepoSelectScreen" component={RepoSelectScreen} options={{ headerShown: false }} />
+                  <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} initialParams={{ setLoggedOut: setLoggedOut }} />
+                  <Stack.Screen name="PreviewMarkdownScreen" component={PreviewMarkdownScreen} options={{ headerShown: false }} />
+                  <Stack.Screen name="EditNoteScreen" component={EditNoteScreen} options={{ headerShown: false }} />
+                  <Stack.Screen name="CreateNoteScreen" component={CreateNoteScreen} options={{ headerShown: false }} />
+                </>
+              }
+
+              {
+                isLoaded && isSignedIn && repoName &&
+
+                <>
+                  <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} initialParams={{ setLoggedOut: setLoggedOut }} />
+                  <Stack.Screen name="RepoSelectScreen" component={RepoSelectScreen} options={{ headerShown: false }} />
+                  <Stack.Screen name="PreviewMarkdownScreen" component={PreviewMarkdownScreen} options={{ headerShown: false }} />
+                  <Stack.Screen name="EditNoteScreen" component={EditNoteScreen} options={{ headerShown: false }} />
+                  <Stack.Screen name="CreateNoteScreen" component={CreateNoteScreen} options={{ headerShown: false }} />
+                </>
+              }
+
+              {
+                isLoaded && !isSignedIn &&
+                <>
+                  <Stack.Screen name="AuthScreen" component={AuthenticateScreen} options={{ headerShown: false }} initialParams={{ setIsLoggedIn: setIsLoggedIn }} />
+                </>
               }
             </Stack.Navigator>
           }

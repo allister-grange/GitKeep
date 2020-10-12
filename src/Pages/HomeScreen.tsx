@@ -17,7 +17,7 @@ import SearchBar from '../Components/Search/SearchBar';
 type RootStackParamList = {
   Home: undefined;
   HomeScreen: {
-      setLoggedOut: (state: boolean) => {},
+      setLoggedOut: (state: boolean) => {}
   };
   Feed: { sort: 'latest' | 'top' } | undefined;
 };

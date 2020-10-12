@@ -76,7 +76,7 @@ export default function AuthenticateScreen({ route }: Props) {
                 setLoadingToken(false);
             }
         }
-
+        
         fetchMyToken()
         
     }, [response]);
