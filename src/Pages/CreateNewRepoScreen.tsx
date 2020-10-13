@@ -4,7 +4,7 @@ import { Appearance, useColorScheme } from 'react-native-appearance';
 import { DisplayRepoInfo } from '../Components/Repos/DisplayRepoInfo';
 import { useNavigation } from '@react-navigation/native';
 import * as SecureStore from 'expo-secure-store';
-import { fetchUserRepos } from '../Services/GitHub';
+import { createANewRepo, fetchUserRepos } from '../Services/GitHub';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const CreateNewRepoScreen = () => {
@@ -12,6 +12,7 @@ const CreateNewRepoScreen = () => {
     Appearance.getColorScheme();
     const colorScheme = useColorScheme();
     const [repoName, setRepoName] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
     const navigation = useNavigation();
 
     const themeContainerStyle =
@@ -29,9 +30,13 @@ const CreateNewRepoScreen = () => {
 
     const createNewRepo = async () => {
         //craete new repo in gut hub
-
+        setIsLoading(true);
+        await createANewRepo(repoName)
+            .then((res) => console.log(res))
+            .catch((err) => console.log(err))
         await SecureStore.setItemAsync('repo_name', repoName);
-        navigation.navigate('Home')
+        setIsLoading(false);
+        navigation.navigate('Home');
     }
 
     return (
@@ -46,7 +51,7 @@ const CreateNewRepoScreen = () => {
                 onChangeText={(value) => setRepoName(value)}
             />
             {
-                repoName !== "" && 
+                repoName !== "" && !isLoading &&
                 <TouchableOpacity 
                     onPress={createNewRepo}
                     style={[styles.buttonContainer, themeButtonContainer]}
@@ -54,6 +59,10 @@ const CreateNewRepoScreen = () => {
                 >
                     <Text style={[themeTextStyle]}>create repo</Text>
                 </TouchableOpacity>
+            }
+            {
+                isLoading &&
+                <ActivityIndicator color={themeButtonColor}/>
             }
         </SafeAreaView>
     );

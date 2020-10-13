@@ -93,6 +93,30 @@ export const getRepoContents = async (): Promise<any> => {
 
 }
 
+export const createANewRepo = async (repoName: string): Promise<any> => {
+
+    const githubToken = await SecureStore.getItemAsync('github_token');
+
+    const url = 'https://api.github.com/user/repos'
+
+    const headers = new Headers({
+        'Authorization': 'Token ' + githubToken,
+        'Accept': 'application/vnd.github.VERSION.raw',
+        "X-Requested-With": "XMLHttpRequest"
+    });
+
+    const body = JSON.stringify({
+        "private": true,
+        "name": repoName,
+    })
+
+    return fetch(proxyUrl + url, { method: 'POST', headers: headers, body: body })
+        .then(res => res.json())
+        .then(data => data)
+        .catch(err => alert(err))
+
+}
+
 export const getRepoContentsFromTree = async (): Promise<Array<FileData>> => {
 
     console.log("getRepoContentsFromTree");
