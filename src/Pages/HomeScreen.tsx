@@ -185,10 +185,16 @@ export default function HomeScreen({ route }: Props) {
       return <Note showingContentView={showingContentView} refreshNotes={refreshNotes} deleteNote={deleteNote} key={fileToRender.index} file={file} />
   }
 
+  const changeRepo = () => {
+    navigation.navigate('RepoSelectScreen')
+    setFiles(new Array<FileData>());
+  }
+
   return (
     <SafeAreaView style={[styles.container, themeContainerStyle]}>
       {!refreshing &&
         <SearchBar
+          changeRepo={changeRepo}
           setIsSignedIn={route.params.setIsSignedIn}
           toggleContentView={toggleContentView}
           isSearching={searchLoadingIndicator}

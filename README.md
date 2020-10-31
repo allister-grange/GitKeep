@@ -62,7 +62,7 @@ https://developer.github.com/v3/repos/#create-a-repository-for-the-authenticated
     - [] Set height of note to zero (or hide it), until webview is ready
     - [X] Menu on a three ellepsis menu on the search bar (option to re-choose your repo)
     - [] Last edited dates on notes
-    - [] Finish create new repo screen
+    - [] Drag to delete notes? 
 
 
 ### To Deploy to phone 

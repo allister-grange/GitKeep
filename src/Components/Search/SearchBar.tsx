@@ -33,7 +33,7 @@ const SearchBar = (props: any) => {
     const themeTextStyle =
         colorScheme === 'light' ? styles.lightText : styles.darkText;
 
-    const SignoutAlert = () =>
+    const signoutAlert = () =>
         Alert.alert(
             "Sign out of GitHub",
             "Are you sure you want to sign out?",
@@ -98,10 +98,10 @@ const SearchBar = (props: any) => {
                     <MenuOption onSelect={props.toggleContentView}>
                         <Text style={[styles.menuText, themeTextStyle]}>Toggle Content View</Text>
                     </MenuOption>
-                    <MenuOption onSelect={() => navigation.navigate('RepoSelectScreen')}>
+                    <MenuOption onSelect={() => props.changeRepo()}>
                         <Text style={[styles.menuText, themeTextStyle]}>Change Repo</Text>
                     </MenuOption>
-                    <MenuOption onSelect={() => SignoutAlert()}>
+                    <MenuOption onSelect={() => signoutAlert()}>
                         <Text style={[styles.menuText, themeTextStyle]}>Sign Out of Github</Text>
                     </MenuOption>
                 </MenuOptions>
