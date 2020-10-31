@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, SafeAreaView, StatusBar, StyleSheet, TextInput, View, ScrollView, ActivityIndicator } from 'react-native';
+import { Text, SafeAreaView, StyleSheet, TextInput, View, ScrollView, ActivityIndicator } from 'react-native';
 import { Appearance, useColorScheme } from 'react-native-appearance';
 
 const LoadingScreen = () => {
@@ -21,6 +21,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         paddingTop: 30,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     lightContainer: {
         backgroundColor: 'white'

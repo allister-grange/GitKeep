@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, SafeAreaView, StatusBar, StyleSheet, TextInput, View, ScrollView, ActivityIndicator } from 'react-native';
+import { Text, SafeAreaView, StyleSheet, TextInput, View, ScrollView, ActivityIndicator } from 'react-native';
 import { Appearance, useColorScheme } from 'react-native-appearance';
 import { Note } from '../Components/Notes/Note';
 import Markdown from 'react-native-showdown';

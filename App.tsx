@@ -29,7 +29,8 @@ export default function App() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [repoName, setRepoName] = useState(false);
 
-  const statusBarStyle = colorScheme === 'dark' ? 'dark' : 'light';
+  const statusBarStyle = colorScheme === 'dark' ? 'light' : 'dark';
+
   const Stack = createStackNavigator();
   const prefix = Linking.makeUrl('/');
 

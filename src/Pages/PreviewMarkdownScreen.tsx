@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react';
-import { Text, SafeAreaView, StatusBar, StyleSheet, ScrollView, View } from 'react-native';
+import { Text, SafeAreaView, StyleSheet, ScrollView, View } from 'react-native';
 import { Appearance, useColorScheme } from 'react-native-appearance';
 import { Note } from '../Components/Notes/Note';
 import Markdown from 'react-native-showdown';

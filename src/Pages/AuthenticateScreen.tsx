@@ -48,7 +48,7 @@ export default function AuthenticateScreen({ route }: Props) {
         colorScheme === 'light' ? styles.lightTitleContainer : styles.darkTitleContainer;
     const themeTextStyle =
         colorScheme === 'light' ? styles.lightText : styles.darkText;
-
+    
     const [request, response, promptAsync] = useAuthRequest(
         {
             clientId: env.GITHUB_CLIENT,
@@ -100,7 +100,7 @@ export default function AuthenticateScreen({ route }: Props) {
                         onPress={() => promptAsync()}
                     />
                 }
-                <Text>{Linking.makeUrl()}</Text>
+                {/* <Text>{Linking.makeUrl()}</Text> */}
             </View>
         </SafeAreaView>
     );

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, SafeAreaView, StatusBar, StyleSheet, TextInput, View, ScrollView, ActivityIndicator, Button } from 'react-native';
+import { Text, SafeAreaView, StyleSheet, TextInput, View, ScrollView, ActivityIndicator, Button } from 'react-native';
 import { Appearance, useColorScheme } from 'react-native-appearance';
 import { DisplayRepoInfo } from '../Components/Repos/DisplayRepoInfo';
 import { useNavigation } from '@react-navigation/native';
@@ -52,7 +52,7 @@ const CreateNewRepoScreen = () => {
             />
             {
                 repoName !== "" && !isLoading &&
-                <TouchableOpacity 
+                <TouchableOpacity
                     onPress={createNewRepo}
                     style={[styles.buttonContainer, themeButtonContainer]}
                     accessibilityLabel="Create a new repo with this name"
@@ -62,7 +62,7 @@ const CreateNewRepoScreen = () => {
             }
             {
                 isLoading &&
-                <ActivityIndicator color={themeButtonColor}/>
+                <ActivityIndicator color={themeButtonColor} />
             }
         </SafeAreaView>
     );

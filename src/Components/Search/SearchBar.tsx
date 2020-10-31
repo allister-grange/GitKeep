@@ -35,7 +35,7 @@ const SearchBar = (props: any) => {
 
     const SignoutAlert = () =>
         Alert.alert(
-            "Sign out",
+            "Sign out of GitHub",
             "Are you sure you want to sign out?",
             [
                 {
@@ -102,7 +102,7 @@ const SearchBar = (props: any) => {
                         <Text style={[styles.menuText, themeTextStyle]}>Change Repo</Text>
                     </MenuOption>
                     <MenuOption onSelect={() => SignoutAlert()}>
-                        <Text style={[styles.menuText, themeTextStyle]}>Sign Out</Text>
+                        <Text style={[styles.menuText, themeTextStyle]}>Sign Out of Github</Text>
                     </MenuOption>
                 </MenuOptions>
             </Menu>

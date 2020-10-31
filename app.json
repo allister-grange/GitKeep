@@ -8,7 +8,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#202020"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -23,7 +23,6 @@
       "favicon": "./assets/favicon.png"
     },
     "androidNavigationBar": {
-      "barStyle": "dark-content",
       "backgroundColor": "#202020"
     },
     "userInterfaceStyle": "automatic",
@@ -32,7 +31,7 @@
     "githubUrl": "https://github.com/allister-grange/gitkeep",
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/git-branch-icon.png"
+        "foregroundImage": "./assets/GitKeepIcon.png"
       },
       "package": "com.grangeal.gitkeep",
       "versionCode": 1.0

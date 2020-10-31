@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
-import { Text, SafeAreaView, Animated, StatusBar, StyleSheet, Platform, View, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
+import { Text, SafeAreaView, Animated, StyleSheet, Platform, View, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
 import { Appearance, useColorScheme } from 'react-native-appearance';
 import { Note } from '../Components/Notes/Note';
 import * as SecureStore from 'expo-secure-store';
@@ -61,8 +61,6 @@ export default function HomeScreen({ route }: Props) {
     setRefreshing(false);
   };
 
-  const themeStatusBarStyle =
-    colorScheme === 'light' ? 'dark-content' : 'light-content';
   const themeContainerStyle =
     colorScheme === 'light' ? styles.lightContainer : styles.darkContainer;
   const themeNewNoteButtonStyle =
@@ -189,7 +187,6 @@ export default function HomeScreen({ route }: Props) {
 
   return (
     <SafeAreaView style={[styles.container, themeContainerStyle]}>
-      <StatusBar barStyle={themeStatusBarStyle} />
       {!refreshing &&
         <SearchBar
           setIsSignedIn={route.params.setIsSignedIn}

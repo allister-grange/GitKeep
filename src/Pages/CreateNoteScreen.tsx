@@ -32,8 +32,6 @@ export function CreateNoteScreen({ route }: Props) {
     const toast = useRef(null);
     const isFocused = useIsFocused();
 
-    const themeStatusBarStyle =
-        colorScheme === 'light' ? 'dark-content' : 'light-content';
     const themeContainerStyle =
         colorScheme === 'light' ? styles.lightContainer : styles.darkContainer;
     const menuContainerStyle =
