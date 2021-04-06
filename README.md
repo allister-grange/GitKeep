@@ -2,7 +2,11 @@
 
 My life is in markdown documents. I have all my notes from work, my to-do lists, my diary, project ideas, books read; they all sit in GitHub repos. To interact with them on my mobile, I built a mobile app to use GitHub’s API to update my markdown files on the go. This was built with React Native.
 
-
+<p align="center">
+        <img src="demo/gitKeep-login-demo.gif">
+        <img src="demo/gitkeep-dark-theme.gif">
+        <img src="demo/gitkeep-serch-demo.gif">
+</p>
 
 ### Flow for ```git clone``` and ```git push``` in the app
 
