@@ -34,7 +34,8 @@
         "foregroundImage": "./assets/GitKeepIcon.png"
       },
       "package": "com.grangeal.gitkeep",
-      "versionCode": 1.0
+      "versionCode": 1.0,
+      "permissions": []
     }
   }
 }

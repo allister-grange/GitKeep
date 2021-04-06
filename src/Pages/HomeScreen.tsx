@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Text, SafeAreaView, Animated, StyleSheet, Platform, View, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
 import { Appearance, useColorScheme } from 'react-native-appearance';
 import { Note } from '../Components/Notes/Note';
@@ -6,11 +6,8 @@ import * as SecureStore from 'expo-secure-store';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useIsFocused } from '@react-navigation/native';
-import { parseRepoData, FileData, getRepoContentsFromTree, updateFileContent, deleteFile, createNewNote } from '../Services/GitHub';
+import { FileData, getRepoContentsFromTree, updateFileContent, deleteFile, createNewNote } from '../Services/GitHub';
 import Toast from "react-native-fast-toast";
-import SearchComponent from '../Components/Search/SearchBar';
-import { Dimensions } from 'react-native';
-import { MenuProvider } from 'react-native-popup-menu';
 import { StackNavigationProp } from '@react-navigation/stack';
 import SearchBar from '../Components/Search/SearchBar';
 

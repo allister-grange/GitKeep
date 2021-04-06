@@ -54,7 +54,11 @@ export const getAccessToken = async (code: string): Promise<string> => {
 export const fetchUserRepos = async (): Promise<any> => {
     const token = await SecureStore.getItemAsync('github_token');
 
-    console.log("fetching user's repos");
+    if(!token){
+      throw("Could not find user's token");
+    }
+    
+    console.log(`fetching user's repos with token ${token}`);
 
     const url = 'https://api.github.com/user/repos'
 

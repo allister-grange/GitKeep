@@ -61,8 +61,8 @@ export default function AuthenticateScreen({ route }: Props) {
     React.useEffect(() => {
 
         async function fetchMyToken() {
-
             if (response?.type === 'success') {
+                console.log("Authentication with GitHub was a success");
                 const { code } = response.params;
                 setLoadingToken(true);
                 await getAccessToken(code)
@@ -75,9 +75,13 @@ export default function AuthenticateScreen({ route }: Props) {
                 route.params.setIsSignedIn(true);
                 setLoadingToken(false);
             }
+            else if (response){
+              //TODO SET ERROR HERE
+              console.error(response);
+            }
         }
         
-        fetchMyToken()
+        fetchMyToken();
         
     }, [response]);
 

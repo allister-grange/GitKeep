@@ -28,10 +28,11 @@ const RepoSelectScreen = () => {
             setLoadingRepos(true);
             await fetchUserRepos()
                 .then(data => setRepoData(data))
+                .catch(err => console.log(err));
             setLoadingRepos(false);
         }
 
-        fetchData()
+        fetchData();
     }, []);
 
     const selectRepo = async (repoName: string) => {        
