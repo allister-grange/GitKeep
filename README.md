@@ -4,14 +4,35 @@ My life is in markdown documents. I have all my notes from work, my to-do lists,
 
 
 
-## Flow for ```git clone``` and ```git push```
+### Flow for ```git clone``` and ```git push``` in the app
 
-Using the endpoint below:
+I use the endpoint below to pull down all the files from a repo:
 https://docs.github.com/en/rest/reference/repos#get-repository-content
 
-If file ends in .md, it's added to a list to download the content from, that content is then displayed on the cards
+If file ends in .md, it's added to a list to download the content from, that content is then displayed on the cards.
 
-Once a file is modified, update the file using this endpoint:
+To pull down the content of each file, I use the tree SHA value for the master branch, and pull the content like this:
+```
+    const shaUrl = 'https://api.github.com/repos/' + userName + '/' + repoName + '/git/blobs/';
+
+    await Promise.all(files.map(f => fetch(proxyUrl + shaUrl + f.fileInfo.sha, { method: 'GET', headers: headers })))
+        .then(result => Promise.all(result.map(res => res.json())))
+        .then(res => {
+            for (let i = 0; i < res.length; i++) {
+                if (res[i].content === "") {
+                    files[i].fileContent = "#Empty Note :("
+                }
+                else {
+                    files[i].fileContent = Buffer.from(res[i].content, 'base64').toString('ascii') as string
+                }
+            }            
+        })
+        .catch(error => {
+            throw(error);
+        });
+```
+
+Once a file is modified, the file is updated using this endpoint:
 https://docs.github.com/en/rest/reference/repos#create-or-update-file-contents
 
 ## iOS Deploy
