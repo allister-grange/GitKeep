@@ -5,7 +5,6 @@ My life is in markdown documents. I have all my notes from work, my to-do lists,
 <p align="center">
         <img src="demo/gitKeep-login-demo.gif">
         <img src="demo/gitkeep-dark-theme.gif">
-        <img src="demo/gitkeep-search-demo.gif">
 </p>
 
 ### Flow for ```git clone``` and ```git push``` in the app
